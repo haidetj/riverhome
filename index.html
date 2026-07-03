@@ -572,13 +572,23 @@
 
     // ================= Deterministic rules engine =================
     // Contact/bacteria risk estimated from recent rainfall + runoff (a proxy, not a measurement).
+    // Plain-language phrasing for a dry spell — reads as days once it's long,
+    // and never prints a raw sentinel like "999h".
+    function dryPhrase(h) {
+      if (h >= 168) return "No rain in at least the past week — runoff has long since cleared.";
+      if (h >= 48) return `Dry for about ${Math.round(h / 24)} days — runoff has had time to clear.`;
+      return `Dry for about ${Math.round(h)}h — runoff has had time to clear.`;
+    }
     function contactRisk(wx, usgs) {
-      const r24 = wx ? wx.rain24 : 0, r48 = wx ? wx.rain48 : 0, dry = wx ? wx.dryHours : 999;
       const rising = usgs && usgs.gaugeRiseFt != null && usgs.gaugeRiseFt > 0.5;
+      // No weather = no rainfall history to estimate runoff from. Say so plainly
+      // instead of defaulting to a bogus "dry for 999h".
+      if (!wx) return { level: "Unknown", sev: 1, why: "Rainfall data isn't loading right now, so runoff risk can't be estimated." };
+      const r24 = wx.rain24, r48 = wx.rain48, dry = wx.dryHours;
       let level, sev, why;
       if (r24 >= 0.5 || r48 >= 1.0) { level = "High"; sev = 3; why = `About ${precipOut(r48)}${precipUnit()} of rain in the last 48h has flushed runoff into the river.`; }
       else if (r24 >= 0.1 || r48 >= 0.3) { level = "Elevated"; sev = 2; why = `Some recent rain (${precipOut(r48)}${precipUnit()} / 48h) may have carried bacteria in.`; }
-      else if (dry >= 72) { level = "Low"; sev = 0; why = `Dry for about ${Math.round(dry)}h — runoff has had time to clear.`; }
+      else if (dry >= 72) { level = "Low"; sev = 0; why = dryPhrase(dry); }
       else { level = "Moderate"; sev = 1; why = `No heavy rain lately, but it hasn't been dry long enough to be sure.`; }
       if (rising && sev < 3) { sev++; why += " The gauge is rising, which backs up a runoff pulse."; if (level === "Low") level = "Moderate"; else if (level === "Moderate") level = "Elevated"; else if (level === "Elevated") level = "High"; }
       return { level, sev, why };
@@ -689,7 +699,11 @@ Write grounded, specific prose — never invent numbers, species, or events not 
         },
         body: JSON.stringify({
           model: settings.model || "claude-sonnet-5",
-          max_tokens: 700,
+          // Sonnet 5 runs adaptive thinking by default, and max_tokens covers
+          // thinking + output combined — 700 left too little for the JSON, so
+          // it truncated mid-string ("Unterminated string in JSON"). Give the
+          // structured read ample room.
+          max_tokens: 2000,
           system: READ_SYSTEM,
           output_config: { format: { type: "json_schema", schema: READ_SCHEMA } },
           messages: [{ role: "user", content: user }]
