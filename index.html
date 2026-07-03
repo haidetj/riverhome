@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>RiverHome</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <style>
+    :root {
+      --glass: rgba(148,163,184,0.08);
+      --glass-2: rgba(148,163,184,0.13);
+      --border: rgba(148,163,184,0.20);
+      --border-soft: rgba(148,163,184,0.13);
+      --ink: #e8eef6;
+      --ink-soft: #9aa8bd;
+      --ink-dim: #64748b;
+      --accent: #22d3ee;
+      --accent-2: #34d399;
+      --accent-soft: rgba(34,211,238,0.15);
+      --go: #34d399;
+      --caution: #fbbf24;
+      --no: #fb7185;
+      --unknown: #64748b;
+      --shadow: 0 10px 30px rgba(2,6,23,0.45);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--ink); background: #0b1220;
+      min-height: 100vh; -webkit-font-smoothing: antialiased;
+    }
+    body { padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+    body::before {
+      content: ""; position: fixed; inset: 0; z-index: -1;
+      background:
+        radial-gradient(60% 50% at 18% 0%, rgba(34,211,238,0.16), transparent 60%),
+        radial-gradient(55% 45% at 92% 8%, rgba(52,211,153,0.13), transparent 60%),
+        radial-gradient(70% 55% at 50% 100%, rgba(34,211,238,0.07), transparent 60%),
+        linear-gradient(180deg, #0b1220, #0e1626 55%, #0b1220);
+    }
+    .app { max-width: 560px; margin: 0 auto; padding: 22px 16px 40px; }
+
+    .card, details.src, .strip, .adv {
+      background: var(--glass);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow);
+    }
+
+    /* Header */
+    header { text-align: center; margin-bottom: 8px; position: relative; }
+    .wave {
+      width: 60px; height: 60px; margin: 2px auto 12px;
+      display: grid; place-items: center;
+    }
+    .wave svg { width: 60px; height: 60px; filter: drop-shadow(0 0 18px rgba(34,211,238,0.4)); }
+    h1 { font-size: 1.4rem; font-weight: 600; margin: 0; letter-spacing: 0.3px; }
+    .tagline { color: var(--ink-soft); font-size: 0.84rem; margin: 3px 0 0; }
+    .spot { color: var(--accent); font-weight: 600; font-size: 0.92rem; margin: 8px 0 0; }
+    .asof { color: var(--ink-dim); font-size: 0.74rem; margin: 2px 0 0; }
+    .gear { position: absolute; top: 0; right: 2px; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--ink-soft); padding: 6px; }
+    .refresh { position: absolute; top: 0; left: 2px; background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--ink-soft); padding: 6px; }
+    .refresh.spin svg { animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .section-title {
+      font-size: 0.74rem; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--ink-soft); margin: 22px 6px 10px; font-weight: 600;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .section-title .note { opacity: 0.6; font-weight: 500; text-transform: none; letter-spacing: 0; }
+
+    /* Hero metric strip */
+    .metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .metric { border-radius: 16px; padding: 13px 14px; }
+    .metric .k { font-size: 0.72rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.6px; display: flex; align-items: center; gap: 6px; }
+    .metric .v { font-size: 1.5rem; font-weight: 700; margin-top: 4px; line-height: 1.1; }
+    .metric .v small { font-size: 0.82rem; font-weight: 500; color: var(--ink-soft); }
+    .metric .d { font-size: 0.74rem; color: var(--ink-soft); margin-top: 2px; }
+    .metric .d.rise { color: var(--caution); }
+    .metric .d.fall { color: var(--accent-2); }
+
+    /* Flow trend sparkline */
+    .strip { border-radius: var(--radius); padding: 13px 15px; margin-top: 10px; }
+    .strip-head { display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); font-weight: 600; margin-bottom: 8px; }
+    .strip-tag { text-transform: none; letter-spacing: 0; font-size: 0.78rem; font-weight: 600; }
+    .spark { width: 100%; height: 52px; display: block; }
+    .strip-foot { font-size: 0.72rem; color: var(--ink-dim); margin-top: 6px; display: flex; justify-content: space-between; }
+
+    /* Activity cards */
+    .acts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .act { border-radius: 16px; padding: 13px 14px; }
+    .act-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .act-name { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 7px; }
+    .chip { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+    .chip.go { background: rgba(52,211,153,0.16); color: var(--go); }
+    .chip.caution { background: rgba(251,191,36,0.15); color: var(--caution); }
+    .chip.no { background: rgba(251,113,133,0.15); color: var(--no); }
+    .chip.unknown { background: rgba(100,116,139,0.18); color: var(--ink-soft); }
+    .act-reason { font-size: 0.79rem; color: var(--ink-soft); margin-top: 7px; line-height: 1.4; }
+
+    /* Advisory / read cards */
+    .adv { border-radius: var(--radius); padding: 14px 16px; margin-top: 10px; border-left: 3px solid var(--accent); }
+    .adv.high { border-left-color: var(--no); }
+    .adv.elevated { border-left-color: var(--caution); }
+    .adv.low { border-left-color: var(--go); }
+    .adv-head { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+    .adv-level { text-transform: none; letter-spacing: 0; font-weight: 700; }
+    .adv-body { font-size: 0.88rem; line-height: 1.5; color: var(--ink); }
+    .adv-body.soft { color: var(--ink-soft); }
+
+    .read {
+      background: linear-gradient(135deg, rgba(34,211,238,0.11), rgba(52,211,153,0.08));
+      -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 15px 17px; margin-top: 10px; box-shadow: var(--shadow);
+    }
+    .read-head { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); font-weight: 600; margin-bottom: 7px; }
+    .read-body { font-size: 0.94rem; line-height: 1.55; color: var(--ink); }
+    .read.loading .read-body { color: var(--ink-soft); font-style: italic; }
+    .best { margin-top: 11px; font-size: 0.86rem; color: var(--accent); background: var(--accent-soft); border-radius: 12px; padding: 9px 12px; line-height: 1.45; }
+
+    /* Weather 3-way */
+    .wx3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .wx { border-radius: 14px; padding: 12px 11px; text-align: center; }
+    .wx .lbl { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ink-soft); font-weight: 600; }
+    .wx .big { font-size: 1.15rem; font-weight: 700; margin: 6px 0 2px; }
+    .wx .sm { font-size: 0.74rem; color: var(--ink-soft); line-height: 1.35; }
+    .wx .delta { font-size: 0.72rem; margin-top: 4px; font-weight: 600; }
+    .wx .delta.warm { color: var(--no); } .wx .delta.cool { color: var(--accent); } .wx .delta.flat { color: var(--ink-soft); }
+    .fc { display: flex; gap: 6px; margin-top: 10px; overflow-x: auto; padding-bottom: 2px; }
+    .fc-day { flex: 1 0 auto; min-width: 56px; border-radius: 12px; padding: 8px 4px; text-align: center; background: var(--glass); border: 1px solid var(--border-soft); }
+    .fc-day .dow { font-size: 0.68rem; color: var(--ink-soft); text-transform: uppercase; }
+    .fc-day .emoji { font-size: 1.2rem; margin: 3px 0; }
+    .fc-day .hl { font-size: 0.76rem; font-weight: 600; }
+    .fc-day .lo { font-size: 0.7rem; color: var(--ink-soft); }
+    .fc-day .pop { font-size: 0.66rem; color: var(--accent); margin-top: 2px; }
+
+    /* Ecology chips */
+    .eco-body { font-size: 0.92rem; line-height: 1.55; color: var(--ink); margin-bottom: 12px; }
+    .eco-body.soft { color: var(--ink-soft); font-style: italic; }
+    .eco-group-lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ink-soft); font-weight: 600; margin: 8px 2px 8px; }
+    .taxa { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+    .taxon { flex: 0 0 auto; width: 92px; text-align: center; }
+    .taxon .ph { width: 92px; height: 92px; border-radius: 14px; object-fit: cover; background: var(--glass-2); border: 1px solid var(--border-soft); display: block; }
+    .taxon .ph.blank { display: grid; place-items: center; font-size: 1.5rem; color: var(--ink-dim); }
+    .taxon .cn { font-size: 0.74rem; font-weight: 600; margin-top: 5px; line-height: 1.25; }
+    .taxon .sci { font-size: 0.68rem; color: var(--ink-dim); font-style: italic; line-height: 1.2; }
+    .taxon .cnt { font-size: 0.66rem; color: var(--accent); }
+
+    /* Sources / disclaimer */
+    details.src { border-radius: var(--radius); margin-top: 16px; padding: 0 16px; }
+    details.src summary { list-style: none; cursor: pointer; padding: 13px 0; font-weight: 600; font-size: 0.86rem; color: var(--ink-soft); display: flex; align-items: center; gap: 8px; }
+    details.src summary::-webkit-details-marker { display: none; }
+    details.src[open] summary { color: var(--accent); }
+    .src-body { padding: 0 0 15px; font-size: 0.8rem; color: var(--ink-soft); line-height: 1.6; }
+    .src-body a { color: var(--accent); }
+    .src-body ul { margin: 6px 0; padding-left: 18px; }
+    .disclaim { font-size: 0.76rem; color: var(--ink-dim); line-height: 1.5; margin-top: 16px; text-align: center; padding: 0 8px; }
+
+    .empty { text-align: center; color: var(--ink-soft); font-size: 0.9rem; padding: 26px 18px; line-height: 1.6; }
+    .empty .cta { display: inline-block; margin-top: 14px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #06121f; font-weight: 700; padding: 11px 20px; border-radius: 14px; border: none; font-size: 0.92rem; cursor: pointer; }
+    .banner { font-size: 0.8rem; color: var(--caution); background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25); border-radius: 12px; padding: 10px 13px; margin-bottom: 12px; line-height: 1.45; }
+    .banner.err { color: var(--no); background: rgba(251,113,133,0.1); border-color: rgba(251,113,133,0.25); }
+
+    /* Modal */
+    .modal-bg { position: fixed; inset: 0; background: rgba(2,6,23,0.6); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 50; overflow-y: auto; }
+    .modal-bg.open { display: flex; }
+    .modal {
+      background: rgba(17,24,39,0.9); -webkit-backdrop-filter: blur(24px) saturate(140%); backdrop-filter: blur(24px) saturate(140%);
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; max-width: 440px; width: 100%; box-shadow: var(--shadow); margin: auto;
+    }
+    .modal h2 { margin: 0 0 4px; font-size: 1.15rem; color: var(--ink); }
+    .modal p { font-size: 0.83rem; color: var(--ink-soft); line-height: 1.5; margin: 6px 0 14px; }
+    .modal label { font-size: 0.76rem; font-weight: 600; color: var(--ink-soft); display: block; margin: 14px 0 6px; }
+    .modal input, .modal select { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 11px 13px; font-size: 0.95rem; outline: none; font-family: inherit; background: rgba(148,163,184,0.10); color: var(--ink); }
+    .modal input:focus, .modal select:focus { border-color: var(--accent); }
+    .two { display: flex; gap: 10px; }
+    .two > div { flex: 1; }
+    .find { margin-top: 8px; width: 100%; background: rgba(34,211,238,0.12); color: var(--accent); border: 1px solid var(--border); border-radius: 12px; padding: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+    .find:active { opacity: 0.7; }
+    .near { margin-top: 8px; max-height: 168px; overflow-y: auto; }
+    .near-item { padding: 9px 11px; border-radius: 10px; background: var(--glass); border: 1px solid var(--border-soft); margin-bottom: 6px; cursor: pointer; font-size: 0.84rem; }
+    .near-item:active { border-color: var(--accent); }
+    .near-item .nm { font-weight: 600; color: var(--ink); }
+    .near-item .meta { font-size: 0.74rem; color: var(--ink-soft); margin-top: 2px; }
+    .row { display: flex; gap: 10px; margin-top: 20px; }
+    .modal .btn { flex: 1; border: none; border-radius: 12px; padding: 12px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #06121f; }
+    .btn-ghost { background: rgba(148,163,184,0.14); color: var(--ink-soft); }
+    .hint { font-size: 0.75rem; color: var(--ink-soft); margin-top: 10px; line-height: 1.5; }
+    .hint a { color: var(--accent); }
+    .divider { height: 1px; background: var(--border-soft); margin: 20px 0 4px; }
+    .subhead { font-size: 0.78rem; font-weight: 700; color: var(--ink); margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <button class="refresh" id="refreshBtn" aria-label="Refresh"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
+      <button class="gear" id="gearBtn" aria-label="Settings">⚙︎</button>
+      <div class="wave" aria-hidden="true">
+        <svg viewBox="0 0 60 60" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round">
+          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs>
+          <path d="M6 22c8-8 16-8 24 0s16 8 24 0" opacity="0.55"/>
+          <path d="M6 32c8-8 16-8 24 0s16 8 24 0"/>
+          <path d="M6 42c8-8 16-8 24 0s16 8 24 0" opacity="0.55"/>
+        </svg>
+      </div>
+      <h1>RiverHome</h1>
+      <p class="tagline">Know your stretch.</p>
+      <p class="spot" id="spotName" hidden></p>
+      <p class="asof" id="asOf" hidden></p>
+    </header>
+
+    <div id="content"></div>
+  </div>
+
+  <!-- Settings -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <h2>Your river spot</h2>
+      <p>RiverHome reads your stretch from live public data. Point it at a USGS stream gauge and set the location.</p>
+
+      <label for="spotInput">Name this spot</label>
+      <input id="spotInput" placeholder="e.g. The bend below the mill" autocomplete="off" />
+
+      <label for="siteInput">USGS gauge site number</label>
+      <input id="siteInput" placeholder="e.g. 01646500" autocomplete="off" inputmode="numeric" />
+      <button class="find" id="findBtn">📍 Find gauges near me</button>
+      <div class="near" id="nearList"></div>
+
+      <label>Location (for weather &amp; ecology)</label>
+      <div class="two">
+        <div><input id="latInput" placeholder="Latitude" autocomplete="off" inputmode="decimal" /></div>
+        <div><input id="lonInput" placeholder="Longitude" autocomplete="off" inputmode="decimal" /></div>
+      </div>
+      <p class="hint">Auto-filled from the gauge when you pick one. Tap 📍 to use your device location.</p>
+
+      <label for="unitsInput">Units</label>
+      <select id="unitsInput">
+        <option value="imperial">Imperial (°F, ft, cfs, in)</option>
+        <option value="metric">Metric (°C, m, m³/s, mm)</option>
+      </select>
+
+      <label>Your river's flow bands <span style="font-weight:400;text-transform:none">(optional — sharpens the calls)</span></label>
+      <div class="two">
+        <div><input id="flowNormalInput" placeholder="Normal (cfs)" autocomplete="off" inputmode="decimal" /></div>
+        <div><input id="flowHighInput" placeholder="High/pushy (cfs)" autocomplete="off" inputmode="decimal" /></div>
+      </div>
+      <p class="hint">Every river runs at its own scale. If you know roughly what "normal" and "too high" look like at this gauge, the ratings get much sharper. Leave blank and RiverHome judges against the last 7 days.</p>
+
+      <div class="divider"></div>
+      <p class="subhead">Richer reads with Claude <span style="font-weight:400;color:var(--ink-soft)">— optional</span></p>
+      <p class="hint" style="margin-top:6px">The numbers, ratings, and advisories work without a key. Add your Anthropic key and Claude writes the daily read and grounds an ecology brief on the species actually seen near you.</p>
+      <label for="keyInput">Anthropic API key</label>
+      <input id="keyInput" type="password" placeholder="sk-ant-…" autocomplete="off" />
+      <label for="modelInput">Model for the daily read</label>
+      <input id="modelInput" list="modelList" autocomplete="off" spellcheck="false" placeholder="claude-sonnet-5" />
+      <datalist id="modelList"></datalist>
+
+      <div class="row">
+        <button class="btn btn-ghost" id="cancelBtn">Cancel</button>
+        <button class="btn btn-primary" id="saveBtn">Save</button>
+      </div>
+      <p class="hint">Gauge numbers: find yours on the <a href="https://dashboard.waterdata.usgs.gov/" target="_blank" rel="noopener">USGS Water Dashboard</a>. Your key stays on this device and is sent only to Anthropic.</p>
+    </div>
+  </div>
+
+  <script>
+    // ================= State =================
+    const STORE = "riverhome.settings.v1";
+    const CACHE = "riverhome.cache.v1";
+
+    const DEFAULTS = {
+      spot: "", site: "", lat: null, lon: null, units: "imperial",
+      flowNormal: null, flowHigh: null,
+      apiKey: "", model: "claude-sonnet-5"
+    };
+    const KNOWN_MODELS = [
+      { id: "claude-opus-4-8",  label: "Opus 4.8 — most capable" },
+      { id: "claude-sonnet-5",  label: "Sonnet 5 — balanced (default)" },
+      { id: "claude-haiku-4-5", label: "Haiku 4.5 — fastest" }
+    ];
+
+    function load(k, fallback) {
+      try { return Object.assign({}, fallback, JSON.parse(localStorage.getItem(k)) || {}); }
+      catch { return { ...fallback }; }
+    }
+    let settings = load(STORE, DEFAULTS);
+    let cache = load(CACHE, { normals: {}, lastData: null });
+    const saveSettings = () => localStorage.setItem(STORE, JSON.stringify(settings));
+    const saveCache = () => localStorage.setItem(CACHE, JSON.stringify(cache));
+
+    const isMetric = () => settings.units === "metric";
+
+    // ================= Unit helpers =================
+    const cToF = (c) => c == null ? null : c * 9 / 5 + 32;
+    const round = (n, d = 0) => n == null ? null : Math.round(n * 10 ** d) / 10 ** d;
+    // USGS gives flow in cfs, height in ft, temp in °C regardless. Convert for display.
+    function tempOut(f) { // input °F
+      if (f == null) return null;
+      return isMetric() ? round((f - 32) * 5 / 9, 1) : round(f);
+    }
+    const tempUnit = () => isMetric() ? "°C" : "°F";
+    function flowOut(cfs) {
+      if (cfs == null) return null;
+      return isMetric() ? round(cfs * 0.0283168, cfs < 350 ? 2 : 1) : round(cfs);
+    }
+    const flowUnit = () => isMetric() ? "m³/s" : "cfs";
+    function lenOut(ft) {
+      if (ft == null) return null;
+      return isMetric() ? round(ft * 0.3048, 2) : round(ft, 2);
+    }
+    const lenUnit = () => isMetric() ? "m" : "ft";
+    function precipOut(inch) {
+      if (inch == null) return null;
+      return isMetric() ? round(inch * 25.4, 1) : round(inch, 2);
+    }
+    const precipUnit = () => isMetric() ? "mm" : "in";
+    // Wind always arrives from Open-Meteo in mph (we request it that way); convert only for display.
+    function windOut(mph) { return mph == null ? null : (isMetric() ? round(mph * 1.60934) : round(mph)); }
+    const windUnit = () => isMetric() ? "km/h" : "mph";
+
+    // ================= WMO weather codes =================
+    const WMO = {
+      0:["Clear","☀️"],1:["Mostly clear","🌤️"],2:["Partly cloudy","⛅"],3:["Overcast","☁️"],
+      45:["Fog","🌫️"],48:["Rime fog","🌫️"],51:["Light drizzle","🌦️"],53:["Drizzle","🌦️"],55:["Heavy drizzle","🌧️"],
+      56:["Freezing drizzle","🌧️"],57:["Freezing drizzle","🌧️"],61:["Light rain","🌦️"],63:["Rain","🌧️"],65:["Heavy rain","🌧️"],
+      66:["Freezing rain","🌧️"],67:["Freezing rain","🌧️"],71:["Light snow","🌨️"],73:["Snow","🌨️"],75:["Heavy snow","❄️"],
+      77:["Snow grains","🌨️"],80:["Showers","🌦️"],81:["Showers","🌧️"],82:["Violent showers","⛈️"],
+      85:["Snow showers","🌨️"],86:["Snow showers","🌨️"],95:["Thunderstorm","⛈️"],96:["Storm + hail","⛈️"],99:["Severe storm","⛈️"]
+    };
+    const THUNDER = new Set([95, 96, 99]);
+    const wmo = (c) => WMO[c] || ["—", "•"];
+
+    // ================= Fetch helper =================
+    async function fetchJSON(url, timeout = 20000) {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), timeout);
+      try {
+        const r = await fetch(url, { signal: ctrl.signal });
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return await r.json();
+      } finally { clearTimeout(t); }
+    }
+
+    // ================= USGS gauge =================
+    // Instantaneous values: flow (00060 cfs), gauge height (00065 ft), water temp (00010 °C).
+    async function fetchUSGS(site) {
+      const url = `https://waterservices.usgs.gov/nwis/iv/?format=json&sites=${encodeURIComponent(site)}` +
+                  `&parameterCd=00060,00065,00010&period=P7D&siteStatus=all`;
+      const j = await fetchJSON(url);
+      const ts = (j.value && j.value.timeSeries) || [];
+      const out = { name: null, lat: null, lon: null, flow: null, gauge: null, tempF: null,
+                    flowSeries: [], flowRisePct: null, flow7min: null, flow7max: null, gaugeRiseFt: null };
+      const clean = (v) => { const n = parseFloat(v); return (isNaN(n) || n <= -999998) ? null : n; };
+      const seriesOf = (code) => {
+        const s = ts.find(t => t.variable.variableCode[0].value === code);
+        if (!s) return null;
+        if (!out.name && s.sourceInfo) {
+          out.name = s.sourceInfo.siteName;
+          const g = s.sourceInfo.geoLocation && s.sourceInfo.geoLocation.geogLocation;
+          if (g) { out.lat = parseFloat(g.latitude); out.lon = parseFloat(g.longitude); }
+        }
+        const vals = (s.values && s.values[0] && s.values[0].value) || [];
+        return vals.map(v => ({ t: new Date(v.dateTime).getTime(), v: clean(v.value) })).filter(p => p.v != null);
+      };
+      const flow = seriesOf("00060");
+      const gauge = seriesOf("00065");
+      const temp = seriesOf("00010");
+      const last = (arr) => arr && arr.length ? arr[arr.length - 1].v : null;
+
+      if (flow && flow.length) {
+        out.flow = last(flow);
+        out.flowSeries = flow;
+        out.flow7min = Math.min(...flow.map(p => p.v));
+        out.flow7max = Math.max(...flow.map(p => p.v));
+        out.flowRisePct = rateOfChange(flow, 12);
+      }
+      if (gauge && gauge.length) {
+        out.gauge = last(gauge);
+        const prev = valueHoursAgo(gauge, 12);
+        if (prev != null) out.gaugeRiseFt = out.gauge - prev;
+      }
+      if (temp && temp.length) out.tempF = cToF(last(temp));
+      return out;
+    }
+    function valueHoursAgo(series, hours) {
+      if (!series.length) return null;
+      const target = series[series.length - 1].t - hours * 3600000;
+      let best = null, bestDiff = Infinity;
+      for (const p of series) { const d = Math.abs(p.t - target); if (d < bestDiff) { bestDiff = d; best = p; } }
+      return best && bestDiff < hours * 3600000 ? best.v : null;
+    }
+    function rateOfChange(series, hours) {
+      const now = series[series.length - 1].v;
+      const then = valueHoursAgo(series, hours);
+      if (then == null || then === 0) return null;
+      return ((now - then) / then) * 100; // % change over `hours`
+    }
+
+    // Nearby active flow gauges via bounding box.
+    async function fetchNearbyGauges(lat, lon) {
+      const d = 0.35;
+      const bbox = [lon - d, lat - d, lon + d, lat + d].map(n => n.toFixed(4)).join(",");
+      const url = `https://waterservices.usgs.gov/nwis/iv/?format=json&bBox=${bbox}` +
+                  `&parameterCd=00060&siteStatus=active`;
+      const j = await fetchJSON(url);
+      const ts = (j.value && j.value.timeSeries) || [];
+      const seen = {};
+      for (const s of ts) {
+        const code = s.sourceInfo.siteCode && s.sourceInfo.siteCode[0] && s.sourceInfo.siteCode[0].value;
+        if (!code || seen[code]) continue;
+        const g = s.sourceInfo.geoLocation && s.sourceInfo.geoLocation.geogLocation;
+        const gl = g ? { lat: parseFloat(g.latitude), lon: parseFloat(g.longitude) } : {};
+        const vals = (s.values && s.values[0] && s.values[0].value) || [];
+        const lastV = vals.length ? parseFloat(vals[vals.length - 1].value) : null;
+        seen[code] = {
+          code, name: s.sourceInfo.siteName, lat: gl.lat, lon: gl.lon,
+          flow: (lastV != null && lastV > -999998) ? lastV : null,
+          dist: (gl.lat != null) ? haversine(lat, lon, gl.lat, gl.lon) : 9999
+        };
+      }
+      return Object.values(seen).sort((a, b) => a.dist - b.dist).slice(0, 8);
+    }
+    function haversine(la1, lo1, la2, lo2) {
+      const R = 3959, toR = (d) => d * Math.PI / 180;
+      const dLa = toR(la2 - la1), dLo = toR(lo2 - lo1);
+      const a = Math.sin(dLa / 2) ** 2 + Math.cos(toR(la1)) * Math.cos(toR(la2)) * Math.sin(dLo / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(a));
+    }
+
+    // ================= Weather (Open-Meteo) =================
+    async function fetchWeather(lat, lon) {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+        `&current=temperature_2m,precipitation,weather_code,wind_speed_10m,relative_humidity_2m` +
+        `&hourly=precipitation` +
+        `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,uv_index_max` +
+        `&past_days=7&forecast_days=7&temperature_unit=fahrenheit&precipitation_unit=inch&wind_speed_unit=mph&timezone=auto`;
+      const j = await fetchJSON(url);
+      const cur = j.current || {};
+      const d = j.daily || {};
+      const todayIdx = (d.time || []).indexOf((cur.time || "").slice(0, 10));
+      const iToday = todayIdx >= 0 ? todayIdx : 7; // past_days=7 -> today is index 7
+      // Recent (past 7d actual) vs Ahead (next 7d forecast)
+      const avg = (a) => a.length ? a.reduce((s, x) => s + x, 0) / a.length : null;
+      const sum = (a) => a.reduce((s, x) => s + (x || 0), 0);
+      const recentMax = avg((d.temperature_2m_max || []).slice(Math.max(0, iToday - 7), iToday));
+      const recentPrecip = sum((d.precipitation_sum || []).slice(Math.max(0, iToday - 7), iToday));
+      const aheadMax = avg((d.temperature_2m_max || []).slice(iToday, iToday + 7));
+      const aheadPrecip = sum((d.precipitation_sum || []).slice(iToday, iToday + 7));
+      // Hourly precip -> rain totals & dry hours
+      const rain = precipWindows(j.hourly, cur.time);
+      // Forecast strip: today + next 6
+      const fc = [];
+      for (let i = iToday; i < Math.min(iToday + 7, (d.time || []).length); i++) {
+        fc.push({
+          date: d.time[i], code: d.weather_code[i],
+          hi: d.temperature_2m_max[i], lo: d.temperature_2m_min[i],
+          pop: d.precipitation_probability_max ? d.precipitation_probability_max[i] : null,
+          precip: d.precipitation_sum[i]
+        });
+      }
+      return {
+        curTempF: cur.temperature_2m, curCode: cur.weather_code, curWind: cur.wind_speed_10m,
+        curHumidity: cur.relative_humidity_2m,
+        uvToday: (d.uv_index_max || [])[iToday], windMaxToday: (d.wind_speed_10m_max || [])[iToday],
+        popToday: (d.precipitation_probability_max || [])[iToday],
+        recentMax, recentPrecip, aheadMax, aheadPrecip, fc,
+        rain24: rain.r24, rain48: rain.r48, dryHours: rain.dry
+      };
+    }
+    function precipWindows(hourly, curTimeStr) {
+      const out = { r24: 0, r48: 0, dry: 999 };
+      if (!hourly || !hourly.time || !hourly.precipitation) return out;
+      const now = curTimeStr ? new Date(curTimeStr).getTime() : Date.now();
+      const times = hourly.time, p = hourly.precipitation;
+      let lastWet = null;
+      for (let i = 0; i < times.length; i++) {
+        const t = new Date(times[i]).getTime();
+        if (t > now) break;
+        const mm = p[i] || 0;
+        const ageH = (now - t) / 3600000;
+        if (ageH <= 24) out.r24 += mm;
+        if (ageH <= 48) out.r48 += mm;
+        if (mm >= 0.03) lastWet = t;
+      }
+      if (lastWet != null) out.dry = (now - lastWet) / 3600000;
+      return out;
+    }
+
+    // Climate normal for this week, averaged over recent years. Cached ~3 weeks.
+    async function fetchNormals(lat, lon) {
+      const key = `${lat.toFixed(2)},${lon.toFixed(2)},w${weekOfYear(new Date())}`;
+      const hit = cache.normals[key];
+      if (hit && (Date.now() - hit.ts) < 21 * 864e5) return hit;
+      const end = new Date(Date.now() - 6 * 864e5);      // archive lags ~5 days
+      const start = new Date(end.getTime() - 3 * 365 * 864e5); // ~3 years back
+      const fmt = (dt) => dt.toISOString().slice(0, 10);
+      const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}` +
+        `&start_date=${fmt(start)}&end_date=${fmt(end)}` +
+        `&daily=temperature_2m_max,temperature_2m_min,precipitation_sum` +
+        `&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=auto`;
+      const j = await fetchJSON(url, 30000);
+      const d = j.daily || {};
+      const now = new Date(), doy = dayOfYear(now);
+      let maxSum = 0, minSum = 0, n = 0, precipDaily = [];
+      const times = d.time || [];
+      for (let i = 0; i < times.length; i++) {
+        const dd = dayOfYear(new Date(times[i]));
+        let diff = Math.abs(dd - doy); diff = Math.min(diff, 365 - diff);
+        if (diff <= 7) {
+          if (d.temperature_2m_max[i] != null) { maxSum += d.temperature_2m_max[i]; minSum += d.temperature_2m_min[i]; n++; }
+          if (d.precipitation_sum[i] != null) precipDaily.push(d.precipitation_sum[i]);
+        }
+      }
+      const res = n ? {
+        normalMax: maxSum / n, normalMin: minSum / n,
+        normalPrecip7: precipDaily.length ? (precipDaily.reduce((s, x) => s + x, 0) / precipDaily.length) * 7 : null,
+        ts: Date.now()
+      } : null;
+      if (res) { cache.normals[key] = res; saveCache(); }
+      return res;
+    }
+    function dayOfYear(d) { const s = new Date(d.getFullYear(), 0, 0); return Math.floor((d - s) / 864e5); }
+    function weekOfYear(d) { return Math.floor(dayOfYear(d) / 7); }
+
+    // ================= iNaturalist ecology =================
+    async function fetchEcology(lat, lon) {
+      const d30 = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
+      const base = `https://api.inaturalist.org/v1/observations`;
+      const common = `lat=${lat}&lng=${lon}&radius=25&d1=${d30}&verifiable=true&per_page=12`;
+      // Most-observed species nearby recently = "what's active"
+      const activeUrl = `${base}/species_counts?${common}&quality_grade=research`;
+      // Plants annotated as flowering (term 12 = Plant Phenology, value 13 = Flowering)
+      const bloomUrl = `${base}/species_counts?${common}&iconic_taxa=Plantae&term_id=12&term_value_id=13`;
+      const [act, bloom] = await Promise.allSettled([fetchJSON(activeUrl), fetchJSON(bloomUrl)]);
+      const toTaxa = (r) => (r.status === "fulfilled" ? (r.value.results || []) : []).map(x => ({
+        cn: x.taxon.preferred_common_name || x.taxon.name,
+        sci: x.taxon.name,
+        cnt: x.count,
+        iconic: x.taxon.iconic_taxon_name,
+        photo: x.taxon.default_photo ? x.taxon.default_photo.square_url : null
+      }));
+      let active = toTaxa(act);
+      const blooming = toTaxa(bloom);
+      // Keep active list focused on fauna (birds/fish/herps/mammals/insects) so it complements the bloom list.
+      const fauna = new Set(["Aves", "Actinopterygii", "Amphibia", "Reptilia", "Mammalia", "Insecta", "Arachnida", "Mollusca"]);
+      const activeFauna = active.filter(t => fauna.has(t.iconic));
+      return { active: (activeFauna.length ? activeFauna : active).slice(0, 10), blooming: blooming.slice(0, 10) };
+    }
+
+    // ================= Deterministic rules engine =================
+    // Contact/bacteria risk estimated from recent rainfall + runoff (a proxy, not a measurement).
+    function contactRisk(wx, usgs) {
+      const r24 = wx ? wx.rain24 : 0, r48 = wx ? wx.rain48 : 0, dry = wx ? wx.dryHours : 999;
+      const rising = usgs && usgs.gaugeRiseFt != null && usgs.gaugeRiseFt > 0.5;
+      let level, sev, why;
+      if (r24 >= 0.5 || r48 >= 1.0) { level = "High"; sev = 3; why = `About ${precipOut(r48)}${precipUnit()} of rain in the last 48h has flushed runoff into the river.`; }
+      else if (r24 >= 0.1 || r48 >= 0.3) { level = "Elevated"; sev = 2; why = `Some recent rain (${precipOut(r48)}${precipUnit()} / 48h) may have carried bacteria in.`; }
+      else if (dry >= 72) { level = "Low"; sev = 0; why = `Dry for about ${Math.round(dry)}h — runoff has had time to clear.`; }
+      else { level = "Moderate"; sev = 1; why = `No heavy rain lately, but it hasn't been dry long enough to be sure.`; }
+      if (rising && sev < 3) { sev++; why += " The gauge is rising, which backs up a runoff pulse."; if (level === "Low") level = "Moderate"; else if (level === "Moderate") level = "Elevated"; else if (level === "Elevated") level = "High"; }
+      return { level, sev, why };
+    }
+
+    // Position of current flow relative to the last 7 days (0=low, 1=high).
+    function flowPos(usgs) {
+      if (!usgs || usgs.flow == null || usgs.flow7max == null || usgs.flow7max === usgs.flow7min) return null;
+      return (usgs.flow - usgs.flow7min) / (usgs.flow7max - usgs.flow7min);
+    }
+    function flowState(usgs) {
+      // Prefer user-set bands; else fall back to 7-day position + rise rate.
+      const f = usgs ? usgs.flow : null;
+      const rise = usgs ? usgs.flowRisePct : null;
+      const risingFast = rise != null && rise >= 40;
+      if (f != null && settings.flowHigh) {
+        if (f >= settings.flowHigh) return { label: "high", high: true, low: false, risingFast };
+        if (settings.flowNormal && f <= settings.flowNormal * 0.6) return { label: "low", high: false, low: true, risingFast };
+        return { label: "normal", high: false, low: false, risingFast };
+      }
+      const pos = flowPos(usgs);
+      // Only let 7-day position flag high/low when the week actually saw a meaningful
+      // swing (>=35%). Otherwise a calm river sitting near the top of a tiny band would
+      // read as "high water" and raise false alarms. A genuine fast rise always counts.
+      const wideRange = usgs && usgs.flow7min > 0 && (usgs.flow7max / usgs.flow7min) >= 1.35;
+      const high = risingFast || (wideRange && pos != null && pos >= 0.85);
+      const low = wideRange && pos != null && pos <= 0.12 && !risingFast;
+      return { label: high ? "high" : low ? "low" : "normal", high, low, risingFast };
+    }
+
+    // Each activity: gather factors, worst severity wins. sev: 0 go, 1/2 caution, 3 no.
+    function rateActivities(cond) {
+      const { usgs, wx, contact } = cond;
+      const tF = usgs ? usgs.tempF : null;
+      const fs = flowState(usgs);
+      const thunder = wx && (THUNDER.has(wx.curCode) || THUNDER.has(cond.thunderAhead));
+      const wind = wx ? (wx.windMaxToday != null ? wx.windMaxToday : wx.curWind) : null;
+
+      const worst = (factors) => {
+        const pick = factors.filter(Boolean).sort((a, b) => b.sev - a.sev)[0] || { sev: 0, text: "Conditions look fine." };
+        const rating = pick.sev >= 3 ? "no" : pick.sev >= 1 ? "caution" : "go";
+        return { rating, reason: pick.text };
+      };
+      const cold = (goBelow, cautBelow, noBelow) => {
+        if (tF == null) return { sev: 1, text: "Water temperature unavailable at this gauge." };
+        if (tF < noBelow) return { sev: 3, text: `Water ~${tempOut(tF)}${tempUnit()} — cold-shock territory.` };
+        if (tF < cautBelow) return { sev: 2, text: `Water is cold (~${tempOut(tF)}${tempUnit()}) — dress for immersion.` };
+        if (tF < goBelow) return { sev: 1, text: `Brisk water (~${tempOut(tF)}${tempUnit()}).` };
+        return null;
+      };
+      const highWater = (sevHi) => fs.high ? { sev: sevHi, text: fs.risingFast ? "River is high and rising fast — strong current and debris." : "Running high versus its recent range." } : (fs.risingFast ? { sev: 2, text: "Rising quickly — expect a stronger, murkier current." } : null);
+      const thunderF = thunder ? { sev: 3, text: "Thunderstorms in play — stay off open water." } : null;
+      const bact = (block) => contact.sev >= 3 ? { sev: block ? 3 : 2, text: "High contact-risk after recent rain — avoid swallowing water." }
+                  : contact.sev === 2 ? { sev: 1, text: "Slightly elevated contact risk from recent runoff." } : null;
+
+      // Swimming — most sensitive to cold, bacteria, high water.
+      const swim = worst([thunderF, cold(70, 62, 56), bact(true), highWater(3),
+        (fs.low ? { sev: 1, text: "Water is low — check depth before diving." } : null)]);
+
+      // Paddling (kayak/canoe/SUP) — cold immersion + wind + very high water.
+      const paddle = worst([thunderF, cold(55, 50, 42),
+        (wind != null && wind >= 30 ? { sev: 3, text: `Wind to ${windOut(wind)} ${windUnit()} — dangerous for small craft.` } : wind != null && wind >= 20 ? { sev: 2, text: `Breezy (${windOut(wind)} ${windUnit()}) — tougher on open water.` } : null),
+        (fs.high && fs.risingFast ? { sev: 2, text: "High and pushy — for confident paddlers with the right gear." } : fs.high ? { sev: 1, text: "Running high — livelier water than usual." } : null),
+        (fs.low ? { sev: 1, text: "Low water — expect scraping and possible portages." } : null)]);
+
+      // Tubing / wading — footing matters most; high/fast water is a no.
+      const tube = worst([thunderF, cold(68, 60, 55), bact(true),
+        (fs.high || fs.risingFast ? { sev: 3, text: "Too high/fast for safe footing — wait for it to drop." } : null),
+        (fs.low ? { sev: 1, text: "Shallow — a scrapey float." } : null)]);
+
+      // Fishing — tolerant; often better on a stain/rise. Only thunder & blown-out water really block it.
+      const fish = worst([thunderF,
+        (fs.high && fs.risingFast ? { sev: 2, text: "High and muddy — likely blown out; try soft edges." } : null),
+        (contact.sev >= 3 ? { sev: 1, text: "Fishable — just wash up afterward." } : null),
+        ((contact.sev === 2 || fs.risingFast) ? { sev: 0, text: "Often prime — fish feed as the water rises and stains." } : null)]);
+
+      return { swim, paddle, tube, fish };
+    }
+
+    // ================= Claude synthesis (optional) =================
+    const READ_SCHEMA = {
+      type: "object",
+      properties: {
+        read: { type: "string" },
+        best_bet: { type: "string" },
+        bacteria_note: { type: "string" },
+        ecology: { type: "string" }
+      },
+      required: ["read", "best_bet", "bacteria_note", "ecology"],
+      additionalProperties: false
+    };
+    const READ_SYSTEM = `You are the resident naturalist voice of RiverHome, an app that reads one person's home stretch of river. You are given a compact JSON snapshot of TODAY'S measured conditions (flow, gauge height, water temperature, recent rainfall, weather, a runoff-based contact-risk estimate, and activity ratings already computed by a deterministic rules engine) plus lists of species and flowering plants ACTUALLY observed near this location in the last 30 days (from iNaturalist).
+
+Write grounded, specific prose — never invent numbers, species, or events not present in the data. Rules:
+- "read": 2-3 sentences synthesizing what the river is doing right now and how it feels for being out there. Reference the real figures.
+- "best_bet": one short sentence naming the single best thing to do on the water (or by it) right now given the ratings, and why. If nothing on-water is safe, say so and suggest a bankside alternative.
+- "bacteria_note": one sentence putting the contact-risk estimate in plain terms. Always remind that it is estimated from rainfall/runoff, not a measured bacteria sample.
+- "ecology": 2-3 sentences on what's alive and moving near this stretch right now. Ground it in the observed-species and flowering-plant lists and the season/latitude — mention specific creatures or blooms by name. Note plausible seasonal movement (migration, spawning, emergence) ONLY when the date, latitude, and the observed species support it. No emojis anywhere.`;
+
+    async function callClaude(user) {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-api-key": settings.apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify({
+          model: settings.model || "claude-sonnet-5",
+          max_tokens: 700,
+          system: READ_SYSTEM,
+          output_config: { format: { type: "json_schema", schema: READ_SCHEMA } },
+          messages: [{ role: "user", content: user }]
+        })
+      });
+      if (!res.ok) {
+        const e = await res.json().catch(() => ({}));
+        throw new Error((e.error && e.error.message) || ("Request failed (" + res.status + ")"));
+      }
+      const body = await res.json();
+      const tb = (body.content || []).find(b => b.type === "text");
+      return JSON.parse(tb.text);
+    }
+
+    function buildClaudeContext(cond) {
+      const { usgs, wx, contact, ratings, eco } = cond;
+      const snap = {
+        location: { name: settings.spot || (usgs && usgs.name) || "this stretch", lat: settings.lat, lon: settings.lon },
+        date: new Date().toDateString(),
+        river: usgs ? {
+          flow_cfs: round(usgs.flow), flow_trend_pct_12h: round(usgs.flowRisePct),
+          flow_vs_7day: usgs.flow7min != null ? `${round(usgs.flow)} in range ${round(usgs.flow7min)}–${round(usgs.flow7max)}` : null,
+          gauge_ft: round(usgs.gauge, 2), gauge_rise_ft_12h: round(usgs.gaugeRiseFt, 2),
+          water_temp_F: round(usgs.tempF)
+        } : "unavailable",
+        weather: wx ? {
+          now_F: round(wx.curTempF), conditions: wmo(wx.curCode)[0], wind_mph: round(wx.curWind),
+          uv_index: round(wx.uvToday, 1), rain_last_24h_in: round(wx.rain24, 2), rain_last_48h_in: round(wx.rain48, 2),
+          dry_hours: round(wx.dryHours), next7_avg_high_F: round(wx.aheadMax), next7_precip_in: round(wx.aheadPrecip, 2)
+        } : "unavailable",
+        contact_risk: { level: contact.level, basis: contact.why },
+        activity_ratings: {
+          swimming: ratings.swim.rating, paddling: ratings.paddle.rating,
+          tubing_wading: ratings.tube.rating, fishing: ratings.fish.rating
+        },
+        observed_species_30d: eco ? eco.active.map(t => `${t.cn} (${t.sci})`).slice(0, 10) : [],
+        flowering_plants_30d: eco ? eco.blooming.map(t => `${t.cn}`).slice(0, 10) : []
+      };
+      return "Here is today's snapshot of the river stretch. Write the grounded read.\n\n" + JSON.stringify(snap, null, 1);
+    }
+
+    // ================= Orchestration =================
+    let currentData = cache.lastData;
+    let claudeRead = null;
+    let loading = false, refreshing = false;
+
+    async function refresh() {
+      if (!configured()) { render(); return; }
+      refreshing = true; renderHeader();
+      const { site, lat, lon } = settings;
+      const jobs = [
+        site ? fetchUSGS(site).catch(e => ({ __err: e.message })) : Promise.resolve(null),
+        (lat != null && lon != null) ? fetchWeather(lat, lon).catch(e => ({ __err: e.message })) : Promise.resolve(null),
+        (lat != null && lon != null) ? fetchEcology(lat, lon).catch(() => null) : Promise.resolve(null),
+        (lat != null && lon != null) ? fetchNormals(lat, lon).catch(() => null) : Promise.resolve(null)
+      ];
+      const [usgs, wx, eco, normals] = await Promise.all(jobs);
+
+      const cond = {
+        usgs: usgs && !usgs.__err ? usgs : null,
+        wx: wx && !wx.__err ? wx : null,
+        eco, normals,
+        errors: [usgs && usgs.__err && "gauge: " + usgs.__err, wx && wx.__err && "weather: " + wx.__err].filter(Boolean),
+        ts: Date.now()
+      };
+      cond.thunderAhead = cond.wx && cond.wx.fc && cond.wx.fc[0] ? cond.wx.fc[0].code : null;
+      cond.contact = contactRisk(cond.wx, cond.usgs);
+      cond.ratings = rateActivities(cond);
+
+      currentData = cond;
+      claudeRead = null;
+      cache.lastData = cond; saveCache();
+      refreshing = false;
+      render();
+
+      if (settings.apiKey && (cond.usgs || cond.wx)) {
+        loading = true; render();
+        try { claudeRead = await callClaude(buildClaudeContext(cond)); }
+        catch (e) { claudeRead = { __err: e.message }; }
+        finally { loading = false; render(); }
+      }
+    }
+
+    const configured = () => !!(settings.site || (settings.lat != null && settings.lon != null));
+
+    // ================= Rendering =================
+    const $ = (id) => document.getElementById(id);
+    const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+    const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    function renderHeader() {
+      const rb = $("refreshBtn");
+      rb.classList.toggle("spin", refreshing);
+      const sn = $("spotName"), ao = $("asOf");
+      if (settings.spot || (currentData && currentData.usgs && currentData.usgs.name)) {
+        sn.hidden = false; sn.textContent = settings.spot || currentData.usgs.name;
+      } else sn.hidden = true;
+      if (currentData && currentData.ts) { ao.hidden = false; ao.textContent = "as of " + timeAgo(currentData.ts); }
+      else ao.hidden = true;
+    }
+
+    function render() {
+      renderHeader();
+      const c = $("content");
+      c.innerHTML = "";
+
+      if (!configured()) {
+        const e = el("div", "empty");
+        e.innerHTML = `Set up your stretch of river and RiverHome starts reading it — live flow, water temperature, weather, contact-safety, activity calls, and what's alive nearby.<br><br><button class="cta" id="setupCta">Set your river spot</button>`;
+        c.appendChild(e);
+        $("setupCta").onclick = openSettings;
+        return;
+      }
+
+      const d = currentData;
+      if (!d) { c.appendChild(el("div", "empty", "Pull the latest conditions —")); const b = el("div","",""); b.style.textAlign="center"; const btn = el("button","cta","Read the river"); btn.onclick = refresh; b.appendChild(btn); c.appendChild(b); return; }
+
+      if (d.errors && d.errors.length) {
+        c.appendChild(el("div", "banner err", "Couldn't reach — " + d.errors.map(esc).join("; ") + ". Showing what loaded."));
+      }
+
+      renderMetrics(c, d);
+      renderFlowTrend(c, d);
+      renderActivities(c, d);
+      renderContact(c, d);
+      renderRead(c, d);
+      renderWeather(c, d);
+      renderEcology(c, d);
+      renderSources(c);
+    }
+
+    function renderMetrics(c, d) {
+      const u = d.usgs, wx = d.wx;
+      c.appendChild(sectionTitle("Right now", null));
+      const g = el("div", "metrics");
+      const trendD = (pct) => {
+        if (pct == null) return "";
+        if (pct >= 8) return `<div class="d rise">▲ rising ${round(pct)}% / 12h</div>`;
+        if (pct <= -8) return `<div class="d fall">▼ falling ${round(Math.abs(pct))}% / 12h</div>`;
+        return `<div class="d">steady</div>`;
+      };
+      g.appendChild(el("div", "metric", `<div class="k">💧 Flow</div><div class="v">${u && u.flow != null ? flowOut(u.flow) : "—"} <small>${flowUnit()}</small></div>${u ? trendD(u.flowRisePct) : ""}`));
+      g.appendChild(el("div", "metric", `<div class="k">📏 Gauge</div><div class="v">${u && u.gauge != null ? lenOut(u.gauge) : "—"} <small>${lenUnit()}</small></div>${u && u.gaugeRiseFt != null ? `<div class="d ${u.gaugeRiseFt > 0.1 ? "rise" : u.gaugeRiseFt < -0.1 ? "fall" : ""}">${u.gaugeRiseFt >= 0 ? "+" : ""}${lenOut(u.gaugeRiseFt)}${lenUnit()} / 12h</div>` : ""}`));
+      g.appendChild(el("div", "metric", `<div class="k">🌊 Water temp</div><div class="v">${u && u.tempF != null ? tempOut(u.tempF) : "—"}<small>${u && u.tempF != null ? tempUnit() : ""}</small></div>${u && u.tempF != null ? `<div class="d">${tempWord(u.tempF)}</div>` : `<div class="d">not sensed here</div>`}`));
+      g.appendChild(el("div", "metric", `<div class="k">${wx ? wmo(wx.curCode)[1] : "🌡️"} Air</div><div class="v">${wx && wx.curTempF != null ? tempOut(wx.curTempF) : "—"}<small>${wx ? tempUnit() : ""}</small></div>${wx ? `<div class="d">${esc(wmo(wx.curCode)[0])}${wx.curWind != null ? " · " + windOut(wx.curWind) + " " + windUnit() : ""}</div>` : ""}`));
+      c.appendChild(g);
+    }
+    function tempWord(f) {
+      if (f == null) return "";
+      if (f < 55) return "cold"; if (f < 62) return "brisk"; if (f < 70) return "cool"; if (f < 80) return "pleasant"; if (f < 87) return "warm"; return "very warm";
+    }
+
+    function renderFlowTrend(c, d) {
+      const u = d.usgs;
+      if (!u || !u.flowSeries || u.flowSeries.length < 4) return;
+      const raw = u.flowSeries;
+      const N = 48;
+      const step = Math.max(1, Math.floor(raw.length / N));
+      const pts = raw.filter((_, i) => i % step === 0);
+      const vals = pts.map(p => p.v);
+      const mn = Math.min(...vals), mx = Math.max(...vals), span = (mx - mn) || 1;
+      const x = (i) => 2 + (i / (pts.length - 1)) * 96;
+      const y = (v) => 30 - ((v - mn) / span) * 26;
+      const line = pts.map((p, i) => `${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ");
+      const area = `2,32 ${line} ${x(pts.length - 1).toFixed(1)},32`;
+      const rise = u.flowRisePct;
+      let tag, col;
+      if (rise != null && rise >= 15) { tag = "Rising"; col = "var(--caution)"; }
+      else if (rise != null && rise <= -15) { tag = "Dropping"; col = "var(--accent-2)"; }
+      else { tag = "Holding steady"; col = "var(--ink-soft)"; }
+      const strip = el("div", "strip");
+      strip.innerHTML =
+        `<div class="strip-head"><span>Flow · last 7 days</span><span class="strip-tag" style="color:${col}">${tag}</span></div>` +
+        `<svg class="spark" viewBox="0 0 100 34" preserveAspectRatio="none">` +
+          `<defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(34,211,238,0.30)"/><stop offset="1" stop-color="rgba(34,211,238,0)"/></linearGradient></defs>` +
+          `<polygon points="${area}" fill="url(#fg)"/>` +
+          `<polyline points="${line}" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>` +
+        `</svg>` +
+        `<div class="strip-foot"><span>low ${flowOut(mn)} ${flowUnit()}</span><span>high ${flowOut(mx)} ${flowUnit()}</span></div>`;
+      c.appendChild(strip);
+    }
+
+    function renderActivities(c, d) {
+      c.appendChild(sectionTitle("Good for", settings.flowHigh ? "using your flow bands" : "vs its last 7 days"));
+      const defs = [
+        ["swim", "Swimming", "🏊"], ["paddle", "Paddling", "🛶"],
+        ["tube", "Tube / wade", "🛟"], ["fish", "Fishing", "🎣"]
+      ];
+      const g = el("div", "acts");
+      defs.forEach(([k, name, icon]) => {
+        const r = d.ratings[k];
+        const card = el("div", "act");
+        card.innerHTML =
+          `<div class="act-top"><span class="act-name">${icon} ${name}</span><span class="chip ${r.rating}">${chipLabel(r.rating)}</span></div>` +
+          `<div class="act-reason">${esc(r.reason)}</div>`;
+        g.appendChild(card);
+      });
+      c.appendChild(g);
+    }
+    function chipLabel(r) { return r === "go" ? "Go" : r === "caution" ? "Caution" : r === "no" ? "Not now" : "—"; }
+
+    function renderContact(c, d) {
+      const ct = d.contact;
+      const cls = ct.sev >= 3 ? "high" : ct.sev === 2 ? "elevated" : ct.sev === 0 ? "low" : "";
+      const note = (claudeRead && !claudeRead.__err && claudeRead.bacteria_note) ? claudeRead.bacteria_note : ct.why;
+      const adv = el("div", "adv " + cls);
+      adv.innerHTML =
+        `<div class="adv-head">🧫 Water-contact risk <span class="adv-level" style="color:${ct.sev>=3?"var(--no)":ct.sev===2?"var(--caution)":ct.sev===0?"var(--go)":"var(--ink-soft)"}">${ct.level}</span></div>` +
+        `<div class="adv-body">${esc(note)}</div>` +
+        `<div class="adv-body soft" style="margin-top:6px;font-size:0.78rem">Estimated from rainfall &amp; runoff — not a measured bacteria sample. For counts, check your local health department or a Swim Guide beach.</div>`;
+      c.appendChild(adv);
+    }
+
+    function renderRead(c, d) {
+      if (!settings.apiKey && !claudeRead) return;
+      const box = el("div", "read" + (loading ? " loading" : ""));
+      let body, best = "";
+      if (loading) body = "Reading the river…";
+      else if (claudeRead && claudeRead.__err) body = "Couldn't write the read — " + esc(claudeRead.__err);
+      else if (claudeRead) { body = esc(claudeRead.read); best = claudeRead.best_bet ? `<div class="best">↳ ${esc(claudeRead.best_bet)}</div>` : ""; }
+      else return;
+      box.innerHTML = `<div class="read-head">The read</div><div class="read-body">${body}</div>${best}`;
+      c.appendChild(box);
+    }
+
+    function renderWeather(c, d) {
+      const wx = d.wx; if (!wx) return;
+      c.appendChild(sectionTitle("Weather", "normal · recent · ahead"));
+      const nm = d.normals;
+      const wrap = el("div", "wx3");
+      // Normal
+      wrap.appendChild(el("div", "wx", nm
+        ? `<div class="lbl">Normal</div><div class="big">${tempOut(nm.normalMax)}${tempUnit()}</div><div class="sm">typical high<br>~${precipOut(nm.normalPrecip7)}${precipUnit()} rain/wk</div>`
+        : `<div class="lbl">Normal</div><div class="big">—</div><div class="sm">loading history…</div>`));
+      // Recent (realized)
+      const recDelta = (nm && wx.recentMax != null) ? wx.recentMax - nm.normalMax : null;
+      wrap.appendChild(el("div", "wx", `<div class="lbl">Recent 7d</div><div class="big">${tempOut(wx.recentMax)}${tempUnit()}</div><div class="sm">avg high<br>${precipOut(wx.recentPrecip)}${precipUnit()} rain fell</div>${deltaTag(recDelta)}`));
+      // Ahead (predicted)
+      const ahDelta = (nm && wx.aheadMax != null) ? wx.aheadMax - nm.normalMax : null;
+      wrap.appendChild(el("div", "wx", `<div class="lbl">Next 7d</div><div class="big">${tempOut(wx.aheadMax)}${tempUnit()}</div><div class="sm">forecast high<br>${precipOut(wx.aheadPrecip)}${precipUnit()} expected</div>${deltaTag(ahDelta)}`));
+      c.appendChild(wrap);
+
+      // Daily forecast strip
+      if (wx.fc && wx.fc.length) {
+        const fc = el("div", "fc");
+        wx.fc.forEach((dd, i) => {
+          const day = i === 0 ? "Today" : new Date(dd.date).toLocaleDateString(undefined, { weekday: "short" });
+          fc.appendChild(el("div", "fc-day",
+            `<div class="dow">${esc(day)}</div><div class="emoji">${wmo(dd.code)[1]}</div>` +
+            `<div class="hl">${tempOut(dd.hi)}°</div><div class="lo">${tempOut(dd.lo)}°</div>` +
+            (dd.pop != null && dd.pop >= 20 ? `<div class="pop">${round(dd.pop)}%</div>` : "")));
+        });
+        c.appendChild(fc);
+      }
+    }
+    function deltaTag(delta) {
+      if (delta == null) return "";           // delta is in °F (classification stays in °F)
+      const disp = round(isMetric() ? delta * 5 / 9 : delta);
+      if (delta >= 3) return `<div class="delta warm">${disp}° above normal</div>`;
+      if (delta <= -3) return `<div class="delta cool">${Math.abs(disp)}° below normal</div>`;
+      return `<div class="delta flat">near normal</div>`;
+    }
+
+    function renderEcology(c, d) {
+      const eco = d.eco;
+      const hasClaude = claudeRead && !claudeRead.__err && claudeRead.ecology;
+      if (!eco && !hasClaude && !loading) return;
+      c.appendChild(sectionTitle("Life along the water", "seen within ~25mi · last 30 days"));
+      if (loading && settings.apiKey) c.appendChild(el("div", "eco-body soft", "Reading the season…"));
+      else if (hasClaude) c.appendChild(el("div", "eco-body", esc(claudeRead.ecology)));
+      else if (eco) c.appendChild(el("div", "eco-body soft", "Recently recorded near your stretch (add a Claude key for a seasonal read):"));
+
+      if (eco && eco.active && eco.active.length) {
+        c.appendChild(el("div", "eco-group-lbl", "Active nearby"));
+        c.appendChild(taxaRow(eco.active));
+      }
+      if (eco && eco.blooming && eco.blooming.length) {
+        c.appendChild(el("div", "eco-group-lbl", "In bloom"));
+        c.appendChild(taxaRow(eco.blooming));
+      }
+      if (eco && (!eco.active || !eco.active.length) && (!eco.blooming || !eco.blooming.length)) {
+        c.appendChild(el("div", "eco-body soft", "No recent community observations within range — quieter corner of the map."));
+      }
+    }
+    function taxaRow(list) {
+      const row = el("div", "taxa");
+      list.forEach(t => {
+        const cell = el("div", "taxon");
+        const ph = t.photo
+          ? `<img class="ph" loading="lazy" src="${esc(t.photo)}" alt="${esc(t.cn)}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph blank',textContent:'🌿'}))"/>`
+          : `<div class="ph blank">🌿</div>`;
+        cell.innerHTML = ph +
+          `<div class="cn">${esc(t.cn)}</div><div class="sci">${esc(t.sci || "")}</div>` +
+          (t.cnt ? `<div class="cnt">${t.cnt} seen</div>` : "");
+        row.appendChild(cell);
+      });
+      return row;
+    }
+
+    function renderSources(c) {
+      const det = el("details", "src");
+      det.innerHTML =
+        `<summary>ℹ️ Sources &amp; how to read this</summary>` +
+        `<div class="src-body">RiverHome is a lens on public data, refreshed the moment you open it:` +
+        `<ul>` +
+        `<li><b>Flow, gauge height, water temp</b> — <a href="https://waterservices.usgs.gov/" target="_blank" rel="noopener">USGS Water Services</a>, your chosen gauge.</li>` +
+        `<li><b>Weather, rainfall, forecast, history</b> — <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (forecast + archive).</li>` +
+        `<li><b>Species &amp; blooms</b> — <a href="https://www.inaturalist.org/" target="_blank" rel="noopener">iNaturalist</a> community observations near you.</li>` +
+        `<li><b>The read &amp; ecology brief</b> — Claude, grounded strictly on the data above (only when you add a key).</li>` +
+        `</ul>` +
+        `Activity calls come from a transparent rules engine (water temp, flow vs its range or your bands, rainfall, wind, storms) — not a guess. ` +
+        `<b>Contact risk is estimated from rainfall/runoff, not measured bacteria.</b> Treat everything as a well-informed starting point: your eyes on the water, posted advisories, and local knowledge always win.</div>`;
+      c.appendChild(det);
+      c.appendChild(el("div", "disclaim", "Rivers change fast and every stretch is its own animal. RiverHome informs your judgment — it doesn't replace it. When in doubt, don't go in."));
+    }
+
+    function sectionTitle(label, note) {
+      const d = el("div", "section-title");
+      d.innerHTML = `<span>${esc(label)}</span>` + (note ? `<span class="note">${esc(note)}</span>` : "");
+      return d;
+    }
+    function timeAgo(ts) {
+      const m = Math.floor((Date.now() - ts) / 60000);
+      if (m < 1) return "just now"; if (m < 60) return m + "m ago";
+      const h = Math.floor(m / 60); if (h < 24) return h + "h ago";
+      return Math.floor(h / 24) + "d ago";
+    }
+
+    // ================= Settings modal =================
+    const modalBg = $("modalBg");
+    function openSettings() {
+      $("spotInput").value = settings.spot || "";
+      $("siteInput").value = settings.site || "";
+      $("latInput").value = settings.lat != null ? settings.lat : "";
+      $("lonInput").value = settings.lon != null ? settings.lon : "";
+      $("unitsInput").value = settings.units;
+      $("flowNormalInput").value = settings.flowNormal != null ? settings.flowNormal : "";
+      $("flowHighInput").value = settings.flowHigh != null ? settings.flowHigh : "";
+      $("keyInput").value = settings.apiKey || "";
+      $("modelInput").value = settings.model || "claude-sonnet-5";
+      $("modelList").innerHTML = KNOWN_MODELS.map(m => `<option value="${m.id}">${m.label}</option>`).join("");
+      $("nearList").innerHTML = "";
+      modalBg.classList.add("open");
+    }
+    $("gearBtn").onclick = openSettings;
+    $("refreshBtn").onclick = () => { if (!refreshing) refresh(); };
+    $("cancelBtn").onclick = () => modalBg.classList.remove("open");
+    modalBg.onclick = (e) => { if (e.target === modalBg) modalBg.classList.remove("open"); };
+
+    $("findBtn").onclick = () => {
+      const nl = $("nearList");
+      if (!navigator.geolocation) { nl.innerHTML = `<div class="near-item">Location not available on this device — enter a gauge number manually.</div>`; return; }
+      nl.innerHTML = `<div class="near-item">Locating…</div>`;
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        $("latInput").value = latitude.toFixed(5);
+        $("lonInput").value = longitude.toFixed(5);
+        try {
+          const list = await fetchNearbyGauges(latitude, longitude);
+          if (!list.length) { nl.innerHTML = `<div class="near-item">No active gauges within ~25mi. Enter one manually from the USGS dashboard.</div>`; return; }
+          nl.innerHTML = "";
+          list.forEach(g => {
+            const item = el("div", "near-item");
+            item.innerHTML = `<div class="nm">${esc(g.name)}</div><div class="meta">#${g.code} · ${g.dist < 9999 ? g.dist.toFixed(1) + " mi" : "?"} ${g.flow != null ? "· " + round(g.flow) + " cfs" : ""}</div>`;
+            item.onclick = () => {
+              $("siteInput").value = g.code;
+              if (g.lat != null) { $("latInput").value = g.lat.toFixed(5); $("lonInput").value = g.lon.toFixed(5); }
+              [...nl.children].forEach(x => x.style.borderColor = "");
+              item.style.borderColor = "var(--accent)";
+            };
+            nl.appendChild(item);
+          });
+        } catch (e) { nl.innerHTML = `<div class="near-item">Couldn't search gauges — ${esc(e.message)}</div>`; }
+      }, () => { nl.innerHTML = `<div class="near-item">Location permission denied — enter a gauge number manually.</div>`; }, { timeout: 12000 });
+    };
+
+    $("saveBtn").onclick = () => {
+      const num = (id) => { const v = parseFloat($(id).value); return isNaN(v) ? null : v; };
+      settings.spot = $("spotInput").value.trim();
+      settings.site = $("siteInput").value.trim().replace(/[^0-9]/g, "");
+      settings.lat = num("latInput");
+      settings.lon = num("lonInput");
+      settings.units = $("unitsInput").value;
+      settings.flowNormal = num("flowNormalInput");
+      settings.flowHigh = num("flowHighInput");
+      settings.apiKey = $("keyInput").value.trim();
+      settings.model = $("modelInput").value.trim() || "claude-sonnet-5";
+      saveSettings();
+      modalBg.classList.remove("open");
+      refresh();
+    };
+
+    // ================= Boot =================
+    render();
+    if (configured()) refresh();
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+  </script>
+</body>
+</html>
