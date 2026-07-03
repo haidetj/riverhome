@@ -198,29 +198,169 @@
     .hint a { color: var(--accent); }
     .divider { height: 1px; background: var(--border-soft); margin: 20px 0 4px; }
     .subhead { font-size: 0.78rem; font-weight: 700; color: var(--ink); margin-top: 6px; }
+
+    /* ============================================================
+       MAGAZINE LAYER — editorial "issue" view
+       ============================================================ */
+    :root {
+      --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Charter, Georgia, "Times New Roman", serif;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --measure: 62ch; --band: rgba(148,163,184,0.14); --grid: rgba(148,163,184,0.12);
+    }
+    html, body { overflow-x: hidden; }
+
+    /* Floating utility controls, legible over the hero photo */
+    .refresh, .gear {
+      position: fixed; top: calc(env(safe-area-inset-top) + 10px); z-index: 40;
+      width: 40px; height: 40px; display: grid; place-items: center;
+      border: 1px solid var(--border-soft); border-radius: 50%;
+      background: rgba(2,6,23,0.42); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      color: var(--ink); cursor: pointer; box-shadow: var(--shadow);
+    }
+    .refresh { left: 12px; } .gear { right: 12px; font-size: 1.15rem; }
+    .refresh.spin svg { animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Setup / start screens */
+    .setup { max-width: 520px; margin: 0 auto; padding: clamp(60px,18vh,140px) 22px 40px; text-align: center; }
+    .setup .wave { width: 58px; margin: 0 auto 14px; }
+    .setup-title { font-family: var(--serif); font-size: 2.4rem; margin: 0; color: var(--ink); }
+    .setup-tag { font-family: var(--serif); font-style: italic; color: var(--ink-soft); margin: 4px 0 22px; }
+
+    .mag { max-width: 620px; margin: 0 auto; padding: 0 0 40px; }
+    .wrap { padding: 0 clamp(18px,5vw,30px); }
+    .mag a { color: var(--accent); text-decoration: none; }
+    .mag a:hover { text-decoration: underline; }
+
+    /* Masthead + hero */
+    .mag-hero {
+      position: relative; min-height: clamp(360px,78vh,600px);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      background:
+        linear-gradient(180deg, rgba(11,18,32,0.15) 0%, rgba(11,18,32,0.55) 55%, rgba(11,18,32,0.96) 100%),
+        radial-gradient(120% 90% at 70% 10%, #12405a 0%, #0e2740 45%, #0b1220 100%);
+      background-size: cover; background-position: center; overflow: hidden;
+    }
+    .mag-hero__scrim { position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(180deg, rgba(11,18,32,0) 30%, rgba(11,18,32,0.85) 92%); pointer-events: none; }
+    .mag-hero__inner { position: relative; z-index: 2; padding: 0 clamp(18px,5vw,30px) 26px; }
+    .masthead-kicker { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); margin: 0 0 10px; }
+    .masthead-title { font-family: var(--serif); font-weight: 700; font-size: clamp(2.7rem,15vw,5rem); line-height: 0.92; letter-spacing: -0.5px; margin: 0; color: #fff; text-shadow: 0 2px 30px rgba(2,6,23,0.6); }
+    .standfirst { font-family: var(--serif); font-style: italic; font-size: clamp(1.05rem,4.5vw,1.4rem); color: var(--ink); margin: 12px 0 0; max-width: 30ch; line-height: 1.35; }
+    .byline { font-family: var(--sans); font-size: 0.78rem; color: var(--ink-soft); margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
+    .byline .dot { color: var(--ink-dim); }
+    .byline .live { color: var(--accent-2); font-weight: 700; }
+    .byline .live::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 5px; border-radius: 50%; background: var(--accent-2); box-shadow: 0 0 0 0 rgba(52,211,153,0.6); animation: pulse 2.2s infinite; }
+    .byline .warn-note { color: var(--caution); }
+    @keyframes pulse { 70% { box-shadow: 0 0 0 8px rgba(52,211,153,0); } 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); } }
+    .credit { position: absolute; z-index: 2; right: 10px; top: 12px; font-family: var(--sans); font-size: 0.62rem; letter-spacing: 0.4px; color: rgba(232,238,246,0.72); background: rgba(2,6,23,0.4); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); padding: 4px 8px; border-radius: 20px; }
+
+    /* Lede + body */
+    .lede { font-family: var(--serif); font-size: clamp(1.18rem,5vw,1.5rem); line-height: 1.5; color: var(--ink); margin: clamp(26px,7vw,40px) 0 0; max-width: var(--measure); }
+    .lede--drop::first-letter { font-family: var(--serif); float: left; font-size: 3.4em; line-height: 0.72; padding: 8px 10px 0 0; color: var(--accent); font-weight: 700; }
+    .body { font-family: var(--sans); font-size: 1.02rem; line-height: 1.7; color: var(--ink); max-width: var(--measure); }
+    .body + .body { margin-top: 1.1em; }
+    .body--soft { color: var(--ink-soft); }
+
+    /* Section spreads */
+    .spread { margin-top: clamp(38px,10vw,60px); }
+    .spread__eyebrow { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2.5px; color: var(--accent); margin: 0 0 8px; }
+    .spread__head { font-family: var(--serif); font-weight: 700; font-size: clamp(1.8rem,7.5vw,2.6rem); line-height: 1.04; letter-spacing: -0.4px; margin: 0 0 6px; color: var(--ink); }
+    .spread__dek { font-family: var(--serif); font-style: italic; font-size: clamp(1rem,4vw,1.15rem); color: var(--ink-soft); margin: 0 0 20px; max-width: 40ch; line-height: 1.4; }
+    .rule { height: 1px; border: 0; margin: 0 0 20px; background: linear-gradient(90deg, var(--accent), transparent 65%); }
+
+    /* Stat callouts */
+    .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 4px 0 8px; }
+    .stat-callout { background: var(--glass); -webkit-backdrop-filter: blur(16px) saturate(140%); backdrop-filter: blur(16px) saturate(140%); border: 1px solid var(--border-soft); border-radius: 16px; padding: 16px 18px; box-shadow: var(--shadow); }
+    .stat-callout--lead { grid-column: 1 / -1; }
+    .stat-callout__label { font-family: var(--sans); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); margin: 0; }
+    .stat-callout__figure { font-family: var(--serif); font-weight: 700; font-size: clamp(2.2rem,11vw,3.2rem); line-height: 1; margin: 6px 0 2px; color: var(--ink); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .stat-callout__figure .unit { font-size: 0.32em; font-weight: 600; color: var(--ink-soft); font-family: var(--sans); letter-spacing: 0.5px; }
+    .stat-callout__figure .trend { font-size: 0.28em; font-family: var(--sans); }
+    .trend.rise { color: var(--caution); } .trend.fall { color: var(--accent-2); }
+    .stat-callout__caption { font-family: var(--serif); font-style: italic; font-size: 0.98rem; line-height: 1.4; color: var(--ink-soft); margin: 6px 0 0; }
+
+    /* Pull quote */
+    .pullquote { font-family: var(--serif); font-size: clamp(1.4rem,6.5vw,2rem); line-height: 1.28; font-weight: 500; color: var(--ink); margin: clamp(26px,7vw,40px) 0; padding: 4px 0 4px 22px; border-left: 3px solid var(--accent); max-width: 30ch; }
+    .pullquote cite { display: block; margin-top: 12px; font-family: var(--sans); font-style: normal; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-2); }
+
+    /* Citations */
+    .cite { font-family: var(--sans); font-size: 0.62em; font-weight: 700; vertical-align: super; line-height: 0; color: var(--accent); margin-left: 1px; padding: 0 2px; border-radius: 4px; }
+    .cite:hover { background: var(--accent-soft); text-decoration: none; }
+    .cite-chip { display: inline-flex; align-items: center; gap: 4px; font-family: var(--sans); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.3px; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--border-soft); border-radius: 20px; padding: 2px 9px; vertical-align: middle; white-space: nowrap; }
+    .cite-chip::before { content: "↗"; font-size: 0.8em; opacity: 0.8; }
+    .section-src { margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+
+    /* Callouts */
+    .callout { background: linear-gradient(135deg, rgba(34,211,238,0.10), rgba(52,211,153,0.06)); -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 16px 18px; margin: 24px 0; box-shadow: var(--shadow); }
+    .callout--caution { border-left-color: var(--caution); background: linear-gradient(135deg, rgba(251,191,36,0.10), rgba(148,163,184,0.05)); }
+    .callout--warn { border-left-color: var(--no); background: linear-gradient(135deg, rgba(251,113,133,0.10), rgba(148,163,184,0.05)); }
+    .callout__head { font-family: var(--sans); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
+    .callout--caution .callout__head { color: var(--caution); } .callout--warn .callout__head { color: var(--no); }
+    .callout__body { font-family: var(--sans); font-size: 0.9rem; line-height: 1.55; color: var(--ink); margin: 0; }
+
+    /* Today's calls (activity ratings) */
+    .today-calls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0 6px; }
+    .call { background: var(--glass); border: 1px solid var(--border-soft); border-radius: 14px; padding: 12px 13px; }
+    .call-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .call .nm { font-family: var(--sans); font-weight: 600; font-size: 0.9rem; color: var(--ink); }
+    .call .verdict { font-family: var(--sans); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+    .verdict.go { color: #06121f; background: var(--go); } .verdict.caution { color: #0b1220; background: var(--caution); } .verdict.no { color: #fff; background: var(--no); }
+    .call .reason { font-family: var(--sans); font-size: 0.76rem; color: var(--ink-soft); margin-top: 7px; line-height: 1.35; }
+
+    /* Figures */
+    .figcaption { font-family: var(--sans); font-size: 0.78rem; line-height: 1.45; color: var(--ink-soft); margin: 9px 2px 0; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .figcaption .src { color: var(--ink-dim); font-size: 0.72rem; white-space: nowrap; }
+
+    /* Ecology thumbnails */
+    .taxa { display: flex; gap: 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 4px 0 10px; scroll-snap-type: x mandatory; }
+    .taxa::-webkit-scrollbar { height: 5px; } .taxa::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .taxon { flex: 0 0 auto; width: clamp(120px,34vw,150px); scroll-snap-align: start; }
+    .taxon__ph { width: 100%; aspect-ratio: 1/1; border-radius: 16px; object-fit: cover; display: block; border: 1px solid var(--border-soft); background: linear-gradient(135deg,#123047,#0f3d34); }
+    .taxon__ph.blank { display: grid; place-items: center; font-size: 1.6rem; }
+    .taxon__name { font-family: var(--sans); font-size: 0.82rem; font-weight: 600; line-height: 1.25; margin: 8px 2px 0; color: var(--ink); }
+    .taxon__sci { font-family: var(--serif); font-style: italic; font-size: 0.74rem; color: var(--ink-dim); line-height: 1.2; margin: 1px 2px 0; }
+    .taxon__cnt { font-family: var(--sans); font-size: 0.68rem; color: var(--accent-2); margin: 3px 2px 0; }
+
+    /* Charts */
+    .chart { background: var(--glass); -webkit-backdrop-filter: blur(16px) saturate(140%); backdrop-filter: blur(16px) saturate(140%); border: 1px solid var(--border-soft); border-radius: var(--radius); padding: 18px 16px 14px; box-shadow: var(--shadow); margin: 24px 0; }
+    .chart__title { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--ink-soft); margin: 0 0 2px; }
+    .chart__sub { font-family: var(--serif); font-style: italic; font-size: 0.86rem; color: var(--ink); margin: 0 0 14px; }
+    .chart__scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .chart svg { width: 100%; height: auto; display: block; min-width: 280px; }
+    .chart__legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-family: var(--sans); font-size: 0.72rem; color: var(--ink-soft); }
+    .chart__legend .key { display: inline-flex; align-items: center; gap: 6px; }
+    .chart__legend .swatch { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+    .chart__legend .swatch--band { height: 11px; width: 14px; border-radius: 3px; background: var(--band); }
+    .chart__legend .swatch--line { background: var(--accent); }
+    .chart__legend .swatch--dash { background: repeating-linear-gradient(90deg, var(--ink-soft) 0 4px, transparent 4px 7px); }
+    .chart__caption { font-family: var(--sans); font-size: 0.78rem; line-height: 1.45; color: var(--ink-soft); margin: 12px 2px 0; }
+    .svg-band { fill: var(--band); } .svg-grid { stroke: var(--grid); stroke-width: 1; }
+    .svg-median { stroke: var(--ink-soft); stroke-width: 1.5; stroke-dasharray: 4 4; opacity: 0.7; }
+    .svg-line { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .svg-area { fill: url(#flowFill); }
+    .svg-dot { fill: var(--accent); stroke: #0b1220; stroke-width: 2; }
+    .svg-axislbl { fill: var(--ink-dim); font-family: var(--sans); font-size: 10px; }
+    .svg-endlbl { fill: var(--ink); font-family: var(--sans); font-size: 11px; font-weight: 700; }
+    .svg-marker { fill: var(--accent); stroke: #0b1220; stroke-width: 2; }
+    .svg-marker2 { fill: var(--caution); stroke: #0b1220; stroke-width: 2; }
+    .svg-normalband { fill: rgba(52,211,153,0.20); } .svg-track { fill: rgba(148,163,184,0.14); }
+
+    /* Sources footer */
+    .sources { margin-top: clamp(44px,11vw,66px); padding: 24px clamp(18px,5vw,30px) 8px; border-top: 1px solid var(--border-soft); }
+    .sources__head { font-family: var(--sans); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--ink-soft); margin: 0 0 14px; }
+    .sources__list { list-style: none; margin: 0; padding: 0; }
+    .sources__list li { font-family: var(--sans); font-size: 0.84rem; line-height: 1.5; color: var(--ink-soft); padding: 9px 0; border-bottom: 1px solid var(--border-soft); display: flex; gap: 10px; align-items: baseline; }
+    .sources__list .n { font-weight: 700; color: var(--accent); font-size: 0.72rem; min-width: 1.4em; }
+    .sources__list a { font-weight: 600; }
+    .sources__note { font-family: var(--sans); font-size: 0.74rem; line-height: 1.55; color: var(--ink-dim); margin: 16px 0 0; text-align: center; }
+    .colophon { font-family: var(--serif); font-style: italic; text-align: center; color: var(--ink-dim); font-size: 0.82rem; margin: 22px 0 0; }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <button class="refresh" id="refreshBtn" aria-label="Refresh"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
-      <button class="gear" id="gearBtn" aria-label="Settings">⚙︎</button>
-      <div class="wave" aria-hidden="true">
-        <svg viewBox="0 0 60 60" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round">
-          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs>
-          <path d="M6 22c8-8 16-8 24 0s16 8 24 0" opacity="0.55"/>
-          <path d="M6 32c8-8 16-8 24 0s16 8 24 0"/>
-          <path d="M6 42c8-8 16-8 24 0s16 8 24 0" opacity="0.55"/>
-        </svg>
-      </div>
-      <h1>RiverHome</h1>
-      <p class="tagline">Know your stretch.</p>
-      <p class="spot" id="spotName" hidden></p>
-      <p class="asof" id="asOf" hidden></p>
-    </header>
-
-    <div id="content"></div>
-  </div>
+  <button class="refresh" id="refreshBtn" aria-label="Refresh"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
+  <button class="gear" id="gearBtn" aria-label="Settings">⚙︎</button>
+  <main id="content"></main>
 
   <!-- Settings -->
   <div class="modal-bg" id="modalBg">
@@ -672,21 +812,38 @@
     const READ_SCHEMA = {
       type: "object",
       properties: {
-        read: { type: "string" },
-        best_bet: { type: "string" },
-        bacteria_note: { type: "string" },
-        ecology: { type: "string" }
+        standfirst: { type: "string" },
+        lede: { type: "string" },
+        on_the_water: { type: "string" },
+        what_to_notice: { type: "string" },
+        week_in_context: { type: "string" },
+        ecology: { type: "string" },
+        before_you_go: { type: "string" },
+        best_bet: { type: "string" }
       },
-      required: ["read", "best_bet", "bacteria_note", "ecology"],
+      required: ["standfirst", "lede", "on_the_water", "what_to_notice", "week_in_context", "ecology", "before_you_go", "best_bet"],
       additionalProperties: false
     };
-    const READ_SYSTEM = `You are the resident naturalist voice of RiverHome, an app that reads one person's home stretch of river. You are given a compact JSON snapshot of TODAY'S measured conditions (flow, gauge height, water temperature, recent rainfall, weather, a runoff-based contact-risk estimate, and activity ratings already computed by a deterministic rules engine) plus lists of species and flowering plants ACTUALLY observed near this location in the last 30 days (from iNaturalist).
+    const READ_SYSTEM = `You are the editor and resident naturalist of RiverHome — a weekly "issue" about one person's home stretch of river. You write like an empathetic science communicator: warm, plain-spoken, unhurried, and genuinely useful. Your job is to help the reader understand what to expect on and beside the water this week, and what there is to notice and appreciate right where they live — honestly and without hype.
 
-Write grounded, specific prose — never invent numbers, species, or events not present in the data. Rules:
-- "read": 2-3 sentences synthesizing what the river is doing right now and how it feels for being out there. Reference the real figures.
-- "best_bet": one short sentence naming the single best thing to do on the water (or by it) right now given the ratings, and why. If nothing on-water is safe, say so and suggest a bankside alternative.
-- "bacteria_note": one sentence putting the contact-risk estimate in plain terms. Always remind that it is estimated from rainfall/runoff, not a measured bacteria sample.
-- "ecology": 2-3 sentences on what's alive and moving near this stretch right now. Ground it in the observed-species and flowering-plant lists and the season/latitude — mention specific creatures or blooms by name. Note plausible seasonal movement (migration, spawning, emergence) ONLY when the date, latitude, and the observed species support it. No emojis anywhere.`;
+You are given a JSON snapshot of TODAY's measured conditions (flow, gauge, water temperature, weather + forecast, recent rainfall, a runoff-based contact-risk estimate, and activity ratings from a deterministic rules engine), a HISTORY block (this week's climate normals for temperature and rainfall from ~3 years of local records, plus how the recent and coming week compare), and lists of species and flowering plants ACTUALLY observed near this location in the last 30 days (iNaturalist).
+
+Voice & rules:
+- Ground every claim in the data. NEVER invent numbers, species, or events not present. If something is unavailable, simply don't mention it.
+- Translate quantities into lived experience ("an easy, walking-pace current") but keep the real figure close by. Less clinical, still precise.
+- Be honest about uncertainty and risk. Never oversell safety.
+- Do NOT write citations, source names, URLs, section headings, or emojis — the app renders sources and layout itself.
+- Second person, present tense, concrete sentences.
+
+Write these fields (no headings inside any field):
+- "standfirst": one inviting sentence (max ~16 words) that sits under the river's name — the issue's promise.
+- "lede": 2-3 sentences. The opening — what the river is doing right now and how the day feels.
+- "on_the_water": 2-3 sentences on the current itself (flow, gauge, water temp) and what they mean for a body in the water.
+- "what_to_notice": 2-3 sentences on the one or two things worth paying attention to this week — appreciative, specific.
+- "week_in_context": 2-3 sentences of honest historical framing from the HISTORY block — how this week compares to normal for the season (temperature, rainfall, and the flow trend). Plain, not statistical.
+- "ecology": 2-3 sentences on what's alive and moving near this stretch now, naming specific creatures or blooms from the observed lists and the season. Note migration/spawning/emergence ONLY when date, latitude, and species support it.
+- "before_you_go": 2-3 sentences of grounded, caring guidance — the honest state of contact risk and what today asks of the reader. Calm, not alarmist.
+- "best_bet": one sentence naming the single best thing to do on or by the water right now, and why. If nothing on-water is safe, say so and offer a bankside alternative.`;
 
     async function callClaude(user) {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -719,10 +876,17 @@ Write grounded, specific prose — never invent numbers, species, or events not 
     }
 
     function buildClaudeContext(cond) {
-      const { usgs, wx, contact, ratings, eco } = cond;
+      const { usgs, wx, contact, ratings, eco, normals } = cond;
       const snap = {
         location: { name: settings.spot || (usgs && usgs.name) || "this stretch", lat: settings.lat, lon: settings.lon },
         date: new Date().toDateString(),
+        history: normals ? {
+          normal_high_F: round(normals.normalMax), normal_low_F: round(normals.normalMin),
+          normal_weekly_rain_in: round(normals.normalPrecip7, 2),
+          recent_avg_high_F: wx ? round(wx.recentMax) : null, recent_rain_in: wx ? round(wx.recentPrecip, 2) : null,
+          next7_avg_high_F: wx ? round(wx.aheadMax) : null, next7_rain_in: wx ? round(wx.aheadPrecip, 2) : null,
+          note: "normals are averages for this week of the year from ~3 years of local records; compare recent/next to normal for the season"
+        } : "unavailable",
         river: usgs ? {
           flow_cfs: round(usgs.flow), flow_trend_pct_12h: round(usgs.flowRisePct),
           flow_vs_7day: usgs.flow7min != null ? `${round(usgs.flow)} in range ${round(usgs.flow7min)}–${round(usgs.flow7max)}` : null,
@@ -742,7 +906,7 @@ Write grounded, specific prose — never invent numbers, species, or events not 
         observed_species_30d: eco ? eco.active.map(t => `${t.cn} (${t.sci})`).slice(0, 10) : [],
         flowering_plants_30d: eco ? eco.blooming.map(t => `${t.cn}`).slice(0, 10) : []
       };
-      return "Here is today's snapshot of the river stretch. Write the grounded read.\n\n" + JSON.stringify(snap, null, 1);
+      return "Here is today's snapshot of this river stretch. Write the issue.\n\n" + JSON.stringify(snap, null, 1);
     }
 
     // ================= Orchestration =================
@@ -796,43 +960,300 @@ Write grounded, specific prose — never invent numbers, species, or events not 
 
     function renderHeader() {
       const rb = $("refreshBtn");
-      rb.classList.toggle("spin", refreshing);
-      const sn = $("spotName"), ao = $("asOf");
-      if (settings.spot || (currentData && currentData.usgs && currentData.usgs.name)) {
-        sn.hidden = false; sn.textContent = settings.spot || currentData.usgs.name;
-      } else sn.hidden = true;
-      if (currentData && currentData.ts) { ao.hidden = false; ao.textContent = "as of " + timeAgo(currentData.ts); }
-      else ao.hidden = true;
+      if (rb) rb.classList.toggle("spin", refreshing);
     }
 
+    // ---- Magazine render ----------------------------------------------------
     function render() {
       renderHeader();
       const c = $("content");
       c.innerHTML = "";
 
       if (!configured()) {
-        const e = el("div", "empty");
-        e.innerHTML = `Set up your stretch of river and RiverHome starts reading it — live flow, water temperature, weather, contact-safety, activity calls, and what's alive nearby.<br><br><button class="cta" id="setupCta">Set your river spot</button>`;
-        c.appendChild(e);
-        $("setupCta").onclick = openSettings;
+        c.appendChild(setupScreen());
+        const cta = $("setupCta"); if (cta) cta.onclick = openSettings;
+        return;
+      }
+      const d = currentData;
+      if (!d) {
+        c.appendChild(startScreen());
+        const b = $("readCta"); if (b) b.onclick = refresh;
         return;
       }
 
-      const d = currentData;
-      if (!d) { c.appendChild(el("div", "empty", "Pull the latest conditions —")); const b = el("div","",""); b.style.textAlign="center"; const btn = el("button","cta","Read the river"); btn.onclick = refresh; b.appendChild(btn); c.appendChild(b); return; }
+      const mag = el("article", "mag");
+      renderHero(mag, d);
+      const w = el("div", "wrap");
+      renderLede(w, d);
+      renderOnWater(w, d);
+      renderNotice(w, d);
+      renderContext(w, d);
+      renderLife(w, d);
+      renderBeforeYouGo(w, d);
+      mag.appendChild(w);
+      renderSourcesFooter(mag, d);
+      c.appendChild(mag);
+    }
 
-      if (d.errors && d.errors.length) {
-        c.appendChild(el("div", "banner err", "Couldn't reach — " + d.errors.map(esc).join("; ") + ". Showing what loaded."));
+    // ---- small building blocks ----
+    const claudeField = (name) => (claudeRead && !claudeRead.__err && claudeRead[name]) ? claudeRead[name] : null;
+    const riverName = (d) => settings.spot || (d && d.usgs && d.usgs.name) || "Your river";
+    const listWords = (a) => a.length <= 1 ? (a[0] || "") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1];
+    const pod = () => { const h = new Date().getHours(); return h < 11 ? "morning" : h < 17 ? "afternoon" : "evening"; };
+    const usgsSitePage = () => settings.site ? `https://waterdata.usgs.gov/monitoring-location/${encodeURIComponent(settings.site)}/` : "https://dashboard.waterdata.usgs.gov/";
+    function seasonWord(dt) { const m = dt.toLocaleDateString(undefined, { month: "long" }); const day = dt.getDate(); return `${day <= 10 ? "Early" : day <= 20 ? "Mid" : "Late"} ${m}`; }
+    function flowWord(d) { const fs = flowState(d.usgs); if (!d.usgs || d.usgs.flow == null) return "running"; if (fs.high) return fs.risingFast ? "running high and rising" : "running high"; if (fs.low) return "running low and clear"; return "running easy and steady"; }
+    function biggerPhoto(u) { return u ? u.replace(/\/square(\.[a-z0-9]+)(\?.*)?$/i, "/medium$1$2") : null; }
+    function heroPhoto(d) { if (!d.eco) return null; const pool = []; (d.eco.active || []).forEach(t => t.photo && pool.push(t.photo)); (d.eco.blooming || []).forEach(t => t.photo && pool.push(t.photo)); return pool.length ? biggerPhoto(pool[0]) : null; }
+    function srcRow(pairs) { return `<div class="section-src">` + pairs.map(([l, h]) => `<a class="cite-chip" href="${h}" target="_blank" rel="noopener">${esc(l)}</a>`).join("") + `</div>`; }
+    function spread(eyebrow, head, dek, inner) {
+      return el("section", "spread",
+        `<hr class="rule"/><p class="spread__eyebrow">${esc(eyebrow)}</p><h2 class="spread__head">${esc(head)}</h2>` +
+        (dek ? `<p class="spread__dek">${esc(dek)}</p>` : "") + inner);
+    }
+    const WAVE = `<div class="wave" aria-hidden="true"><svg viewBox="0 0 60 60" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs><path d="M6 22c8-8 16-8 24 0s16 8 24 0" opacity="0.55"/><path d="M6 32c8-8 16-8 24 0s16 8 24 0"/><path d="M6 42c8-8 16-8 24 0s16 8 24 0" opacity="0.55"/></svg></div>`;
+    function setupScreen() { const e = el("div", "setup"); e.innerHTML = WAVE + `<h1 class="setup-title">RiverHome</h1><p class="setup-tag">Know your stretch.</p><div class="empty">Set up your stretch of river and RiverHome starts reading it — flow, water temperature, weather, safety, and what's alive nearby, written as a weekly issue about your water.<br><br><button class="cta" id="setupCta">Set your river spot</button></div>`; return e; }
+    function startScreen() { const e = el("div", "setup"); e.innerHTML = WAVE + `<h1 class="setup-title">RiverHome</h1><p class="setup-tag">Know your stretch.</p><div class="empty">Pull the latest conditions —<br><br><button class="cta" id="readCta">Read the river</button></div>`; return e; }
+
+    // ---- hero + lede ----
+    function renderHero(mag, d) {
+      const hero = el("header", "mag-hero");
+      const photo = heroPhoto(d);
+      if (photo) hero.style.backgroundImage = `linear-gradient(180deg, rgba(11,18,32,0.15) 0%, rgba(11,18,32,0.55) 55%, rgba(11,18,32,0.96) 100%), url("${photo}")`;
+      const issue = new Date(d.ts || Date.now());
+      const sf = claudeField("standfirst") || "Know your stretch — what to expect, and what to notice, before you go down to the water.";
+      const err = (d.errors && d.errors.length) ? `<span class="dot">·</span><span class="warn-note">some data didn't load</span>` : "";
+      hero.innerHTML = (photo ? `<span class="credit">Photo · iNaturalist, near your stretch</span>` : "") +
+        `<div class="mag-hero__scrim"></div>` +
+        `<div class="mag-hero__inner">` +
+          `<p class="masthead-kicker">Your stretch, this week</p>` +
+          `<h1 class="masthead-title">${esc(riverName(d))}</h1>` +
+          `<p class="standfirst">${esc(sf)}</p>` +
+          `<p class="byline"><span>${esc(seasonWord(issue))} Issue · ${esc(issue.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }))}</span><span class="dot">·</span><span class="live">as of ${esc(timeAgo(d.ts || Date.now()))}</span>${err}</p>` +
+        `</div>`;
+      mag.appendChild(hero);
+    }
+    function fbLede(d) {
+      const u = d.usgs, wx = d.wx;
+      let s = `${riverName(d)} is ${flowWord(d)} this ${pod()}.`;
+      if (u && u.tempF != null) s += ` The water is ${tempWord(u.tempF)}, about ${tempOut(u.tempF)}${tempUnit()}.`;
+      if (wx && wx.dryHours != null && wx.dryHours >= 72) s += ` It has been dry for days, so the water is settled and clear.`;
+      else if (wx && wx.rain48 >= 0.3) s += ` Recent rain has stirred it up a little.`;
+      return s;
+    }
+    function renderLede(w, d) {
+      const p = el("p", "lede lede--drop");
+      if (loading && settings.apiKey && !claudeRead) { p.textContent = "Reading the river…"; p.classList.add("body--soft"); }
+      else p.textContent = claudeField("lede") || fbLede(d);
+      w.appendChild(p);
+      if (claudeRead && claudeRead.__err) w.appendChild(el("p", "body body--soft", "The written read didn't load — " + esc(claudeRead.__err) + " · the numbers below are unaffected."));
+    }
+
+    // ---- spread 1: on the water ----
+    function flowCaption(d) { const fs = flowState(d.usgs); if (fs.high) return fs.risingFast ? "High and rising — a strong, pushy current." : "Running high — livelier than usual."; if (fs.low) return "Low and clear — cobble bars showing."; return "An easy, steady current."; }
+    function gaugeCaption(d) { const u = d.usgs; if (u && u.gaugeRiseFt != null) { if (u.gaugeRiseFt > 0.15) return "Rising — watch the edges."; if (u.gaugeRiseFt < -0.15) return "Dropping and settling."; } return "Low and stable."; }
+    function tempCaption(d) { const f = d.usgs && d.usgs.tempF; if (f == null) return ""; if (f < 55) return "Cold — dress for immersion."; if (f < 68) return "Bracing at first, then fine."; if (f < 80) return "Swimmable — just right."; return "Warm — bathwater by afternoon."; }
+    function headOnWater(d) { const fs = flowState(d.usgs); if (!d.usgs || d.usgs.flow == null) return "A read on the current"; if (fs.high) return fs.risingFast ? "High, pushy water" : "Running high this week"; if (fs.low) return "Low, clear, and easy"; return "A steady, unhurried current"; }
+    function fbOnWater(d) {
+      const u = d.usgs; if (!u) return "Live gauge readings for this stretch are below.";
+      const bits = [];
+      if (u.flow != null) bits.push(`at about ${flowOut(u.flow)} ${flowUnit()} the current is ${flowWord(d).replace(/^running /, "")}`);
+      if (u.tempF != null) bits.push(`the water ${tempWord(u.tempF)} at ${tempOut(u.tempF)}${tempUnit()}`);
+      let s = bits.join(", "); if (s) s = s.charAt(0).toUpperCase() + s.slice(1) + ".";
+      if (u.gaugeRiseFt != null && Math.abs(u.gaugeRiseFt) > 0.1) s += ` The gauge has ${u.gaugeRiseFt > 0 ? "risen" : "eased"} ${lenOut(Math.abs(u.gaugeRiseFt))}${lenUnit()} in the last half-day.`;
+      return s;
+    }
+    function renderOnWater(w, d) {
+      const u = d.usgs;
+      let stats = "";
+      if (u && u.flow != null) {
+        const p = u.flowRisePct;
+        const tr = p == null ? "" : (p >= 8 ? `<span class="trend rise">▲ ${round(p)}% / 12h</span>` : p <= -8 ? `<span class="trend fall">▼ ${round(Math.abs(p))}% / 12h</span>` : "");
+        stats += `<div class="stat-row"><div class="stat-callout stat-callout--lead"><p class="stat-callout__label">Flow</p><p class="stat-callout__figure">${flowOut(u.flow)} <span class="unit">${flowUnit()}</span> ${tr}</p><p class="stat-callout__caption">${esc(flowCaption(d))}</p></div></div>`;
       }
+      let pair = "";
+      if (u && u.gauge != null) pair += `<div class="stat-callout"><p class="stat-callout__label">Gauge height</p><p class="stat-callout__figure">${lenOut(u.gauge)} <span class="unit">${lenUnit()}</span></p><p class="stat-callout__caption">${esc(gaugeCaption(d))}</p></div>`;
+      if (u && u.tempF != null) pair += `<div class="stat-callout"><p class="stat-callout__label">Water temp</p><p class="stat-callout__figure">${tempOut(u.tempF)} <span class="unit">${tempUnit()}</span></p><p class="stat-callout__caption">${esc(tempCaption(d))}</p></div>`;
+      if (pair) stats += `<div class="stat-row">${pair}</div>`;
+      const txt = claudeField("on_the_water") || fbOnWater(d);
+      const inner = stats + `<p class="body">${esc(txt)}</p>` + srcRow([["USGS Water Services", "https://waterservices.usgs.gov/"]]);
+      w.appendChild(spread("Right now on the water", headOnWater(d), "The numbers, and what they actually feel like.", inner));
+    }
 
-      renderMetrics(c, d);
-      renderFlowTrend(c, d);
-      renderActivities(c, d);
-      renderContact(c, d);
-      renderRead(c, d);
-      renderWeather(c, d);
-      renderEcology(c, d);
-      renderSources(c);
+    // ---- spread 2: what to notice (temp vs normal) ----
+    function tempChart(d) {
+      const nm = d.normals, wx = d.wx;
+      if (!nm || nm.normalMax == null || !wx) return "";
+      const vals = [nm.normalMin, nm.normalMax, wx.recentMax, wx.aheadMax].filter(v => v != null);
+      if (vals.length < 2) return "";
+      const lo = Math.min(...vals) - 4, hi = Math.max(...vals) + 4, span = (hi - lo) || 1;
+      const X = v => 30 + ((v - lo) / span) * 270;
+      const bx = X(nm.normalMin), bw = Math.max(6, X(nm.normalMax) - X(nm.normalMin));
+      let markers = "";
+      if (wx.recentMax != null) { const x = X(wx.recentMax); markers += `<circle class="svg-marker2" cx="${x.toFixed(1)}" cy="49" r="6"/><text class="svg-endlbl" x="${x.toFixed(1)}" y="90" text-anchor="middle">${tempOut(wx.recentMax)}° recent</text>`; }
+      if (wx.aheadMax != null) { const x = X(wx.aheadMax); markers += `<circle class="svg-marker" cx="${x.toFixed(1)}" cy="49" r="6"/><text class="svg-axislbl" x="${x.toFixed(1)}" y="20" text-anchor="middle">${tempOut(wx.aheadMax)}° ahead</text>`; }
+      return `<figure class="chart"><p class="chart__title">Air temperature · recent vs. seasonal normal</p><p class="chart__sub">Typical high this week is about ${tempOut(nm.normalMax)}${tempUnit()}.</p><div class="chart__scroll"><svg viewBox="0 0 320 100" role="img" aria-label="Recent and forecast air temperature against the seasonal normal band">` +
+        `<rect class="svg-track" x="30" y="44" width="270" height="10" rx="5"/>` +
+        `<rect class="svg-normalband" x="${bx.toFixed(1)}" y="40" width="${bw.toFixed(1)}" height="18" rx="6"/>` +
+        `<text class="svg-axislbl" x="${(bx + bw / 2).toFixed(1)}" y="34" text-anchor="middle">seasonal normal</text>` +
+        `<text class="svg-axislbl" x="30" y="74" text-anchor="middle">${tempOut(lo)}°</text>` +
+        `<text class="svg-axislbl" x="300" y="74" text-anchor="end">${tempOut(hi)}°</text>` + markers + `</svg></div>` +
+        `<div class="chart__legend"><span class="key"><span class="swatch swatch--band"></span> Typical high–low</span><span class="key"><span class="swatch" style="background:var(--caution);border-radius:50%;width:10px;height:10px"></span> Last 7 days</span><span class="key"><span class="swatch" style="background:var(--accent);border-radius:50%;width:10px;height:10px"></span> Next 7 days</span></div>` +
+        `<p class="chart__caption">The band is this week's average high–low from ~3 years of local records; the dots are the last and next seven days' average highs.</p></figure>`;
+    }
+    function fbNotice(d) {
+      const wx = d.wx, nm = d.normals;
+      if (wx && nm && wx.aheadMax != null && nm.normalMax != null && wx.aheadMax - nm.normalMax >= 3) return `A warm stretch is coming — highs near ${tempOut(wx.aheadMax)}${tempUnit()}, above the seasonal norm. Low, clear water heats fast, so a morning outing will feel crisper than an afternoon one.`;
+      if (d.usgs && d.usgs.tempF != null) return `Water temperature is the quiet variable most people skip, and right now it sits at a comfortable ${tempOut(d.usgs.tempF)}${tempUnit()} — pleasant for immersion and likely to hold.`;
+      return `Conditions this week are steady, but keep an eye on the sky and the water's edge — rivers change fast.`;
+    }
+    function renderNotice(w, d) {
+      const txt = claudeField("what_to_notice") || fbNotice(d);
+      let inner = `<p class="body">${esc(txt)}</p>`;
+      const tc = tempChart(d); if (tc) inner += tc;
+      inner += srcRow([["Open-Meteo", "https://open-meteo.com/"]]);
+      w.appendChild(spread("What to notice this week", "Worth paying attention to", null, inner));
+    }
+
+    // ---- spread 3: the week in context (flow history) ----
+    function flowChart(d) {
+      const u = d.usgs; if (!u || !u.flowSeries || u.flowSeries.length < 4) return "";
+      const raw = u.flowSeries, step = Math.max(1, Math.floor(raw.length / 40));
+      const pts = raw.filter((_, i) => i % step === 0), vals = pts.map(p => p.v);
+      const mn = Math.min(...vals), mx = Math.max(...vals), pad = ((mx - mn) || 1) * 0.15;
+      const ylo = mn - pad, yhi = mx + pad, yspan = (yhi - ylo) || 1;
+      const L = 44, R = 300, T = 30, B = 150;
+      const X = i => L + (i / (pts.length - 1)) * (R - L);
+      const Y = v => T + (1 - (v - ylo) / yspan) * (B - T);
+      const line = pts.map((p, i) => `${X(i).toFixed(1)},${Y(p.v).toFixed(1)}`).join(" ");
+      const area = `${L},${B} ${line} ${R},${B}`;
+      const sorted = [...vals].sort((a, b) => a - b), med = sorted[Math.floor(sorted.length / 2)];
+      const now = new Date(), d0 = new Date(now.getTime() - 6 * 864e5);
+      const fmt = dt => dt.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      const rise = u.flowRisePct;
+      const sub = rise != null && rise >= 15 ? `${flowOut(u.flow)} ${flowUnit()} and rising this week.` : rise != null && rise <= -15 ? `${flowOut(u.flow)} ${flowUnit()}, easing gently through a quiet week.` : `${flowOut(u.flow)} ${flowUnit()}, holding steady this week.`;
+      return `<figure class="chart"><p class="chart__title">Flow · last 7 days</p><p class="chart__sub">${esc(sub)}</p><div class="chart__scroll"><svg viewBox="0 0 320 190" role="img" aria-label="Seven-day flow trend">` +
+        `<defs><linearGradient id="flowFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22d3ee" stop-opacity="0.28"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></linearGradient></defs>` +
+        `<rect class="svg-band" x="${L}" y="${Y(mx).toFixed(1)}" width="${R - L}" height="${(Y(mn) - Y(mx)).toFixed(1)}" rx="4"/>` +
+        `<line class="svg-median" x1="${L}" y1="${Y(med).toFixed(1)}" x2="${R}" y2="${Y(med).toFixed(1)}"/>` +
+        `<text class="svg-axislbl" x="${L + 4}" y="${(Y(med) - 4).toFixed(1)}">median ${flowOut(med)}</text>` +
+        `<polygon class="svg-area" points="${area}"/>` +
+        `<polyline class="svg-line" points="${line}"/>` +
+        `<circle class="svg-dot" cx="${X(0).toFixed(1)}" cy="${Y(pts[0].v).toFixed(1)}" r="3.5"/>` +
+        `<circle class="svg-dot" cx="${X(pts.length - 1).toFixed(1)}" cy="${Y(pts[pts.length - 1].v).toFixed(1)}" r="4.5"/>` +
+        `<text class="svg-endlbl" x="${L}" y="${(Y(pts[0].v) - 8).toFixed(1)}" text-anchor="start">${flowOut(pts[0].v)}</text>` +
+        `<text class="svg-endlbl" x="${R}" y="${(Y(pts[pts.length - 1].v) - 8).toFixed(1)}" text-anchor="end">${flowOut(pts[pts.length - 1].v)}</text>` +
+        `<text class="svg-axislbl" x="${L}" y="170" text-anchor="start">${fmt(d0)}</text>` +
+        `<text class="svg-axislbl" x="${R}" y="170" text-anchor="end">${fmt(now)}</text>` +
+        `</svg></div>` +
+        `<div class="chart__legend"><span class="key"><span class="swatch swatch--line"></span> This week's flow</span><span class="key"><span class="swatch swatch--band"></span> This week's range</span><span class="key"><span class="swatch swatch--dash"></span> Median</span></div>` +
+        `<p class="chart__caption">Flow in ${flowUnit()} over the past seven days. The shaded band is this week's own high–low; the dashed line is its median.</p></figure>`;
+    }
+    function headContext(d) { const nm = d.normals, wx = d.wx; if (nm && wx && wx.recentMax != null && nm.normalMax != null) { const dl = wx.recentMax - nm.normalMax; if (dl >= 3) return "Warmer than the season usually runs"; if (dl <= -3) return "A cooler week than usual"; } return "Right about where it should be"; }
+    function fbContext(d) {
+      const wx = d.wx, nm = d.normals; if (!nm) return `Set against a typical week here, conditions are unremarkable — the kind of settled water that makes for easy days.`;
+      const bits = [];
+      if (wx && wx.recentMax != null && nm.normalMax != null) { const dl = wx.recentMax - nm.normalMax; bits.push(dl >= 3 ? `the past week ran warmer than usual` : dl <= -3 ? `the past week ran cooler than usual` : `temperatures held near normal`); }
+      if (wx && wx.recentPrecip != null && nm.normalPrecip7 != null) bits.push(wx.recentPrecip > nm.normalPrecip7 * 1.3 ? `with more rain than a typical week` : wx.recentPrecip < nm.normalPrecip7 * 0.5 ? `with less rain than usual` : `with about normal rainfall`);
+      return `Against about three years of records for this week of the year, ${bits.join(", ") || "conditions are close to normal"}.`;
+    }
+    function renderContext(w, d) {
+      const txt = claudeField("week_in_context") || fbContext(d);
+      let inner = `<p class="body">${esc(txt)}</p>`;
+      const fc = flowChart(d); if (fc) inner += fc;
+      inner += `<div class="callout"><p class="callout__head">◈ How we read “normal”</p><p class="callout__body">Seasonal normals come from about three years of local records for this same week of the year, and flow is judged against this gauge's own range — every river runs at its own scale, so “normal” is re-learned for <strong>your</strong> water.</p></div>`;
+      inner += srcRow([["Open-Meteo archive", "https://open-meteo.com/"], ["USGS", "https://waterservices.usgs.gov/"]]);
+      w.appendChild(spread("The week in context", headContext(d), "How this week sits against what's normal for the season.", inner));
+    }
+
+    // ---- spread 4: life along the bank ----
+    function magTaxaRow(list) {
+      const row = el("div", "taxa");
+      list.forEach(t => {
+        const fig = el("figure", "taxon");
+        const img = t.photo
+          ? `<img class="taxon__ph" loading="lazy" src="${esc(t.photo)}" alt="${esc(t.cn)}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'taxon__ph blank',textContent:'🌿'}))"/>`
+          : `<div class="taxon__ph blank">🌿</div>`;
+        fig.innerHTML = img + `<p class="taxon__name">${esc(t.cn)}</p>` + (t.sci ? `<p class="taxon__sci">${esc(t.sci)}</p>` : "") + (t.cnt ? `<p class="taxon__cnt">${t.cnt} sightings</p>` : "");
+        row.appendChild(fig);
+      });
+      return row;
+    }
+    function fbEcology(d) {
+      const eco = d.eco; if (!eco || (!eco.active.length && !eco.blooming.length)) return `Community naturalists haven't logged much within range lately — a quieter corner of the map.`;
+      const a = eco.active.slice(0, 3).map(t => t.cn), b = eco.blooming.slice(0, 2).map(t => t.cn);
+      let s = "";
+      if (a.length) s += `Neighbors have recently recorded ${listWords(a)} near this stretch`;
+      if (b.length) s += `${a.length ? ", and on the bank " : "On the bank, "}${listWords(b)} ${b.length > 1 ? "are" : "is"} in bloom`;
+      return (s || "Life is quietly going about its week here") + ".";
+    }
+    function renderLife(w, d) {
+      const eco = d.eco;
+      const frag = el("section", "spread");
+      frag.innerHTML = `<hr class="rule"/><p class="spread__eyebrow">Life along the bank</p><h2 class="spread__head">Who else is out this week</h2><p class="spread__dek">Seen near this stretch in the last month, by people like you.</p>`;
+      if (loading && settings.apiKey && !claudeField("ecology")) frag.appendChild(el("p", "body body--soft", "Reading the season…"));
+      else frag.appendChild(el("p", "body", esc(claudeField("ecology") || fbEcology(d))));
+      if (eco && eco.active && eco.active.length) {
+        const eb = el("p", "spread__eyebrow", "Active nearby · last 30 days"); eb.style.marginTop = "22px"; frag.appendChild(eb);
+        frag.appendChild(magTaxaRow(eco.active));
+      }
+      if (eco && eco.blooming && eco.blooming.length) {
+        const eb = el("p", "spread__eyebrow", "In bloom on the bank"); eb.style.marginTop = "18px"; frag.appendChild(eb);
+        frag.appendChild(magTaxaRow(eco.blooming));
+      }
+      frag.appendChild(el("p", "figcaption", `<span>What neighbors have photographed within ~25 mi, in the past 30 days.</span><span class="src">iNaturalist</span>`));
+      const sr = el("div", "section-src"); sr.innerHTML = `<a class="cite-chip" href="https://www.inaturalist.org/" target="_blank" rel="noopener">iNaturalist</a>`;
+      frag.appendChild(sr);
+      w.appendChild(frag);
+    }
+
+    // ---- spread 5: before you go in ----
+    function headBefore(d) { const s = d.contact.sev; return s >= 3 ? "Give the water a day to clear" : s === 2 ? "Fine, with a little caution" : "A clean, low-risk day"; }
+    function bestBet(d) {
+      const order = [["swim", "a swim"], ["tube", "a lazy tube or wade"], ["paddle", "a paddle"], ["fish", "some fishing"]];
+      const go = order.find(([k]) => d.ratings[k].rating === "go");
+      if (go) return `Today's easy call: ${go[1]}.`;
+      const caut = order.find(([k]) => d.ratings[k].rating === "caution");
+      if (caut) return `${caut[1].charAt(0).toUpperCase() + caut[1].slice(1)} looks workable with a little care.`;
+      return "Better a day to enjoy the river from the bank.";
+    }
+    function fbBefore(d) {
+      const ct = d.contact;
+      const s = ct.sev >= 3 ? `Recent rain has raised the odds of runoff bacteria, so it's worth giving the water a day or two to clear before you put your face in it.`
+        : ct.sev === 2 ? `There's been a little recent rain, so contact risk is mildly elevated — rinse off afterward and keep water out of your mouth.`
+        : `It's been dry, which is the best thing going for water quality — no fresh runoff to carry bacteria in.`;
+      return s + " Whatever you do, glance at the sky: summer storms build fast, and a low river can rise quickly once rain arrives.";
+    }
+    function renderBeforeYouGo(w, d) {
+      const ct = d.contact;
+      const txt = claudeField("before_you_go") || fbBefore(d);
+      let inner = `<p class="body">${esc(txt)}</p>`;
+      const variant = ct.sev >= 3 ? " callout--warn" : ct.sev === 2 ? " callout--caution" : "";
+      inner += `<div class="callout${variant}"><p class="callout__head">◈ Water-contact risk · ${esc(ct.level)}</p><p class="callout__body">${esc(ct.why)} This is an <strong>estimate from rainfall and runoff</strong>, not a measured water sample — it can't see an upstream spill or a failing septic line. If you'll put your face in the water, or you're with kids, check your local health department's advisories first.</p></div>`;
+      let calls = `<p class="spread__eyebrow" style="margin-top:22px">Today's calls</p><div class="today-calls">`;
+      [["swim", "Swimming"], ["paddle", "Paddling"], ["tube", "Tube / wade"], ["fish", "Fishing"]].forEach(([k, name]) => {
+        const r = d.ratings[k];
+        calls += `<div class="call"><div class="call-top"><span class="nm">${name}</span><span class="verdict ${r.rating}">${chipLabel(r.rating)}</span></div><div class="reason">${esc(r.reason)}</div></div>`;
+      });
+      calls += `</div>`;
+      inner += calls;
+      inner += `<blockquote class="pullquote">${esc(claudeField("best_bet") || bestBet(d))}<cite>Best bet</cite></blockquote>`;
+      inner += srcRow([["USGS gauge", usgsSitePage()], ["Health advisories", "https://www.epa.gov/beach-tech/state-and-local-beach-monitoring-programs"]]);
+      w.appendChild(spread("Before you go in", headBefore(d), "What the conditions ask of you today.", inner));
+    }
+
+    // ---- sources footer ----
+    function renderSourcesFooter(mag, d) {
+      const f = el("footer", "sources");
+      f.innerHTML = `<p class="sources__head">Sources &amp; how we know</p><ol class="sources__list">` +
+        `<li><span class="n">1</span><span>Live flow, gauge height &amp; water temperature — <a href="https://waterservices.usgs.gov/" target="_blank" rel="noopener">USGS Water Services</a>, instantaneous values for this gauge.</span></li>` +
+        `<li><span class="n">2</span><span>Gauge details &amp; history — <a href="${usgsSitePage()}" target="_blank" rel="noopener">USGS monitoring-location page</a>.</span></li>` +
+        `<li><span class="n">3</span><span>Weather, forecast &amp; the seasonal normals — <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (forecast API &amp; historical archive).</span></li>` +
+        `<li><span class="n">4</span><span>Species &amp; flowering-plant observations near this stretch — <a href="https://www.inaturalist.org/" target="_blank" rel="noopener">iNaturalist</a>, community observations from the last 30 days.</span></li>` +
+        `<li><span class="n">5</span><span>Contact-risk is a RiverHome <em>estimate</em> from recent rainfall &amp; runoff — not a bacteria measurement. For posted advisories, consult your <a href="https://www.epa.gov/beach-tech/state-and-local-beach-monitoring-programs" target="_blank" rel="noopener">state or local health department</a>.</span></li>` +
+        `</ol><p class="sources__note">RiverHome reads public data and helps you interpret it. It is not a safety authority — always use your own judgment at the water's edge.</p>` +
+        `<p class="colophon">${esc(riverName(d))} · an issue of RiverHome</p>`;
+      mag.appendChild(f);
     }
 
     function renderMetrics(c, d) {
