@@ -504,6 +504,47 @@
       throw lastErr;
     }
 
+    // Like fetchJSON, but returns text (USGS statistics come back as RDB/TSV).
+    async function fetchText(url, timeout = 20000, attempts = 3) {
+      let lastErr;
+      for (let i = 0; i < attempts; i++) {
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), timeout);
+        try {
+          const r = await fetch(url, { signal: ctrl.signal });
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return await r.text();
+        } catch (e) { lastErr = e; if (/^HTTP 4\d\d$/.test(e.message || "")) break; }
+        finally { clearTimeout(t); }
+        if (i < attempts - 1) await new Promise(res => setTimeout(res, 600 * (i + 1)));
+      }
+      throw lastErr;
+    }
+
+    // Multi-year daily flow statistics (p10/p50/p90 per calendar day) → the real
+    // "typical range" for the time of year. Same host/CORS as the live flow data.
+    async function fetchFlowStats(site) {
+      const url = `https://waterservices.usgs.gov/nwis/stat/?format=rdb&sites=${encodeURIComponent(site)}` +
+        `&statReportType=daily&statTypeCd=p10,p50,p90&parameterCd=00060`;
+      const txt = await fetchText(url, 30000);
+      const lines = txt.split(/\r?\n/).filter(l => l && !l.startsWith("#"));
+      if (lines.length < 3) return null;
+      const header = lines[0].split("\t");
+      const iM = header.indexOf("month_nu"), iD = header.indexOf("day_nu");
+      const i10 = header.indexOf("p10_va"), i50 = header.indexOf("p50_va"), i90 = header.indexOf("p90_va");
+      if (iM < 0 || iD < 0 || i50 < 0) return null;
+      const map = {};
+      for (let k = 2; k < lines.length; k++) {           // skip header + format-spec row
+        const c = lines[k].split("\t");
+        if (c.length <= iM) continue;
+        const p50 = parseFloat(c[i50]);
+        if (isNaN(p50)) continue;
+        const p10 = i10 >= 0 ? parseFloat(c[i10]) : NaN, p90 = i90 >= 0 ? parseFloat(c[i90]) : NaN;
+        map[`${+c[iM]}-${+c[iD]}`] = { p10: isNaN(p10) ? null : p10, p50, p90: isNaN(p90) ? null : p90 };
+      }
+      return Object.keys(map).length ? map : null;
+    }
+
     // ================= USGS gauge =================
     // Instantaneous values: flow (00060 cfs), gauge height (00065 ft), water temp (00010 °C).
     async function fetchUSGS(site) {
@@ -877,6 +918,8 @@ Write these fields (no headings inside any field):
 
     function buildClaudeContext(cond) {
       const { usgs, wx, contact, ratings, eco, normals } = cond;
+      const _n = new Date();
+      const fst = (cond.flowStats && usgs) ? cond.flowStats[`${_n.getMonth() + 1}-${_n.getDate()}`] : null;
       const snap = {
         location: { name: settings.spot || (usgs && usgs.name) || "this stretch", lat: settings.lat, lon: settings.lon },
         date: new Date().toDateString(),
@@ -885,7 +928,10 @@ Write these fields (no headings inside any field):
           normal_weekly_rain_in: round(normals.normalPrecip7, 2),
           recent_avg_high_F: wx ? round(wx.recentMax) : null, recent_rain_in: wx ? round(wx.recentPrecip, 2) : null,
           next7_avg_high_F: wx ? round(wx.aheadMax) : null, next7_rain_in: wx ? round(wx.aheadPrecip, 2) : null,
-          note: "normals are averages for this week of the year from ~3 years of local records; compare recent/next to normal for the season"
+          flow_today_cfs: usgs ? round(usgs.flow) : null,
+          flow_typical_median_cfs: fst ? round(fst.p50) : null,
+          flow_vs_typical: (fst && usgs && usgs.flow != null) ? (usgs.flow < fst.p10 ? "well below typical for the date" : usgs.flow > fst.p90 ? "well above typical for the date" : usgs.flow < fst.p50 ? "a little below the median" : "a little above the median") : null,
+          note: "normals are averages for this week of the year from ~3 years of local records; flow percentiles are multi-year daily statistics for this gauge; compare recent/next/flow to typical for the season"
         } : "unavailable",
         river: usgs ? {
           flow_cfs: round(usgs.flow), flow_trend_pct_12h: round(usgs.flowRisePct),
@@ -922,14 +968,15 @@ Write these fields (no headings inside any field):
         site ? fetchUSGS(site).catch(e => ({ __err: e.message })) : Promise.resolve(null),
         (lat != null && lon != null) ? fetchWeather(lat, lon).catch(e => ({ __err: e.message })) : Promise.resolve(null),
         (lat != null && lon != null) ? fetchEcology(lat, lon).catch(() => null) : Promise.resolve(null),
-        (lat != null && lon != null) ? fetchNormals(lat, lon).catch(() => null) : Promise.resolve(null)
+        (lat != null && lon != null) ? fetchNormals(lat, lon).catch(() => null) : Promise.resolve(null),
+        site ? fetchFlowStats(site).catch(() => null) : Promise.resolve(null)
       ];
-      const [usgs, wx, eco, normals] = await Promise.all(jobs);
+      const [usgs, wx, eco, normals, flowStats] = await Promise.all(jobs);
 
       const cond = {
         usgs: usgs && !usgs.__err ? usgs : null,
         wx: wx && !wx.__err ? wx : null,
-        eco, normals,
+        eco, normals, flowStats,
         errors: [usgs && usgs.__err && "gauge: " + usgs.__err, wx && wx.__err && "weather: " + wx.__err].filter(Boolean),
         ts: Date.now()
       };
@@ -1254,6 +1301,85 @@ Write these fields (no headings inside any field):
         `</ol><p class="sources__note">RiverHome reads public data and helps you interpret it. It is not a safety authority — always use your own judgment at the water's edge.</p>` +
         `<p class="colophon">${esc(riverName(d))} · an issue of RiverHome</p>`;
       mag.appendChild(f);
+    }
+
+    // Upgraded flow chart: real multi-year typical range (USGS daily percentiles)
+    // behind the week's line when available; falls back to the week's own range.
+    // (Supersedes the earlier flowChart definition.)
+    function flowChart(d) {
+      const u = d.usgs; if (!u || !u.flowSeries || u.flowSeries.length < 4) return "";
+      const raw = u.flowSeries, step = Math.max(1, Math.floor(raw.length / 40));
+      const pts = raw.filter((_, i) => i % step === 0), vals = pts.map(p => p.v);
+      const L = 44, R = 300, T = 30, B = 150;
+      const now = new Date(), d0 = new Date(now.getTime() - 6 * 864e5);
+      const fmt = dt => dt.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+
+      const stats = d.flowStats;
+      let days = null, todayStat = null;
+      if (stats) {
+        days = [];
+        for (let i = 6; i >= 0; i--) { const dt = new Date(now.getTime() - i * 864e5); days.push(stats[`${dt.getMonth() + 1}-${dt.getDate()}`] || null); }
+        if (!days.some(Boolean)) days = null;
+        todayStat = stats[`${now.getMonth() + 1}-${now.getDate()}`] || null;
+      }
+
+      let lo = Math.min(...vals), hi = Math.max(...vals);
+      if (days) days.forEach(s => { if (s) { if (s.p10 != null) lo = Math.min(lo, s.p10); if (s.p90 != null) hi = Math.max(hi, s.p90); } });
+      const pad = ((hi - lo) || 1) * 0.12, ylo = lo - pad, yhi = hi + pad, yspan = (yhi - ylo) || 1;
+      const X = i => L + (i / (pts.length - 1)) * (R - L);
+      const Xd = j => L + (j / 6) * (R - L);
+      const Y = v => T + (1 - (v - ylo) / yspan) * (B - T);
+      const line = pts.map((p, i) => `${X(i).toFixed(1)},${Y(p.v).toFixed(1)}`).join(" ");
+      const area = `${L},${B} ${line} ${R},${B}`;
+
+      let bandSvg = "", legendBand, caption, title;
+      if (days) {
+        const fill = arr => { for (let j = 0; j < 7; j++) if (arr[j] == null) { let a = j, b = j; while (a >= 0 && arr[a] == null) a--; while (b < 7 && arr[b] == null) b++; arr[j] = arr[a] != null ? arr[a] : (arr[b] != null ? arr[b] : null); } return arr; };
+        const p10 = fill(days.map(s => s && s.p10 != null ? s.p10 : null));
+        const p90 = fill(days.map(s => s && s.p90 != null ? s.p90 : null));
+        const p50 = fill(days.map(s => s && s.p50 != null ? s.p50 : null));
+        if (p10.every(v => v != null) && p90.every(v => v != null)) {
+          const top = p90.map((v, j) => `${Xd(j).toFixed(1)},${Y(v).toFixed(1)}`);
+          const bot = p10.map((v, j) => `${Xd(j).toFixed(1)},${Y(v).toFixed(1)}`).reverse();
+          bandSvg += `<polygon class="svg-band" points="${top.concat(bot).join(" ")}"/>`;
+        }
+        if (p50.every(v => v != null)) bandSvg += `<polyline class="svg-median" fill="none" points="${p50.map((v, j) => `${Xd(j).toFixed(1)},${Y(v).toFixed(1)}`).join(" ")}"/>`;
+        title = "Flow · last 7 days vs. typical";
+        legendBand = `<span class="key"><span class="swatch swatch--band"></span> Typical range (multi-year)</span><span class="key"><span class="swatch swatch--dash"></span> Median for the date</span>`;
+        caption = `The shaded band is the usual span of flows for these dates across many years — the 10th–90th percentile from USGS daily statistics; the dashed line is the median.`;
+      } else {
+        const mn = Math.min(...vals), mx = Math.max(...vals);
+        bandSvg += `<rect class="svg-band" x="${L}" y="${Y(mx).toFixed(1)}" width="${R - L}" height="${(Y(mn) - Y(mx)).toFixed(1)}" rx="4"/>`;
+        const sorted = [...vals].sort((a, b) => a - b), med = sorted[Math.floor(sorted.length / 2)];
+        bandSvg += `<line class="svg-median" x1="${L}" y1="${Y(med).toFixed(1)}" x2="${R}" y2="${Y(med).toFixed(1)}"/>`;
+        title = "Flow · last 7 days";
+        legendBand = `<span class="key"><span class="swatch swatch--band"></span> This week's range</span><span class="key"><span class="swatch swatch--dash"></span> Median</span>`;
+        caption = `The shaded band is this week's own high–low; the dashed line is its median.`;
+      }
+
+      let sub;
+      if (todayStat && u.flow != null) {
+        const rel = u.flow < todayStat.p10 ? "well below" : u.flow > todayStat.p90 ? "well above" : u.flow < todayStat.p50 ? "a little below" : u.flow > todayStat.p50 ? "a little above" : "right at";
+        sub = `${flowOut(u.flow)} ${flowUnit()} — ${rel} its typical level for the date.`;
+      } else {
+        const rise = u.flowRisePct;
+        sub = rise != null && rise >= 15 ? `${flowOut(u.flow)} ${flowUnit()} and rising this week.` : rise != null && rise <= -15 ? `${flowOut(u.flow)} ${flowUnit()}, easing gently through a quiet week.` : `${flowOut(u.flow)} ${flowUnit()}, holding steady this week.`;
+      }
+
+      return `<figure class="chart"><p class="chart__title">${title}</p><p class="chart__sub">${esc(sub)}</p><div class="chart__scroll"><svg viewBox="0 0 320 190" role="img" aria-label="Seven-day flow against its typical range">` +
+        `<defs><linearGradient id="flowFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22d3ee" stop-opacity="0.28"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></linearGradient></defs>` +
+        bandSvg +
+        `<polygon class="svg-area" points="${area}"/>` +
+        `<polyline class="svg-line" points="${line}"/>` +
+        `<circle class="svg-dot" cx="${X(0).toFixed(1)}" cy="${Y(pts[0].v).toFixed(1)}" r="3.5"/>` +
+        `<circle class="svg-dot" cx="${X(pts.length - 1).toFixed(1)}" cy="${Y(pts[pts.length - 1].v).toFixed(1)}" r="4.5"/>` +
+        `<text class="svg-endlbl" x="${L}" y="${(Y(pts[0].v) - 8).toFixed(1)}" text-anchor="start">${flowOut(pts[0].v)}</text>` +
+        `<text class="svg-endlbl" x="${R}" y="${(Y(pts[pts.length - 1].v) - 8).toFixed(1)}" text-anchor="end">${flowOut(pts[pts.length - 1].v)}</text>` +
+        `<text class="svg-axislbl" x="${L}" y="170" text-anchor="start">${fmt(d0)}</text>` +
+        `<text class="svg-axislbl" x="${R}" y="170" text-anchor="end">${fmt(now)}</text>` +
+        `</svg></div>` +
+        `<div class="chart__legend"><span class="key"><span class="swatch swatch--line"></span> This week's flow</span>${legendBand}</div>` +
+        `<p class="chart__caption">${esc(caption)}</p></figure>`;
     }
 
     function renderMetrics(c, d) {
