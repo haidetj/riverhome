@@ -241,6 +241,7 @@
         radial-gradient(120% 90% at 70% 10%, #12405a 0%, #0e2740 45%, #0b1220 100%);
       background-size: cover; background-position: center; overflow: hidden;
     }
+    .mag-hero__art { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
     .mag-hero__scrim { position: absolute; inset: 0; z-index: 1;
       background: linear-gradient(180deg, rgba(11,18,32,0) 30%, rgba(11,18,32,0.85) 92%); pointer-events: none; }
     .mag-hero__inner { position: relative; z-index: 2; padding: 0 clamp(18px,5vw,30px) 26px; }
@@ -253,7 +254,6 @@
     .byline .live::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 5px; border-radius: 50%; background: var(--accent-2); box-shadow: 0 0 0 0 rgba(52,211,153,0.6); animation: pulse 2.2s infinite; }
     .byline .warn-note { color: var(--caution); }
     @keyframes pulse { 70% { box-shadow: 0 0 0 8px rgba(52,211,153,0); } 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); } }
-    .credit { position: absolute; z-index: 2; right: 10px; top: 12px; font-family: var(--sans); font-size: 0.62rem; letter-spacing: 0.4px; color: rgba(232,238,246,0.72); background: rgba(2,6,23,0.4); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); padding: 4px 8px; border-radius: 20px; }
 
     /* Lede + body */
     .lede { font-family: var(--serif); font-size: clamp(1.18rem,5vw,1.5rem); line-height: 1.5; color: var(--ink); margin: clamp(26px,7vw,40px) 0 0; max-width: var(--measure); }
@@ -1219,8 +1219,56 @@ Write these fields (no headings inside any field):
     const usgsSitePage = () => settings.site ? `https://waterdata.usgs.gov/monitoring-location/${encodeURIComponent(settings.site)}/` : "https://dashboard.waterdata.usgs.gov/";
     function seasonWord(dt) { const m = dt.toLocaleDateString(undefined, { month: "long" }); const day = dt.getDate(); return `${day <= 10 ? "Early" : day <= 20 ? "Mid" : "Late"} ${m}`; }
     function flowWord(d) { const fs = flowState(d.usgs); if (!d.usgs || d.usgs.flow == null) return "running"; if (fs.high) return fs.risingFast ? "running high and rising" : "running high"; if (fs.low) return "running low and clear"; return "running easy and steady"; }
-    function biggerPhoto(u) { return u ? u.replace(/\/square(\.[a-z0-9]+)(\?.*)?$/i, "/medium$1$2") : null; }
-    function heroPhoto(d) { if (!d.eco) return null; const pool = []; (d.eco.active || []).forEach(t => t.photo && pool.push(t.photo)); (d.eco.blooming || []).forEach(t => t.photo && pool.push(t.photo)); return pool.length ? biggerPhoto(pool[0]) : null; }
+    // Abstract masthead art — layered current ribbons drawn fresh for each issue.
+    // Seeded by the date + gauge (stable across re-renders, new each day) and
+    // shaped by real conditions: a low river draws calm, flat lines; a high or
+    // rising river draws bolder, tighter waves.
+    function heroArt(d) {
+      let seed = 2166136261;
+      const seedStr = new Date(d.ts || Date.now()).toDateString() + (settings.site || "");
+      for (let i = 0; i < seedStr.length; i++) { seed ^= seedStr.charCodeAt(i); seed = Math.imul(seed, 16777619); }
+      const rnd = () => { seed = Math.imul(seed ^ (seed >>> 15), seed | 1); seed ^= seed + Math.imul(seed ^ (seed >>> 7), seed | 61); return ((seed ^ (seed >>> 14)) >>> 0) / 4294967296; };
+
+      const fs = flowState(d.usgs);
+      const amp = fs.high ? 46 : fs.low ? 16 : 28;          // wave height
+      const segW = fs.high ? 130 : 190;                      // wave length (tighter when high)
+      const W = 800, H = 620;
+
+      // One undulating ribbon: a wavy top edge filled down to the bottom.
+      const ribbon = (yBase, a, phase) => {
+        let x = -60, y = yBase + Math.sin(phase) * a * 0.5;
+        let p = `M ${x} ${y.toFixed(1)}`;
+        let up = rnd() > 0.5;
+        while (x < W + 60) {
+          const nx = x + segW * (0.8 + rnd() * 0.5);
+          const ny = yBase + (up ? -1 : 1) * a * (0.55 + rnd() * 0.65);
+          p += ` C ${(x + (nx - x) * 0.45).toFixed(1)} ${y.toFixed(1)}, ${(x + (nx - x) * 0.55).toFixed(1)} ${ny.toFixed(1)}, ${nx.toFixed(1)} ${ny.toFixed(1)}`;
+          x = nx; y = ny; up = !up;
+        }
+        return { fill: `${p} L ${W + 60} ${H + 40} L -60 ${H + 40} Z`, crest: p };
+      };
+
+      let layers = "";
+      const bands = 5;
+      for (let i = 0; i < bands; i++) {
+        const yBase = 190 + i * ((H - 210) / bands) + rnd() * 26;
+        const r = ribbon(yBase, amp * (0.7 + i * 0.14), rnd() * 6.28);
+        const op = (0.05 + i * 0.045).toFixed(3);
+        layers += `<path d="${r.fill}" fill="url(#heroBand)" opacity="${op}"/>`;
+        layers += `<path d="${r.crest}" fill="none" stroke="url(#heroLine)" stroke-width="${(1 + i * 0.35).toFixed(1)}" stroke-linecap="round" opacity="${(0.16 + i * 0.07).toFixed(2)}"/>`;
+      }
+      // A few drifting orbs — river stones / moon-on-water.
+      let orbs = "";
+      for (let i = 0; i < 3; i++) {
+        orbs += `<circle cx="${(80 + rnd() * 640).toFixed(0)}" cy="${(70 + rnd() * 180).toFixed(0)}" r="${(24 + rnd() * 66).toFixed(0)}" fill="url(#heroOrb)" opacity="${(0.25 + rnd() * 0.3).toFixed(2)}"/>`;
+      }
+      return `<svg class="mag-hero__art" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMax slice" aria-hidden="true">` +
+        `<defs>` +
+          `<linearGradient id="heroBand" x1="0" y1="0" x2="1" y2="0.25"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#34d399"/></linearGradient>` +
+          `<linearGradient id="heroLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22d3ee" stop-opacity="0.1"/><stop offset="0.5" stop-color="#67e8f9"/><stop offset="1" stop-color="#34d399" stop-opacity="0.15"/></linearGradient>` +
+          `<radialGradient id="heroOrb"><stop offset="0" stop-color="#67e8f9" stop-opacity="0.5"/><stop offset="0.7" stop-color="#22d3ee" stop-opacity="0.12"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>` +
+        `</defs>${orbs}${layers}</svg>`;
+    }
     function srcRow(pairs) { return `<div class="section-src">` + pairs.map(([l, h]) => `<a class="cite-chip" href="${h}" target="_blank" rel="noopener">${esc(l)}</a>`).join("") + `</div>`; }
     function spread(eyebrow, head, dek, inner) {
       return el("section", "spread",
@@ -1234,12 +1282,10 @@ Write these fields (no headings inside any field):
     // ---- hero + lede ----
     function renderHero(mag, d) {
       const hero = el("header", "mag-hero");
-      const photo = heroPhoto(d);
-      if (photo) hero.style.backgroundImage = `linear-gradient(180deg, rgba(11,18,32,0.15) 0%, rgba(11,18,32,0.55) 55%, rgba(11,18,32,0.96) 100%), url("${photo}")`;
       const issue = new Date(d.ts || Date.now());
       const sf = claudeField("standfirst") || "Know your stretch — what to expect, and what to notice, before you go down to the water.";
       const err = (d.errors && d.errors.length) ? `<span class="dot">·</span><span class="warn-note">some data didn't load</span>` : "";
-      hero.innerHTML = (photo ? `<span class="credit">Photo · iNaturalist, near your stretch</span>` : "") +
+      hero.innerHTML = heroArt(d) +
         `<div class="mag-hero__scrim"></div>` +
         `<div class="mag-hero__inner">` +
           `<p class="masthead-kicker">Your stretch, this week</p>` +
