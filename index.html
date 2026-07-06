@@ -298,6 +298,34 @@
     .callout__head { font-family: var(--sans); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
     .callout--caution .callout__head { color: var(--caution); } .callout--warn .callout__head { color: var(--no); }
     .callout__body { font-family: var(--sans); font-size: 0.9rem; line-height: 1.55; color: var(--ink); margin: 0; }
+    .cite-inline { color: var(--ink-soft); font-size: 0.82rem; }
+
+    /* Executive overview — the quick read at the top of the issue */
+    .quickread { background: linear-gradient(135deg, rgba(34,211,238,0.12), rgba(52,211,153,0.07)); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 18px 16px; margin: 6px 0 26px; box-shadow: var(--shadow); }
+    .quickread__eyebrow { font-family: var(--sans); font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin: 0 0 8px; }
+    .quickread__verdict { font-family: var(--serif); font-size: 1.28rem; line-height: 1.4; color: var(--ink); margin: 0 0 12px; }
+    .quickread__stats { font-family: var(--sans); font-size: 0.86rem; color: var(--ink-soft); margin: 0 0 14px; line-height: 1.7; }
+    .quickread__stats b { color: var(--ink); font-weight: 700; }
+    .quickread__stats .qsep { opacity: 0.4; margin: 0 2px; }
+    .quickread__calls { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+    .qcall { display: inline-flex; align-items: center; gap: 6px; font-family: var(--sans); font-size: 0.82rem; font-weight: 600; color: var(--ink); }
+    .qdot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+    /* Password gate (soft, client-side only) */
+    .gate { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; padding: 22px; background: radial-gradient(120% 80% at 50% 0%, #0f2233 0%, var(--bg) 60%); }
+    .gate.open { display: flex; }
+    .gate__card { width: 100%; max-width: 360px; text-align: center; }
+    .gate__card .wave { width: 54px; margin: 0 auto 14px; }
+    .gate__title { font-family: var(--serif); font-size: 2.2rem; margin: 0; color: var(--ink); }
+    .gate__tag { font-family: var(--serif); font-style: italic; color: var(--ink-soft); margin: 4px 0 22px; }
+    .gate__form { display: flex; flex-direction: column; gap: 10px; }
+    .gate__input { width: 100%; box-sizing: border-box; text-align: center; font-family: var(--sans); font-size: 1rem; padding: 13px 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--glass); color: var(--ink); }
+    .gate__input:focus { outline: none; border-color: var(--accent); }
+    .gate__btn { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #06121f; font-weight: 700; padding: 13px 20px; border-radius: 14px; border: none; font-size: 0.95rem; cursor: pointer; }
+    .gate__err { min-height: 18px; font-family: var(--sans); font-size: 0.82rem; color: var(--no); margin: 2px 0 0; }
+
+    /* In-app settings are disabled — configuration lives in CONFIG (edit + commit). */
+    .gear { display: none !important; }
 
     /* Today's calls (activity ratings) */
     .today-calls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0 6px; }
@@ -358,6 +386,20 @@
   </style>
 </head>
 <body>
+  <!-- Soft password gate (client-side only — this is a public site, not real security) -->
+  <div class="gate" id="gate">
+    <div class="gate__card">
+      <div class="wave" aria-hidden="true"><svg viewBox="0 0 60 60" fill="none" stroke="url(#gg)" stroke-width="4" stroke-linecap="round"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs><path d="M6 22c8-8 16-8 24 0s16 8 24 0" opacity="0.55"/><path d="M6 32c8-8 16-8 24 0s16 8 24 0"/><path d="M6 42c8-8 16-8 24 0s16 8 24 0" opacity="0.55"/></svg></div>
+      <h1 class="gate__title">RiverHome</h1>
+      <p class="gate__tag">Know your stretch.</p>
+      <form class="gate__form" id="gateForm">
+        <input class="gate__input" id="gateInput" type="password" inputmode="text" autocomplete="off" autocapitalize="none" placeholder="Password" aria-label="Password" />
+        <button class="gate__btn" type="submit">Enter</button>
+        <p class="gate__err" id="gateErr" role="alert"></p>
+      </form>
+    </div>
+  </div>
+
   <button class="refresh" id="refreshBtn" aria-label="Refresh"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
   <button class="gear" id="gearBtn" aria-label="Settings">⚙︎</button>
   <main id="content"></main>
@@ -415,14 +457,25 @@
 
   <script>
     // ================= State =================
+    // ===== Fixed configuration — change these values and commit (no in-app config) =====
+    const CONFIG = {
+      address: "1048 Riverbend Club Drive SE", // resolved to coordinates on first load
+      lat: null,            // optional: hardcode coordinates to skip geocoding
+      lon: null,
+      gauge: "",            // optional: hardcode a USGS site number to skip nearest-gauge pick
+      spot: "Riverbend",    // name shown on the masthead
+      units: "imperial",    // "imperial" | "metric"
+      model: "claude-sonnet-5",
+      // WARNING: this repo is PUBLIC — a key pasted here is visible to anyone and will be
+      // auto-revoked by secret scanning. Leave blank to run on the built-in fallback prose.
+      apiKey: "",
+      password: "trail"     // soft gate only (client-side; not real security)
+    };
+
     const STORE = "riverhome.settings.v1";
     const CACHE = "riverhome.cache.v1";
-
-    const DEFAULTS = {
-      spot: "", site: "", lat: null, lon: null, units: "imperial",
-      flowNormal: null, flowHigh: null,
-      apiKey: "", model: "claude-sonnet-5"
-    };
+    const PLACE = "riverhome.place.v1";     // cached resolved location {lat,lon,site,name}
+    const UNLOCK = "riverhome.unlock.v1";
     const KNOWN_MODELS = [
       { id: "claude-opus-4-8",  label: "Opus 4.8 — most capable" },
       { id: "claude-sonnet-5",  label: "Sonnet 5 — balanced (default)" },
@@ -433,10 +486,19 @@
       try { return Object.assign({}, fallback, JSON.parse(localStorage.getItem(k)) || {}); }
       catch { return { ...fallback }; }
     }
-    let settings = load(STORE, DEFAULTS);
+    const _place = load(PLACE, { lat: null, lon: null, site: "", name: "" });
+    let settings = {
+      spot: CONFIG.spot || CONFIG.address, address: CONFIG.address,
+      site: CONFIG.gauge || _place.site || "",
+      lat: CONFIG.lat != null ? CONFIG.lat : _place.lat,
+      lon: CONFIG.lon != null ? CONFIG.lon : _place.lon,
+      units: CONFIG.units, flowNormal: null, flowHigh: null,
+      apiKey: CONFIG.apiKey, model: CONFIG.model
+    };
     let cache = load(CACHE, { normals: {}, lastData: null });
-    const saveSettings = () => localStorage.setItem(STORE, JSON.stringify(settings));
+    const saveSettings = () => {};    // in-app settings removed; configuration lives in CONFIG
     const saveCache = () => localStorage.setItem(CACHE, JSON.stringify(cache));
+    const savePlace = () => localStorage.setItem(PLACE, JSON.stringify({ lat: settings.lat, lon: settings.lon, site: settings.site, name: settings.spot }));
 
     const isMetric = () => settings.units === "metric";
 
@@ -543,6 +605,83 @@
         map[`${+c[iM]}-${+c[iD]}`] = { p10: isNaN(p10) ? null : p10, p50, p90: isNaN(p90) ? null : p90 };
       }
       return Object.keys(map).length ? map : null;
+    }
+
+    // Minimal CSV parser (handles quoted fields) for the Water Quality Portal.
+    function parseCSV(txt) {
+      const rows = []; let row = [], field = "", q = false;
+      for (let i = 0; i < txt.length; i++) {
+        const ch = txt[i];
+        if (q) { if (ch === '"') { if (txt[i + 1] === '"') { field += '"'; i++; } else q = false; } else field += ch; }
+        else if (ch === '"') q = true;
+        else if (ch === ',') { row.push(field); field = ""; }
+        else if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ""; }
+        else if (ch !== '\r') field += ch;
+      }
+      if (field.length || row.length) { row.push(field); rows.push(row); }
+      return rows;
+    }
+
+    // Geocode the fixed address to coordinates (US Census first, then Nominatim).
+    async function geocodeAddress(addr) {
+      try {
+        const j = await fetchJSON(`https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=${encodeURIComponent(addr)}&benchmark=Public_AR_Current&format=json`, 20000, 2);
+        const m = j && j.result && j.result.addressMatches && j.result.addressMatches[0];
+        if (m && m.coordinates) return { lat: +m.coordinates.y, lon: +m.coordinates.x };
+      } catch (e) { /* fall through */ }
+      try {
+        const j = await fetchJSON(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(addr)}`, 20000, 2);
+        if (j && j[0]) return { lat: +j[0].lat, lon: +j[0].lon };
+      } catch (e) { /* fall through */ }
+      return null;
+    }
+
+    // Resolve the hardcoded address into coordinates + nearest gauge, once, then cache it.
+    async function resolvePlace() {
+      if (settings.lat == null || settings.lon == null) {
+        const g = await geocodeAddress(settings.address);
+        if (g) { settings.lat = g.lat; settings.lon = g.lon; }
+      }
+      if (!settings.site && settings.lat != null && settings.lon != null) {
+        try {
+          const list = await fetchNearbyGauges(settings.lat, settings.lon);
+          const pick = list.find(x => x.flow != null) || list[0];
+          if (pick) settings.site = pick.code;
+        } catch (e) { /* leave site empty */ }
+      }
+      savePlace();
+    }
+
+    // Latest measured bacteria sample near the location, from the federal Water
+    // Quality Portal (USGS + EPA). Best-effort: grab samples are sparse and lagging,
+    // and browser CORS is not guaranteed — any failure falls back to the estimate.
+    async function fetchBacteria(lat, lon) {
+      const d = 0.12;
+      const bBox = `${(lon - d).toFixed(4)},${(lat - d).toFixed(4)},${(lon + d).toFixed(4)},${(lat + d).toFixed(4)}`;
+      const since = new Date(Date.now() - 150 * 864e5);
+      const lo = `${String(since.getMonth() + 1).padStart(2, "0")}-${String(since.getDate()).padStart(2, "0")}-${since.getFullYear()}`;
+      const url = `https://www.waterqualitydata.us/data/Result/search?mimeType=csv&siteType=Stream` +
+        `&characteristicName=Escherichia%20coli&characteristicName=Enterococcus&characteristicName=Fecal%20Coliform` +
+        `&startDateLo=${lo}&bBox=${bBox}`;
+      const rows = parseCSV(await fetchText(url, 30000, 2));
+      if (rows.length < 2) return null;
+      const H = rows[0], ix = n => H.indexOf(n);
+      const iChar = ix("CharacteristicName"), iVal = ix("ResultMeasureValue"), iUnit = ix("ResultMeasure/MeasureUnitCode"),
+        iDate = ix("ActivityStartDate"), iName = ix("MonitoringLocationName"),
+        iLat = ix("ActivityLocation/LatitudeMeasure"), iLon = ix("ActivityLocation/LongitudeMeasure");
+      if (iVal < 0 || iDate < 0) return null;
+      let best = null;
+      for (let r = 1; r < rows.length; r++) {
+        const c = rows[r]; if (c.length <= iVal) continue;
+        const v = parseFloat(c[iVal]); if (isNaN(v)) continue;
+        const dt = c[iDate]; if (!dt) continue;
+        if (!best || dt > best.date) best = {
+          char: iChar >= 0 ? c[iChar] : "Bacteria", value: v, unit: iUnit >= 0 ? c[iUnit] : "",
+          date: dt, station: iName >= 0 ? c[iName] : "",
+          lat: iLat >= 0 ? parseFloat(c[iLat]) : null, lon: iLon >= 0 ? parseFloat(c[iLon]) : null
+        };
+      }
+      return best;
     }
 
     // ================= USGS gauge =================
@@ -854,6 +993,7 @@
       type: "object",
       properties: {
         standfirst: { type: "string" },
+        exec_overview: { type: "string" },
         lede: { type: "string" },
         on_the_water: { type: "string" },
         what_to_notice: { type: "string" },
@@ -862,12 +1002,12 @@
         before_you_go: { type: "string" },
         best_bet: { type: "string" }
       },
-      required: ["standfirst", "lede", "on_the_water", "what_to_notice", "week_in_context", "ecology", "before_you_go", "best_bet"],
+      required: ["standfirst", "exec_overview", "lede", "on_the_water", "what_to_notice", "week_in_context", "ecology", "before_you_go", "best_bet"],
       additionalProperties: false
     };
     const READ_SYSTEM = `You are the editor and resident naturalist of RiverHome — a weekly "issue" about one person's home stretch of river. You write like an empathetic science communicator: warm, plain-spoken, unhurried, and genuinely useful. Your job is to help the reader understand what to expect on and beside the water this week, and what there is to notice and appreciate right where they live — honestly and without hype.
 
-You are given a JSON snapshot of TODAY's measured conditions (flow, gauge, water temperature, weather + forecast, recent rainfall, a runoff-based contact-risk estimate, and activity ratings from a deterministic rules engine), a HISTORY block (this week's climate normals for temperature and rainfall from ~3 years of local records, plus how the recent and coming week compare), and lists of species and flowering plants ACTUALLY observed near this location in the last 30 days (iNaturalist).
+You are given a JSON snapshot of TODAY's measured conditions (flow, gauge, water temperature, weather + forecast, recent rainfall, a runoff-based contact-risk estimate, and activity ratings from a deterministic rules engine), a HISTORY block (this week's climate normals for temperature and rainfall from ~3 years of local records, plus how the recent and coming week compare), any recent MEASURED bacteria sample from a nearby monitoring station (may be several days or weeks old), and lists of species and flowering plants ACTUALLY observed near this location in the last 30 days (iNaturalist).
 
 Voice & rules:
 - Ground every claim in the data. NEVER invent numbers, species, or events not present. If something is unavailable, simply don't mention it.
@@ -878,12 +1018,13 @@ Voice & rules:
 
 Write these fields (no headings inside any field):
 - "standfirst": one inviting sentence (max ~16 words) that sits under the river's name — the issue's promise.
+- "exec_overview": the bottom line up front — 2 sentences, max ~34 words total. The single most important thing to know today and whether it's a good day to be on or by the water. Written so a reader in a hurry can stop after this and still be well served.
 - "lede": 2-3 sentences. The opening — what the river is doing right now and how the day feels.
 - "on_the_water": 2-3 sentences on the current itself (flow, gauge, water temp) and what they mean for a body in the water.
 - "what_to_notice": 2-3 sentences on the one or two things worth paying attention to this week — appreciative, specific.
 - "week_in_context": 2-3 sentences of honest historical framing from the HISTORY block — how this week compares to normal for the season (temperature, rainfall, and the flow trend). Plain, not statistical.
 - "ecology": 2-3 sentences on what's alive and moving near this stretch now, naming specific creatures or blooms from the observed lists and the season. Note migration/spawning/emergence ONLY when date, latitude, and species support it.
-- "before_you_go": 2-3 sentences of grounded, caring guidance — the honest state of contact risk and what today asks of the reader. Calm, not alarmist.
+- "before_you_go": 2-3 sentences of grounded, caring guidance — the honest state of contact risk and what today asks of the reader. Calm, not alarmist. If a MEASURED bacteria sample is present, lead with what it actually found and how fresh it is; otherwise be clear the risk is a rainfall-runoff estimate, not a measurement.
 - "best_bet": one sentence naming the single best thing to do on or by the water right now, and why. If nothing on-water is safe, say so and offer a bankside alternative.`;
 
     async function callClaude(user) {
@@ -917,7 +1058,7 @@ Write these fields (no headings inside any field):
     }
 
     function buildClaudeContext(cond) {
-      const { usgs, wx, contact, ratings, eco, normals } = cond;
+      const { usgs, wx, contact, ratings, eco, normals, bacteria } = cond;
       const _n = new Date();
       const fst = (cond.flowStats && usgs) ? cond.flowStats[`${_n.getMonth() + 1}-${_n.getDate()}`] : null;
       const snap = {
@@ -945,6 +1086,11 @@ Write these fields (no headings inside any field):
           dry_hours: round(wx.dryHours), next7_avg_high_F: round(wx.aheadMax), next7_precip_in: round(wx.aheadPrecip, 2)
         } : "unavailable",
         contact_risk: { level: contact.level, basis: contact.why },
+        measured_bacteria: bacteria ? {
+          indicator: bacteria.char, value: bacteria.value, units: bacteria.unit,
+          sampled_on: bacteria.date, station: bacteria.station,
+          note: "an actual laboratory water-quality sample from a nearby monitoring station (federal Water Quality Portal) — the most recent one on record, which may be days or weeks old; use it as real evidence, not a live reading"
+        } : "no recent measured sample found near this stretch",
         activity_ratings: {
           swimming: ratings.swim.rating, paddling: ratings.paddle.rating,
           tubing_wading: ratings.tube.rating, fishing: ratings.fish.rating
@@ -958,25 +1104,31 @@ Write these fields (no headings inside any field):
     // ================= Orchestration =================
     let currentData = cache.lastData;
     let claudeRead = null;
-    let loading = false, refreshing = false;
+    let loading = false, refreshing = false, resolving = false;
 
     async function refresh() {
-      if (!configured()) { render(); return; }
       refreshing = true; renderHeader();
+      if (settings.lat == null || settings.lon == null || !settings.site) {
+        resolving = true; render();
+        await resolvePlace();
+        resolving = false;
+      }
+      if (!configured()) { refreshing = false; render(); return; }
       const { site, lat, lon } = settings;
       const jobs = [
         site ? fetchUSGS(site).catch(e => ({ __err: e.message })) : Promise.resolve(null),
         (lat != null && lon != null) ? fetchWeather(lat, lon).catch(e => ({ __err: e.message })) : Promise.resolve(null),
         (lat != null && lon != null) ? fetchEcology(lat, lon).catch(() => null) : Promise.resolve(null),
         (lat != null && lon != null) ? fetchNormals(lat, lon).catch(() => null) : Promise.resolve(null),
-        site ? fetchFlowStats(site).catch(() => null) : Promise.resolve(null)
+        site ? fetchFlowStats(site).catch(() => null) : Promise.resolve(null),
+        (lat != null && lon != null) ? fetchBacteria(lat, lon).catch(() => null) : Promise.resolve(null)
       ];
-      const [usgs, wx, eco, normals, flowStats] = await Promise.all(jobs);
+      const [usgs, wx, eco, normals, flowStats, bacteria] = await Promise.all(jobs);
 
       const cond = {
         usgs: usgs && !usgs.__err ? usgs : null,
         wx: wx && !wx.__err ? wx : null,
-        eco, normals, flowStats,
+        eco, normals, flowStats, bacteria,
         errors: [usgs && usgs.__err && "gauge: " + usgs.__err, wx && wx.__err && "weather: " + wx.__err].filter(Boolean),
         ts: Date.now()
       };
@@ -1016,21 +1168,23 @@ Write these fields (no headings inside any field):
       const c = $("content");
       c.innerHTML = "";
 
+      if (resolving && !currentData) { c.appendChild(noteScreen("Finding your stretch…")); return; }
       if (!configured()) {
-        c.appendChild(setupScreen());
-        const cta = $("setupCta"); if (cta) cta.onclick = openSettings;
-        return;
+        const e = noteScreen(`Couldn't locate ${settings.address} automatically.`);
+        const b = el("button", "cta", "Try again"); b.onclick = refresh; e.appendChild(b);
+        c.appendChild(e); return;
       }
       const d = currentData;
       if (!d) {
-        c.appendChild(startScreen());
-        const b = $("readCta"); if (b) b.onclick = refresh;
-        return;
+        const e = noteScreen("Ready to read your stretch.");
+        const b = el("button", "cta", "Read the river"); b.onclick = refresh; e.appendChild(b);
+        c.appendChild(e); return;
       }
 
       const mag = el("article", "mag");
       renderHero(mag, d);
       const w = el("div", "wrap");
+      renderQuickRead(w, d);
       renderLede(w, d);
       renderOnWater(w, d);
       renderNotice(w, d);
@@ -1277,6 +1431,7 @@ Write these fields (no headings inside any field):
       let inner = `<p class="body">${esc(txt)}</p>`;
       const variant = ct.sev >= 3 ? " callout--warn" : ct.sev === 2 ? " callout--caution" : "";
       inner += `<div class="callout${variant}"><p class="callout__head">◈ Water-contact risk · ${esc(ct.level)}</p><p class="callout__body">${esc(ct.why)} This is an <strong>estimate from rainfall and runoff</strong>, not a measured water sample — it can't see an upstream spill or a failing septic line. If you'll put your face in the water, or you're with kids, check your local health department's advisories first.</p></div>`;
+      inner += bacteriaCallout(d.bacteria);
       let calls = `<p class="spread__eyebrow" style="margin-top:22px">Today's calls</p><div class="today-calls">`;
       [["swim", "Swimming"], ["paddle", "Paddling"], ["tube", "Tube / wade"], ["fish", "Fishing"]].forEach(([k, name]) => {
         const r = d.ratings[k];
@@ -1301,6 +1456,53 @@ Write these fields (no headings inside any field):
         `</ol><p class="sources__note">RiverHome reads public data and helps you interpret it. It is not a safety authority — always use your own judgment at the water's edge.</p>` +
         `<p class="colophon">${esc(riverName(d))} · an issue of RiverHome</p>`;
       mag.appendChild(f);
+    }
+
+    // ---- masthead-style note screen (resolving / errors / prompts) ----
+    function noteScreen(msg) {
+      const e = el("div", "setup");
+      e.innerHTML = WAVE + `<h1 class="setup-title">RiverHome</h1><p class="setup-tag">${esc(msg)}</p>`;
+      return e;
+    }
+
+    // ---- executive overview: the bottom-line-up-front block at the top ----
+    function renderQuickRead(w, d) {
+      const u = d.usgs;
+      const bits = [];
+      if (u && u.flow != null) bits.push(`<b>${flowOut(u.flow)}</b> ${flowUnit()}`);
+      if (u && u.tempF != null) bits.push(`<b>${tempOut(u.tempF)}${tempUnit()}</b> water`);
+      bits.push(`contact <b>${esc(d.contact.level)}</b>`);
+      if (d.bacteria && d.bacteria.value != null) bits.push(`sample <b>${esc(String(d.bacteria.value))}</b> ${esc(d.bacteria.unit || "")}`);
+      const dotFor = (r) => r === "go" ? "var(--go)" : r === "caution" ? "var(--caution)" : "var(--no)";
+      const calls = [["swim", "Swim"], ["paddle", "Paddle"], ["tube", "Tube"], ["fish", "Fish"]].map(([k, n]) => {
+        const r = d.ratings[k];
+        return `<span class="qcall"><span class="qdot" style="background:${dotFor(r.rating)}"></span>${n}</span>`;
+      }).join("");
+      const verdict = claudeField("exec_overview") || claudeField("best_bet") || bestBet(d);
+      const q = el("div", "quickread");
+      q.innerHTML =
+        `<p class="quickread__eyebrow">The quick read</p>` +
+        `<p class="quickread__verdict">${esc(verdict)}</p>` +
+        `<p class="quickread__stats">${bits.join(' <span class="qsep">·</span> ')}</p>` +
+        `<div class="quickread__calls">${calls}</div>`;
+      w.appendChild(q);
+    }
+
+    // ---- measured bacteria callout (real lab sample, may be dated) ----
+    function bacteriaCallout(b) {
+      if (!b || b.value == null) return "";
+      const c = (b.char || "").toLowerCase();
+      const thr = (c.includes("coli") && !c.includes("fecal")) ? 235 : c.includes("enteroc") ? 61 : c.includes("fecal") ? 200 : null;
+      const over = thr != null ? b.value > thr : null;
+      let days = null;
+      if (b.date) { const t = Date.parse(b.date); if (!isNaN(t)) days = Math.max(0, Math.round((Date.now() - t) / 864e5)); }
+      const fresh = days == null ? "" : days === 0 ? " (sampled today)" : days === 1 ? " (sampled yesterday)" : days <= 21 ? ` (sampled ${days} days ago)` : ` (sampled about ${Math.round(days / 7)} weeks ago — read it as dated)`;
+      const rel = over === true ? `above the usual recreational threshold${thr != null ? ` of about ${thr} ${esc(b.unit || "")}` : ""}` : over === false ? `below the usual recreational threshold${thr != null ? ` of about ${thr} ${esc(b.unit || "")}` : ""}` : "on record";
+      const tail = over === true ? "That points to elevated bacteria — give the water a day or two to clear and keep it out of your mouth." : over === false ? "That's reassuring, but a single dated sample isn't a live reading — a storm can change it overnight." : "Read it as one data point, not a live reading.";
+      const variant = over === true ? " callout--warn" : "";
+      return `<div class="callout${variant}"><p class="callout__head">🧫 Measured sample · ${esc(b.char)}</p>` +
+        `<p class="callout__body">The most recent lab sample near your stretch read <strong>${esc(String(b.value))} ${esc(b.unit || "")}</strong>${fresh} — ${rel}. ${tail}` +
+        (b.station ? ` <span class="cite-inline">Station: ${esc(b.station)}.</span>` : "") + `</p></div>`;
     }
 
     // Upgraded flow chart: real multi-year typical range (USGS daily percentiles)
@@ -1643,9 +1845,34 @@ Write these fields (no headings inside any field):
       refresh();
     };
 
+    // ================= Password gate (soft, client-side only) =================
+    // NOTE: this repo is PUBLIC, so this is a courtesy lock, not real security —
+    // it just keeps the page from being casually read by anyone with the link.
+    const unlocked = () => { try { return localStorage.getItem(UNLOCK) === "1"; } catch { return true; } };
+    function startApp() {
+      $("gate").classList.remove("open");
+      render();
+      // Configured (gauge/coords cached) OR we have an address to geocode → pull the issue.
+      if (configured() || CONFIG.address) refresh();
+    }
+    function showGate() {
+      const g = $("gate"), inp = $("gateInput"), err = $("gateErr");
+      g.classList.add("open");
+      setTimeout(() => inp.focus(), 60);
+      $("gateForm").onsubmit = (e) => {
+        e.preventDefault();
+        if (inp.value === CONFIG.password) {
+          try { localStorage.setItem(UNLOCK, "1"); } catch {}
+          startApp();
+        } else {
+          err.textContent = "Not quite — try again.";
+          inp.value = ""; inp.focus();
+        }
+      };
+    }
+
     // ================= Boot =================
-    render();
-    if (configured()) refresh();
+    if (unlocked()) startApp(); else showGate();
     if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
   </script>
 </body>
