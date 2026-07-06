@@ -183,6 +183,11 @@
     .modal input:focus, .modal select:focus { border-color: var(--accent); }
     .two { display: flex; gap: 10px; }
     .two > div { flex: 1; }
+    .key-hint { font-size: 0.75rem; color: var(--ink-dim); margin: 8px 0 16px; }
+    .key-actions { display: flex; gap: 10px; }
+    .key-save { flex: 2; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #06121f; font-weight: 700; border: none; border-radius: 12px; padding: 12px; font-size: 0.9rem; cursor: pointer; }
+    .key-clear { flex: 1; background: rgba(148,163,184,0.12); color: var(--ink-soft); border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-size: 0.9rem; cursor: pointer; }
+    .key-cancel { display: block; width: 100%; margin-top: 14px; background: none; border: none; color: var(--ink-dim); font-size: 0.85rem; cursor: pointer; padding: 6px; }
     .find { margin-top: 8px; width: 100%; background: rgba(34,211,238,0.12); color: var(--accent); border: 1px solid var(--border); border-radius: 12px; padding: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
     .find:active { opacity: 0.7; }
     .near { margin-top: 8px; max-height: 168px; overflow-y: auto; }
@@ -210,7 +215,7 @@
     html, body { overflow-x: hidden; }
 
     /* Floating utility controls, legible over the hero photo */
-    .refresh, .gear {
+    .refresh, .gear, .keyBtn {
       position: fixed; top: calc(env(safe-area-inset-top) + 10px); z-index: 40;
       width: 40px; height: 40px; display: grid; place-items: center;
       border: 1px solid var(--border-soft); border-radius: 50%;
@@ -218,6 +223,8 @@
       color: var(--ink); cursor: pointer; box-shadow: var(--shadow);
     }
     .refresh { left: 12px; } .gear { right: 12px; font-size: 1.15rem; }
+    .keyBtn { right: 12px; font-size: 1.05rem; }
+    .keyBtn.off::after { content: ""; position: absolute; top: 6px; right: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--caution); box-shadow: 0 0 0 2px rgba(2,6,23,0.6); }
     .refresh.spin svg { animation: spin 0.9s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -314,6 +321,7 @@
     .qflag { font-family: var(--sans); font-size: 0.74rem; font-weight: 700; letter-spacing: 0.2px; padding: 4px 10px; border-radius: 20px; border: 1px solid; }
     .qflag--warn { color: var(--no); border-color: rgba(251,113,133,0.45); background: rgba(251,113,133,0.12); }
     .qflag--cold { color: #7dd3fc; border-color: rgba(125,211,252,0.45); background: rgba(125,211,252,0.12); }
+    .qkey { display: inline-flex; align-items: center; gap: 6px; margin-top: 13px; font-family: var(--sans); font-size: 0.8rem; font-weight: 600; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--border-soft); border-radius: 20px; padding: 7px 13px; cursor: pointer; }
 
     /* "Your river" evergreen fact cards */
     .riverfacts { display: flex; flex-direction: column; gap: 14px; margin: 22px 0 6px; }
@@ -417,8 +425,26 @@
   </div>
 
   <button class="refresh" id="refreshBtn" aria-label="Refresh"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
+  <button class="keyBtn" id="keyBtn" aria-label="Written-read key">✨</button>
   <button class="gear" id="gearBtn" aria-label="Settings">⚙︎</button>
   <main id="content"></main>
+
+  <!-- Written-read key (stored only on this device, never uploaded or committed) -->
+  <div class="modal-bg" id="keyBg">
+    <div class="modal">
+      <h2>The written read</h2>
+      <p>RiverHome can have Claude write the issue's prose. Paste an Anthropic API key to turn it on. The key is stored <strong>only on this device</strong> — it's never uploaded, shared, or committed anywhere.</p>
+      <label for="keyModalInput">Anthropic API key</label>
+      <input id="keyModalInput" type="password" placeholder="sk-ant-…" autocomplete="off" autocapitalize="none" spellcheck="false" />
+      <p class="key-hint">Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>. It stays on your phone; clear it any time.</p>
+      <div class="key-actions">
+        <button class="key-save" id="keySaveBtn">Save &amp; turn on</button>
+        <button class="key-clear" id="keyClearBtn">Clear</button>
+      </div>
+      <p class="gate__err" id="keyErr" role="alert"></p>
+      <button class="key-cancel" id="keyCancelBtn">Close</button>
+    </div>
+  </div>
 
   <!-- Settings -->
   <div class="modal-bg" id="modalBg">
@@ -498,6 +524,8 @@
     const CACHE = "riverhome.cache.v1";
     const PLACE = "riverhome.place.v1";     // cached resolved location {lat,lon,site,name}
     const UNLOCK = "riverhome.unlock.v1";
+    const APIKEY = "riverhome.apikey.v1";   // Anthropic key, stored ONLY on this device
+    const loadKey = () => { try { return localStorage.getItem(APIKEY) || ""; } catch { return ""; } };
     const KNOWN_MODELS = [
       { id: "claude-opus-4-8",  label: "Opus 4.8 — most capable" },
       { id: "claude-sonnet-5",  label: "Sonnet 5 — balanced (default)" },
@@ -515,7 +543,7 @@
       lat: CONFIG.lat != null ? CONFIG.lat : _place.lat,
       lon: CONFIG.lon != null ? CONFIG.lon : _place.lon,
       units: CONFIG.units, flowNormal: null, flowHigh: null,
-      apiKey: CONFIG.apiKey, model: CONFIG.model
+      apiKey: CONFIG.apiKey || loadKey(), model: CONFIG.model
     };
     let cache = load(CACHE, { normals: {}, lastData: null });
     const saveSettings = () => {};    // in-app settings removed; configuration lives in CONFIG
@@ -1388,7 +1416,7 @@ Write these fields (no headings inside any field):
     }
     function renderLede(w, d) {
       const p = el("p", "lede lede--drop");
-      if (loading && settings.apiKey && !claudeRead) { p.textContent = "Reading the river…"; p.classList.add("body--soft"); }
+      if (loading && aiEnabled() && !claudeRead) { p.textContent = "Reading the river…"; p.classList.add("body--soft"); }
       else p.textContent = claudeField("lede") || fbLede(d);
       w.appendChild(p);
       if (claudeRead && claudeRead.__err) w.appendChild(el("p", "body body--soft", "The written read didn't load — " + esc(claudeRead.__err) + " · the numbers below are unaffected."));
@@ -1536,7 +1564,7 @@ Write these fields (no headings inside any field):
       const eco = d.eco;
       const frag = el("section", "spread");
       frag.innerHTML = `<hr class="rule"/><p class="spread__eyebrow">Life along the bank</p><h2 class="spread__head">Who else is out this week</h2><p class="spread__dek">Seen near this stretch in the last month, by people like you.</p>`;
-      if (loading && settings.apiKey && !claudeField("ecology")) frag.appendChild(el("p", "body body--soft", "Reading the season…"));
+      if (loading && aiEnabled() && !claudeField("ecology")) frag.appendChild(el("p", "body body--soft", "Reading the season…"));
       else frag.appendChild(el("p", "body", esc(claudeField("ecology") || fbEcology(d))));
       if (onChattahoochee()) {
         const notes = LOCAL.season[seasonNow(new Date(d.ts || Date.now()))] || [];
@@ -1694,8 +1722,10 @@ Write these fields (no headings inside any field):
         `<p class="quickread__verdict">${esc(verdict)}</p>` +
         (flags.length ? `<div class="quickread__flags">${flags.join("")}</div>` : "") +
         `<p class="quickread__stats">${bits.join(' <span class="qsep">·</span> ')}</p>` +
-        `<div class="quickread__calls">${calls}</div>`;
+        `<div class="quickread__calls">${calls}</div>` +
+        (aiEnabled() ? "" : `<button class="qkey" id="qkeyBtn">✨ Turn on the written read</button>`);
       w.appendChild(q);
+      const qk = $("qkeyBtn"); if (qk) qk.onclick = openKeyModal;
     }
 
     // ---- measured bacteria callout (real lab sample, may be dated) ----
@@ -2055,12 +2085,42 @@ Write these fields (no headings inside any field):
       refresh();
     };
 
+    // ================= Written-read key (stored only on this device) =================
+    function syncKeyBtn() { const b = $("keyBtn"); if (b) b.classList.toggle("off", !aiEnabled()); }
+    function openKeyModal() {
+      const bg = $("keyBg"), inp = $("keyModalInput"), err = $("keyErr");
+      err.textContent = "";
+      inp.value = (settings.apiKey && !CONFIG.apiKey) ? settings.apiKey : "";
+      bg.classList.add("open");
+      setTimeout(() => inp.focus(), 60);
+    }
+    function closeKeyModal() { $("keyBg").classList.remove("open"); }
+    $("keyBtn").onclick = openKeyModal;
+    $("keyCancelBtn").onclick = closeKeyModal;
+    $("keyBg").onclick = (e) => { if (e.target === $("keyBg")) closeKeyModal(); };
+    $("keySaveBtn").onclick = () => {
+      const v = $("keyModalInput").value.trim();
+      if (!v) { $("keyErr").textContent = "Paste a key, or tap Clear to turn the read off."; return; }
+      if (!/^sk-ant-/.test(v)) { $("keyErr").textContent = "That doesn't look like an Anthropic key (they start with sk-ant-)."; return; }
+      try { localStorage.setItem(APIKEY, v); } catch {}
+      settings.apiKey = v;
+      closeKeyModal(); syncKeyBtn();
+      refresh();   // pull the issue and now write the read
+    };
+    $("keyClearBtn").onclick = () => {
+      try { localStorage.removeItem(APIKEY); } catch {}
+      settings.apiKey = CONFIG.apiKey || "";
+      claudeRead = null;
+      closeKeyModal(); syncKeyBtn(); render();
+    };
+
     // ================= Password gate (soft, client-side only) =================
     // NOTE: this repo is PUBLIC, so this is a courtesy lock, not real security —
     // it just keeps the page from being casually read by anyone with the link.
     const unlocked = () => { try { return localStorage.getItem(UNLOCK) === "1"; } catch { return true; } };
     function startApp() {
       $("gate").classList.remove("open");
+      syncKeyBtn();
       render();
       // Configured (gauge/coords cached) OR we have an address to geocode → pull the issue.
       if (configured() || CONFIG.address) refresh();
