@@ -1,0 +1,8 @@
+name = "riverhome-proxy"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# The only site allowed to call this Worker. Change if your Pages URL differs.
+# Use "*" to allow any origin (not recommended once you're live).
+[vars]
+ALLOWED_ORIGIN = "https://haidetj.github.io"

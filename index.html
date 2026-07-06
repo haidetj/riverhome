@@ -466,8 +466,14 @@
       spot: "Riverbend",    // name shown on the masthead
       units: "imperial",    // "imperial" | "metric"
       model: "claude-sonnet-5",
-      // WARNING: this repo is PUBLIC — a key pasted here is visible to anyone and will be
-      // auto-revoked by secret scanning. Leave blank to run on the built-in fallback prose.
+      // The Claude "read" is written server-side through a tiny Cloudflare Worker
+      // that holds the API key (see proxy/). Paste your deployed Worker URL here,
+      // commit, and the magazine read turns on. The key itself never lives in
+      // this public repo. Example: "https://riverhome-proxy.you.workers.dev"
+      proxyUrl: "",
+      // WARNING: this repo is PUBLIC — a key pasted here is visible to anyone and
+      // will be auto-revoked by secret scanning. Prefer proxyUrl above. Leave this
+      // blank unless you knowingly accept exposing/rotating the key.
       apiKey: "",
       password: "trail"     // soft gate only (client-side; not real security)
     };
@@ -1027,15 +1033,24 @@ Write these fields (no headings inside any field):
 - "before_you_go": 2-3 sentences of grounded, caring guidance — the honest state of contact risk and what today asks of the reader. Calm, not alarmist. If a MEASURED bacteria sample is present, lead with what it actually found and how fresh it is; otherwise be clear the risk is a rainfall-runoff estimate, not a measurement.
 - "best_bet": one sentence naming the single best thing to do on or by the water right now, and why. If nothing on-water is safe, say so and offer a bankside alternative.`;
 
+    // The read is written by Claude either through the proxy Worker (preferred —
+    // the key stays server-side) or, if only a direct key is set, straight to
+    // Anthropic. proxyUrl wins when both are present.
+    const aiEnabled = () => !!(CONFIG.proxyUrl || settings.apiKey);
+
     async function callClaude(user) {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const usingProxy = !!CONFIG.proxyUrl;
+      const headers = { "content-type": "application/json" };
+      if (usingProxy) {
+        headers["x-riverhome-pass"] = CONFIG.password;   // matches the Worker's GATE_PASSWORD
+      } else {
+        headers["x-api-key"] = settings.apiKey;
+        headers["anthropic-version"] = "2023-06-01";
+        headers["anthropic-dangerous-direct-browser-access"] = "true";
+      }
+      const res = await fetch(usingProxy ? CONFIG.proxyUrl : "https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: {
-          "content-type": "application/json",
-          "x-api-key": settings.apiKey,
-          "anthropic-version": "2023-06-01",
-          "anthropic-dangerous-direct-browser-access": "true"
-        },
+        headers,
         body: JSON.stringify({
           model: settings.model || "claude-sonnet-5",
           // Sonnet 5 runs adaptive thinking by default, and max_tokens covers
@@ -1142,7 +1157,7 @@ Write these fields (no headings inside any field):
       refreshing = false;
       render();
 
-      if (settings.apiKey && (cond.usgs || cond.wx)) {
+      if (aiEnabled() && (cond.usgs || cond.wx)) {
         loading = true; render();
         try { claudeRead = await callClaude(buildClaudeContext(cond)); }
         catch (e) { claudeRead = { __err: e.message }; }
