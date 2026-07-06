@@ -310,6 +310,22 @@
     .quickread__calls { display: flex; flex-wrap: wrap; gap: 8px 14px; }
     .qcall { display: inline-flex; align-items: center; gap: 6px; font-family: var(--sans); font-size: 0.82rem; font-weight: 600; color: var(--ink); }
     .qdot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .quickread__flags { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 13px; }
+    .qflag { font-family: var(--sans); font-size: 0.74rem; font-weight: 700; letter-spacing: 0.2px; padding: 4px 10px; border-radius: 20px; border: 1px solid; }
+    .qflag--warn { color: var(--no); border-color: rgba(251,113,133,0.45); background: rgba(251,113,133,0.12); }
+    .qflag--cold { color: #7dd3fc; border-color: rgba(125,211,252,0.45); background: rgba(125,211,252,0.12); }
+
+    /* "Your river" evergreen fact cards */
+    .riverfacts { display: flex; flex-direction: column; gap: 14px; margin: 22px 0 6px; }
+    .riverfact { background: var(--glass); border: 1px solid var(--border-soft); border-left: 3px solid var(--accent-2); border-radius: 14px; padding: 14px 16px; }
+    .riverfact__t { font-family: var(--serif); font-size: 1.12rem; color: var(--ink); margin: 0 0 6px; }
+    .riverfact__b { font-family: var(--sans); font-size: 0.9rem; line-height: 1.55; color: var(--ink); margin: 0; }
+    .riverfact .section-src { margin-top: 8px; }
+
+    /* Seasonal local-knowledge list */
+    .seasonlist { list-style: none; margin: 10px 0 4px; padding: 0; }
+    .seasonlist li { position: relative; font-family: var(--sans); font-size: 0.92rem; line-height: 1.55; color: var(--ink); padding: 0 0 10px 22px; }
+    .seasonlist li::before { content: "❋"; position: absolute; left: 0; top: 1px; color: var(--accent-2); font-size: 0.85rem; }
 
     /* Password gate (soft, client-side only) */
     .gate { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; padding: 22px; background: radial-gradient(120% 80% at 50% 0%, #0f2233 0%, var(--bg) 60%); }
@@ -1020,7 +1036,7 @@
     };
     const READ_SYSTEM = `You are the editor and resident naturalist of RiverHome — a weekly "issue" about one person's home stretch of river. You write like an empathetic science communicator: warm, plain-spoken, unhurried, and genuinely useful. Your job is to help the reader understand what to expect on and beside the water this week, and what there is to notice and appreciate right where they live — honestly and without hype.
 
-You are given a JSON snapshot of TODAY's measured conditions (flow, gauge, water temperature, weather + forecast, recent rainfall, a runoff-based contact-risk estimate, and activity ratings from a deterministic rules engine), a HISTORY block (this week's climate normals for temperature and rainfall from ~3 years of local records, plus how the recent and coming week compare), any recent MEASURED bacteria sample from a nearby monitoring station (may be several days or weeks old), and lists of species and flowering plants ACTUALLY observed near this location in the last 30 days (iNaturalist).
+You are given a JSON snapshot of TODAY's measured conditions (flow, gauge, water temperature, weather + forecast, recent rainfall, a runoff-based contact-risk estimate, and activity ratings from a deterministic rules engine), a HISTORY block (this week's climate normals for temperature and rainfall from ~3 years of local records, plus how the recent and coming week compare), any recent MEASURED bacteria sample from a nearby monitoring station (may be several days or weeks old), lists of species and flowering plants ACTUALLY observed near this location in the last 30 days (iNaturalist), and — when available — a LOCAL_BRIEFING of curated, verified facts about this specific river. When a local_briefing is present, treat it as authoritative ground truth: make the read accurate to that river, weave the relevant facts in naturally, and never contradict them.
 
 Voice & rules:
 - Ground every claim in the data. NEVER invent numbers, species, or events not present. If something is unavailable, simply don't mention it.
@@ -1120,6 +1136,24 @@ Write these fields (no headings inside any field):
         observed_species_30d: eco ? eco.active.map(t => `${t.cn} (${t.sci})`).slice(0, 10) : [],
         flowering_plants_30d: eco ? eco.blooming.map(t => `${t.cn}`).slice(0, 10) : []
       };
+      if (onChattahoochee()) {
+        snap.local_briefing = {
+          river: "Chattahoochee River, metro Atlanta, downstream of Buford Dam and Morgan Falls Dam",
+          season: seasonNow(new Date()),
+          key_facts: [
+            "This is a DAM-CONTROLLED COLD TAILWATER: Buford Dam releases deep, cold water from Lake Lanier, so the river runs cold (often 45-58F) YEAR-ROUND, even in summer — it is a rare Southern trout river for this reason.",
+            "The river can rise quickly from dam power-generation releases with no rain and little warning; Morgan Falls Dam re-regulates and smooths these pulses before the metro reach. Rising water here often means a release, not a storm.",
+            "Mainstem flooding is buffered by the dams and is rare; the real flash-flood risk is on small urban tributaries (Peachtree, Sope, Nancy, Sweetwater creeks).",
+            "Cold-water shock is a genuine hazard on hot days; the 1-10-1 rule applies; life jackets strongly advised.",
+            "Bacteria (E. coli) is tracked by the USGS/NPS/Riverkeeper BacteriALERT program and spikes after heavy rain — the guidance is to wait 24-48 hours after big storms.",
+            "The delayed-harvest trout reach (Sope Creek to Cobb Parkway) runs through this area: catch-and-release, artificial lures only, Nov 1-May 14. Brown trout are largely wild and spawn late fall/winter.",
+            "Signature wildlife: great blue heron, belted kingfisher, wood duck, bald eagle (nests ~Nov-May), osprey (returns Mar-May), river otter, river cooter; Cochran Shoals is a top migration birding site.",
+            "SNAKE SAFETY: cottonmouths/water moccasins are essentially ABSENT from metro Atlanta (a Coastal-Plain species). Water snakes here are harmless. Do not imply moccasin danger.",
+            "The river supplies ~70% of metro Atlanta's drinking water; it was badly polluted by sewer overflows until a 1998 consent decree and Chattahoochee Riverkeeper cleanup; it is protected as a National Recreation Area (1978)."
+          ],
+          instruction: "Use these facts to make the read ACCURATE and specifically local. Weave them in naturally where relevant (cold water in on_the_water/before_you_go; dam releases and contact risk in before_you_go; local species and the trout/delayed-harvest angle in ecology; historical/appreciative notes in week_in_context). Do NOT dump the list; select what fits today's conditions and season. Never contradict these facts (e.g., never warn about cottonmouths here)."
+        };
+      }
       return "Here is today's snapshot of this river stretch. Write the issue.\n\n" + JSON.stringify(snap, null, 1);
     }
 
@@ -1208,11 +1242,12 @@ Write these fields (no headings inside any field):
       const w = el("div", "wrap");
       renderQuickRead(w, d);
       renderLede(w, d);
+      renderSafety(w, d);
       renderOnWater(w, d);
       renderNotice(w, d);
       renderContext(w, d);
       renderLife(w, d);
-      renderBeforeYouGo(w, d);
+      renderThisRiver(w, d);
       mag.appendChild(w);
       renderSourcesFooter(mag, d);
       c.appendChild(mag);
@@ -1285,6 +1320,47 @@ Write these fields (no headings inside any field):
     const WAVE = `<div class="wave" aria-hidden="true"><svg viewBox="0 0 60 60" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs><path d="M6 22c8-8 16-8 24 0s16 8 24 0" opacity="0.55"/><path d="M6 32c8-8 16-8 24 0s16 8 24 0"/><path d="M6 42c8-8 16-8 24 0s16 8 24 0" opacity="0.55"/></svg></div>`;
     function setupScreen() { const e = el("div", "setup"); e.innerHTML = WAVE + `<h1 class="setup-title">RiverHome</h1><p class="setup-tag">Know your stretch.</p><div class="empty">Set up your stretch of river and RiverHome starts reading it — flow, water temperature, weather, safety, and what's alive nearby, written as a weekly issue about your water.<br><br><button class="cta" id="setupCta">Set your river spot</button></div>`; return e; }
     function startScreen() { const e = el("div", "setup"); e.innerHTML = WAVE + `<h1 class="setup-title">RiverHome</h1><p class="setup-tag">Know your stretch.</p><div class="empty">Pull the latest conditions —<br><br><button class="cta" id="readCta">Read the river</button></div>`; return e; }
+
+    // ================= Local knowledge: the metro-Atlanta Chattahoochee =================
+    // A curated, cited briefing so the read and the safety guidance are accurate for
+    // THIS river — a dam-controlled cold tailwater, not a generic natural stream. When
+    // the configured spot isn't on the metro Chattahoochee, all of this stays dormant
+    // and the app behaves generically.
+    function onChattahoochee() {
+      const s = settings.site || "";
+      if (["02334430","02335000","02335990","02336000","02335350","02335700"].includes(s)) return true;
+      const la = settings.lat, lo = settings.lon;
+      return la != null && lo != null && la > 33.6 && la < 34.35 && lo < -84.0 && lo > -84.75;
+    }
+    const LOCAL = {
+      name: "Chattahoochee River",
+      reach: "the metro-Atlanta Chattahoochee, downstream of Buford Dam and Morgan Falls Dam",
+      // Season-independent truths a resident should know:
+      facts: [
+        { t: "A cold river by design", b: "This is a dam-controlled <em>tailwater</em>: Buford Dam releases water from deep in Lake Lanier, so the Chattahoochee runs cold — often in the 40s–50s °F — <strong>year-round, even in summer</strong>. That cold is what makes it a rare Southern trout river, and what makes a hot-day swim riskier than it looks.", src: ["USACE / USGS", "https://ga.water.usgs.gov/bacteria/"] },
+        { t: "The river can rise without a cloud in the sky", b: "When Buford Dam generates power, the river downstream can rise several feet quickly. Morgan Falls Dam re-regulates those pulses before they reach the metro reach, smoothing them — but levels still change with releases, not just with rain. Before wading, check the release schedule: <strong>1-855-DAM-FLOW</strong>.", src: ["NPS · CRNRA safety", "https://www.nps.gov/chat/planyourvisit/safety.htm"] },
+        { t: "Your drinking water", b: "The Chattahoochee supplies about <strong>70% of metro Atlanta's drinking water</strong> from an unusually small watershed — the smallest supplying any major U.S. metro. The river you live beside is also the one that fills your tap.", src: ["Georgia Rivers", "https://garivers.org/chattahoochee-river/"] },
+        { t: "Cleaner than it was", b: "After a 1998 federal consent decree, Atlanta spent <strong>$4&nbsp;billion+</strong> fixing combined sewers that once dumped raw sewage after storms. Chattahoochee Riverkeeper (founded 1994) and the USGS/NPS BacteriALERT program now track <em>E.&nbsp;coli</em> weekly — the river has come a long way, though it still spikes after heavy rain.", src: ["Chattahoochee Riverkeeper", "https://chattahoochee.org/our-work/water-quality-monitoring/"] },
+        { t: "A national park in the city", b: "In 1978 President Carter signed the <strong>Chattahoochee River National Recreation Area</strong> into being — ~48 miles of protected river in ~15 units threaded through the suburbs. “Shooting the Hooch” by tube is a metro-Atlanta rite of passage.", src: ["National Park Service", "https://www.nps.gov/chat/"] },
+        { t: "What the name means", b: "“Chattahoochee” comes from the Muscogee (Creek) words for <em>painted</em> or <em>marked rock</em> — a nod to the colorful shoals and rock outcrops along this Piedmont stretch. The river was long a boundary between the Creek and Cherokee nations.", src: ["New Georgia Encyclopedia", "https://www.georgiaencyclopedia.org/articles/geography-environment/chattahoochee-river/"] },
+        { t: "The flood of 2009", b: "On September 20–21, 2009, 10–20 inches of rain fell in a day. At the Vinings gauge the river hit its <strong>second-highest level ever recorded</strong> — and would have topped its 1916 record if Buford Dam hadn't held water back. The mainstem here is dam-buffered; the real flash-flood danger is on the small urban creeks.", src: ["NWS Peachtree City", "https://www.weather.gov/ffc/atlanta_floods_anniv"] },
+        { t: "Snakes, honestly", b: "The snakes you'll see swimming here are almost always harmless <strong>water snakes</strong>. Venomous cottonmouths (“water moccasins”) are essentially <strong>absent from metro Atlanta</strong> — they're a Coastal-Plain species. A water snake has round pupils, no facial pit, and swims low with just its head up.", src: ["UGA Savannah River Ecology Lab", "https://srelherp.uga.edu/snakes/cottonmouth-water-moccasin/"] }
+      ],
+      // What a resident can look for, by season, that live feeds won't surface:
+      season: {
+        winter: ["Bald eagles are nesting along the corridor (roughly November–May).", "Brown trout have just finished their late-fall/winter spawn; the cold, clear tailwater fishes well.", "The delayed-harvest trout reach from Sope Creek to Cobb Parkway is catch-and-release now (Nov 1–May 14)."],
+        spring: ["Songbird migration peaks — Cochran Shoals in Cobb County is one of metro Atlanta's top spots for warblers.", "Ospreys return to fish the river (March–May); wood ducks and green herons begin nesting.", "River birch and floodplain wildflowers leaf out; mayfly and caddis hatches build."],
+        summer: ["Trout hold in the coldest water near the dam; herons and egrets feed young along the shallows.", "This is peak tubing season — and peak bacteria-after-rain season; give the water a day or two after storms.", "Otters, basking river cooters, and water snakes are all out and active."],
+        fall: ["Fall migration brings flycatchers and sparrows; leaf-fall opens up the sightlines for birding.", "Brown trout stage and begin to spawn; the delayed-harvest reach reopens to catch-and-release Nov 1.", "Lake Lanier's autumn turnover can briefly cloud the released water."]
+      }
+    };
+    function seasonNow(dt) { const m = dt.getMonth(); return m <= 1 || m === 11 ? "winter" : m <= 4 ? "spring" : m <= 7 ? "summer" : "fall"; }
+
+    // Is the river rising fast enough to read as a dam release (or a genuine surge)?
+    function risingSurge(d) {
+      const u = d.usgs; if (!u) return false;
+      return (u.flowRisePct != null && u.flowRisePct >= 35) || (u.gaugeRiseFt != null && u.gaugeRiseFt >= 1.0);
+    }
 
     // ---- hero + lede ----
     function renderHero(mag, d) {
@@ -1462,6 +1538,14 @@ Write these fields (no headings inside any field):
       frag.innerHTML = `<hr class="rule"/><p class="spread__eyebrow">Life along the bank</p><h2 class="spread__head">Who else is out this week</h2><p class="spread__dek">Seen near this stretch in the last month, by people like you.</p>`;
       if (loading && settings.apiKey && !claudeField("ecology")) frag.appendChild(el("p", "body body--soft", "Reading the season…"));
       else frag.appendChild(el("p", "body", esc(claudeField("ecology") || fbEcology(d))));
+      if (onChattahoochee()) {
+        const notes = LOCAL.season[seasonNow(new Date(d.ts || Date.now()))] || [];
+        if (notes.length) {
+          const eb = el("p", "spread__eyebrow", "This season on the Chattahoochee"); eb.style.marginTop = "22px"; frag.appendChild(eb);
+          const ul = el("ul", "seasonlist"); ul.innerHTML = notes.map(n => `<li>${n}</li>`).join("");
+          frag.appendChild(ul);
+        }
+      }
       if (eco && eco.active && eco.active.length) {
         const eb = el("p", "spread__eyebrow", "Active nearby · last 30 days"); eb.style.marginTop = "22px"; frag.appendChild(eb);
         frag.appendChild(magTaxaRow(eco.active));
@@ -1493,12 +1577,37 @@ Write these fields (no headings inside any field):
         : `It's been dry, which is the best thing going for water quality — no fresh runoff to carry bacteria in.`;
       return s + " Whatever you do, glance at the sky: summer storms build fast, and a low river can rise quickly once rain arrives.";
     }
-    function renderBeforeYouGo(w, d) {
+    // Dam-release / rising-water callout — the headline hazard on a controlled tailwater.
+    function damCallout(d) {
+      if (!onChattahoochee()) return "";
+      const surge = risingSurge(d);
+      const head = surge ? "◈ The river is rising — treat it as a release" : "◈ Dam-controlled water";
+      const body = surge
+        ? `Flow here is climbing fast right now. On this river a quick rise usually means an upstream dam release, not rain — the water gets deeper, faster, and colder within the hour. <strong>Stay out of the channel and off the low banks until it settles.</strong>`
+        : `Buford Dam releases can raise this river with no rain and no warning; Morgan Falls Dam upstream smooths the surge before it reaches you, but levels still move with power generation. Check the release line — <strong>1-855-DAM-FLOW</strong> — before you wade, and never turn your back on rising water.`;
+      return `<div class="callout${surge ? " callout--warn" : ""}"><p class="callout__head">${head}</p><p class="callout__body">${body}</p></div>`;
+    }
+    // Cold-water callout with the 1-10-1 rule — this tailwater is cold even in July.
+    function coldCallout(d) {
+      const f = d.usgs && d.usgs.tempF;
+      const local = onChattahoochee();
+      if (f == null && !local) return "";
+      if (f != null && f >= 65 && !local) return "";
+      const reading = f != null ? `The water is about <strong>${tempOut(f)}${tempUnit()}</strong> right now — ` : (local ? `Released from deep in Lake Lanier, this water stays cold — often 45–58&nbsp;°F — even on the hottest days, and ` : "");
+      const danger = (f != null && f < 60) || local
+        ? `cold enough for cold-water shock. `
+        : `cool enough to sap your strength faster than you'd expect. `;
+      return `<div class="callout${(f != null && f < 60) || local ? " callout--caution" : ""}"><p class="callout__head">◈ Cold water, even in summer</p><p class="callout__body">${reading}${danger}Sudden cold triggers an involuntary gasp and can steal your breath in the first minute. The rule of thumb is <strong>1–10–1</strong>: about 1 minute to control your breathing, 10 minutes of useful arm-and-leg strength, roughly 1 hour before hypothermia — and you only get that hour if you're wearing a life jacket. Dress for the water, not the air.</p></div>`;
+    }
+    function renderSafety(w, d) {
       const ct = d.contact;
       const txt = claudeField("before_you_go") || fbBefore(d);
       let inner = `<p class="body">${esc(txt)}</p>`;
+      // Order by how fast it can hurt you: rising water → cold → bacteria.
+      inner += damCallout(d);
+      inner += coldCallout(d);
       const variant = ct.sev >= 3 ? " callout--warn" : ct.sev === 2 ? " callout--caution" : "";
-      inner += `<div class="callout${variant}"><p class="callout__head">◈ Water-contact risk · ${esc(ct.level)}</p><p class="callout__body">${esc(ct.why)} This is an <strong>estimate from rainfall and runoff</strong>, not a measured water sample — it can't see an upstream spill or a failing septic line. If you'll put your face in the water, or you're with kids, check your local health department's advisories first.</p></div>`;
+      inner += `<div class="callout${variant}"><p class="callout__head">◈ Water-contact risk · ${esc(ct.level)}</p><p class="callout__body">${esc(ct.why)} This is an <strong>estimate from rainfall and runoff</strong>, not a measured water sample — it can't see an upstream spill or a failing septic line. ${onChattahoochee() ? `For actual counts, the USGS/Riverkeeper <a href="https://ga.water.usgs.gov/bacteria/" target="_blank" rel="noopener">BacteriALERT</a> program tracks <em>E.&nbsp;coli</em> on this river, and the guidance is to wait 24–48 hours after heavy rain.` : `If you'll put your face in the water, or you're with kids, check your local health department's advisories first.`}</p></div>`;
       inner += bacteriaCallout(d.bacteria);
       let calls = `<p class="spread__eyebrow" style="margin-top:22px">Today's calls</p><div class="today-calls">`;
       [["swim", "Swimming"], ["paddle", "Paddling"], ["tube", "Tube / wade"], ["fish", "Fishing"]].forEach(([k, name]) => {
@@ -1508,8 +1617,31 @@ Write these fields (no headings inside any field):
       calls += `</div>`;
       inner += calls;
       inner += `<blockquote class="pullquote">${esc(claudeField("best_bet") || bestBet(d))}<cite>Best bet</cite></blockquote>`;
-      inner += srcRow([["USGS gauge", usgsSitePage()], ["Health advisories", "https://www.epa.gov/beach-tech/state-and-local-beach-monitoring-programs"]]);
-      w.appendChild(spread("Before you go in", headBefore(d), "What the conditions ask of you today.", inner));
+      const src = onChattahoochee()
+        ? [["USGS gauge", usgsSitePage()], ["Dam releases · NPS", "https://www.nps.gov/chat/planyourvisit/safety.htm"], ["BacteriALERT", "https://ga.water.usgs.gov/bacteria/"]]
+        : [["USGS gauge", usgsSitePage()], ["Health advisories", "https://www.epa.gov/beach-tech/state-and-local-beach-monitoring-programs"]];
+      inner += srcRow(src);
+      w.appendChild(spread("Before you go in", headBefore(d), "What the conditions ask of you today — read this first.", inner));
+    }
+
+    // ---- evergreen: know your river ----
+    function renderThisRiver(w, d) {
+      if (!onChattahoochee()) return;
+      // Rotate through the curated facts so the panel feels fresh each issue,
+      // seeded by the date so it's stable within a day.
+      const issue = new Date(d.ts || Date.now());
+      let seed = issue.getFullYear() * 366 + (issue.getMonth() * 31 + issue.getDate());
+      const facts = LOCAL.facts, N = facts.length, k = 3;
+      const pick = [];
+      for (let i = 0; i < k; i++) pick.push(facts[(seed + i * 3) % N]);
+      let inner = `<p class="body">A few things worth knowing about the water you live beside — the Chattahoochee is one of the most storied and hardest-working rivers in the South.</p>`;
+      inner += `<div class="riverfacts">`;
+      pick.forEach(f => {
+        inner += `<div class="riverfact"><p class="riverfact__t">${f.t}</p><p class="riverfact__b">${f.b}</p>` +
+          `<div class="section-src"><a class="cite-chip" href="${f.src[1]}" target="_blank" rel="noopener">${esc(f.src[0])}</a></div></div>`;
+      });
+      inner += `</div>`;
+      w.appendChild(spread("Your river", "Know the Chattahoochee", "The context behind the conditions.", inner));
     }
 
     // ---- sources footer ----
@@ -1521,7 +1653,9 @@ Write these fields (no headings inside any field):
         `<li><span class="n">3</span><span>Weather, forecast &amp; the seasonal normals — <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (forecast API &amp; historical archive).</span></li>` +
         `<li><span class="n">4</span><span>Species &amp; flowering-plant observations near this stretch — <a href="https://www.inaturalist.org/" target="_blank" rel="noopener">iNaturalist</a>, community observations from the last 30 days.</span></li>` +
         `<li><span class="n">5</span><span>Contact-risk is a RiverHome <em>estimate</em> from recent rainfall &amp; runoff — not a bacteria measurement. For posted advisories, consult your <a href="https://www.epa.gov/beach-tech/state-and-local-beach-monitoring-programs" target="_blank" rel="noopener">state or local health department</a>.</span></li>` +
-        `</ol><p class="sources__note">RiverHome reads public data and helps you interpret it. It is not a safety authority — always use your own judgment at the water's edge.</p>` +
+        (onChattahoochee() ?
+          `<li><span class="n">6</span><span>Measured <em>E.&nbsp;coli</em> &amp; the cold-tailwater and dam-release facts for this reach — <a href="https://ga.water.usgs.gov/bacteria/" target="_blank" rel="noopener">USGS BacteriALERT</a>, <a href="https://chattahoochee.org/our-work/water-quality-monitoring/" target="_blank" rel="noopener">Chattahoochee Riverkeeper</a>, and the <a href="https://www.nps.gov/chat/planyourvisit/safety.htm" target="_blank" rel="noopener">National Park Service (CRNRA)</a>. Check dam releases at 1-855-DAM-FLOW before wading.</span></li>` : "") +
+        `</ol><p class="sources__note">RiverHome reads public data and helps you interpret it. It is not a safety authority — always use your own judgment at the water's edge.${onChattahoochee() ? " Below a hydropower dam, water can rise fast and cold with no warning — heed sirens and posted signs." : ""}</p>` +
         `<p class="colophon">${esc(riverName(d))} · an issue of RiverHome</p>`;
       mag.appendChild(f);
     }
@@ -1547,10 +1681,18 @@ Write these fields (no headings inside any field):
         return `<span class="qcall"><span class="qdot" style="background:${dotFor(r.rating)}"></span>${n}</span>`;
       }).join("");
       const verdict = claudeField("exec_overview") || claudeField("best_bet") || bestBet(d);
+      // Safety flags a hurried reader must not miss.
+      const flags = [];
+      if (risingSurge(d)) flags.push(`<span class="qflag qflag--warn">▲ Rising fast — possible dam release</span>`);
+      const wt = u && u.tempF;
+      if (wt != null && wt < 60) flags.push(`<span class="qflag qflag--cold">❄ Cold water — ${tempOut(wt)}${tempUnit()}</span>`);
+      else if (onChattahoochee() && wt == null) flags.push(`<span class="qflag qflag--cold">❄ Cold tailwater year-round</span>`);
+      if (d.contact.sev >= 3) flags.push(`<span class="qflag qflag--warn">◈ Contact risk high after rain</span>`);
       const q = el("div", "quickread");
       q.innerHTML =
         `<p class="quickread__eyebrow">The quick read</p>` +
         `<p class="quickread__verdict">${esc(verdict)}</p>` +
+        (flags.length ? `<div class="quickread__flags">${flags.join("")}</div>` : "") +
         `<p class="quickread__stats">${bits.join(' <span class="qsep">·</span> ')}</p>` +
         `<div class="quickread__calls">${calls}</div>`;
       w.appendChild(q);
