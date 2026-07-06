@@ -459,7 +459,7 @@
     // ================= State =================
     // ===== Fixed configuration — change these values and commit (no in-app config) =====
     const CONFIG = {
-      address: "1048 Riverbend Club Drive SE", // resolved to coordinates on first load
+      address: "1048 Riverbend Club Drive SE, Atlanta, GA 30339", // resolved to coordinates on first load — geocoders need the full city/state/zip
       lat: null,            // optional: hardcode coordinates to skip geocoding
       lon: null,
       gauge: "",            // optional: hardcode a USGS site number to skip nearest-gauge pick
@@ -629,17 +629,24 @@
     }
 
     // Geocode the fixed address to coordinates (US Census first, then Nominatim).
-    async function geocodeAddress(addr) {
+    // If the exact house number can't be matched, retry with the street only —
+    // a road-centroid hit is easily close enough for river, weather & wildlife data.
+    async function geocodeOnce(addr) {
       try {
         const j = await fetchJSON(`https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=${encodeURIComponent(addr)}&benchmark=Public_AR_Current&format=json`, 20000, 2);
         const m = j && j.result && j.result.addressMatches && j.result.addressMatches[0];
         if (m && m.coordinates) return { lat: +m.coordinates.y, lon: +m.coordinates.x };
       } catch (e) { /* fall through */ }
       try {
-        const j = await fetchJSON(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(addr)}`, 20000, 2);
+        const j = await fetchJSON(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q=${encodeURIComponent(addr)}`, 20000, 2);
         if (j && j[0]) return { lat: +j[0].lat, lon: +j[0].lon };
       } catch (e) { /* fall through */ }
       return null;
+    }
+    async function geocodeAddress(addr) {
+      let g = await geocodeOnce(addr);
+      if (!g && /^\s*\d+\s+/.test(addr)) g = await geocodeOnce(addr.replace(/^\s*\d+\s+/, ""));
+      return g;
     }
 
     // Resolve the hardcoded address into coordinates + nearest gauge, once, then cache it.

@@ -1,7 +1,7 @@
 // RiverHome service worker — caches the app shell only.
 // Live data (USGS, Open-Meteo, iNaturalist, Anthropic) is NEVER cached:
 // conditions must always be fresh, so those requests bypass the cache entirely.
-const SHELL = "riverhome-shell-v8";
+const SHELL = "riverhome-shell-v9";
 const ASSETS = ["./index.html", "./manifest.json", "./icon.svg"];
 
 self.addEventListener("install", (e) => {
