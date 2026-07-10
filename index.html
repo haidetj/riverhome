@@ -501,9 +501,12 @@
     // ================= State =================
     // ===== Fixed configuration — change these values and commit (no in-app config) =====
     const CONFIG = {
-      address: "1048 Riverbend Club Drive SE, Atlanta, GA 30339", // resolved to coordinates on first load — geocoders need the full city/state/zip
-      lat: null,            // optional: hardcode coordinates to skip geocoding
-      lon: null,
+      address: "1048 Riverbend Club Drive SE, Atlanta, GA 30339", // shown on the masthead only
+      // Coordinates are hardcoded so the app NEVER has to geocode on a fresh device
+      // (the online geocoders rate-limit and fail intermittently). This is the west
+      // bank of the Chattahoochee at the Riverbend/Akers Mill community, Vinings.
+      lat: 33.8845,
+      lon: -84.4585,
       gauge: "",            // optional: hardcode a USGS site number to skip nearest-gauge pick
       spot: "Riverbend",    // name shown on the masthead
       units: "imperial",    // "imperial" | "metric"
