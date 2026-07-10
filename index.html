@@ -501,10 +501,11 @@
     // ================= State =================
     // ===== Fixed configuration — change these values and commit (no in-app config) =====
     const CONFIG = {
-      address: "1048 Riverbend Club Drive SE, Atlanta, GA 30339", // shown on the masthead only
-      // Coordinates are hardcoded so the app NEVER has to geocode on a fresh device
-      // (the online geocoders rate-limit and fail intermittently). This is the west
-      // bank of the Chattahoochee at the Riverbend/Akers Mill community, Vinings.
+      address: "1048 Riverbend Club Drive SE, Atlanta, GA 30339", // geocoded to the exact spot on first load
+      // FALLBACK coordinates only. The app tries to geocode the address above first
+      // (accurate to the building); if the online geocoders are rate-limited or down,
+      // it falls back to these so a fresh device never dead-ends. This point is the
+      // Riverbend/Akers Mill stretch of the Chattahoochee in Vinings.
       lat: 33.8845,
       lon: -84.4585,
       gauge: "",            // optional: hardcode a USGS site number to skip nearest-gauge pick
@@ -543,8 +544,8 @@
     let settings = {
       spot: CONFIG.spot || CONFIG.address, address: CONFIG.address,
       site: CONFIG.gauge || _place.site || "",
-      lat: CONFIG.lat != null ? CONFIG.lat : _place.lat,
-      lon: CONFIG.lon != null ? CONFIG.lon : _place.lon,
+      lat: _place.lat != null ? _place.lat : null,   // filled by a real geocode of the address (cached after first success)
+      lon: _place.lon != null ? _place.lon : null,
       units: CONFIG.units, flowNormal: null, flowHigh: null,
       apiKey: CONFIG.apiKey || loadKey(), model: CONFIG.model
     };
@@ -699,8 +700,12 @@
     // Resolve the hardcoded address into coordinates + nearest gauge, once, then cache it.
     async function resolvePlace() {
       if (settings.lat == null || settings.lon == null) {
+        // Try to geocode the exact address (most accurate). If the geocoders are
+        // down or rate-limited, fall back to the pinned coordinates so we never
+        // dead-end on a fresh device.
         const g = await geocodeAddress(settings.address);
         if (g) { settings.lat = g.lat; settings.lon = g.lon; }
+        else if (CONFIG.lat != null && CONFIG.lon != null) { settings.lat = CONFIG.lat; settings.lon = CONFIG.lon; }
       }
       if (!settings.site && settings.lat != null && settings.lon != null) {
         try {
