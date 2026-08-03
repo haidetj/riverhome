@@ -1,0 +1,39 @@
+[
+  {
+    "id32": 950231,
+    "setting": {
+      "overrideTitle": "MACHINERY OF OPPRESSION",
+      "overrideBrief": "High Command has identified two fronts pivotal to the war effort. Liberate them.",
+      "taskDescription": "Liberate the designated planets.",
+      "tasks": [
+        {
+          "type": 11,
+          "values": [
+            1,
+            200,
+            63
+          ],
+          "valueTypes": [
+            3,
+            12,
+            1
+          ]
+        },
+        {
+          "type": 11,
+          "values": [
+            1,
+            95,
+            49
+          ],
+          "valueTypes": [
+            3,
+            12,
+            1
+          ]
+        }
+      ]
+    },
+    "expiresIn": 183600
+  }
+]

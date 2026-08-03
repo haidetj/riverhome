@@ -1,0 +1,52 @@
+# Planets whose live hazard array does NOT match their biome default.
+# HTM's docs claim environmentals "almost always match the biome" and name only
+# Tien Kwan as an exception. That is wrong — there are six, and Tien Kwan is not
+# one of them (it has its own biome slug, icemoss-special, so it resolves cleanly).
+#
+# Re-verify this file on every patch. New exceptions are silent.
+
+51:
+  name: Ivis
+  biome: shattered
+  biome_default: []
+  actual: [extreme_cold, blizzards]
+  note: Only shattered planet with hazards. Moradesh (85) and Angel's Venture (127) are empty.
+
+63:
+  name: Maw
+  biome: null
+  biome_default: []
+  actual: [intense_heat]
+  note: Null biome but non-empty hazards. Null-biome planets are otherwise always empty.
+
+95:
+  name: Genesis Prime
+  biome: jungle
+  biome_default: [volcanic_activity, rainstorms]
+  actual: [ion_storms]
+  note: Full substitution, not an addition. Adjacent Oasis (94) is a normal jungle.
+
+130:
+  name: Achernar Secundus
+  biome: highlands
+  biome_default: [thick_fog, rainstorms]
+  actual: [rainstorms]
+  note: Drops fog.
+
+200:
+  name: Matar Bay
+  biome: highlands
+  biome_default: [thick_fog, rainstorms]
+  actual: [rainstorms]
+  note: Drops fog. Currently an active Automaton campaign.
+
+171:
+  name: Gacrux
+  biome: undergrowth
+  biome_default: [rainstorms]
+  actual: [rainstorms]
+  note: >
+    Not an override — listed for the record. Gacrux is the only undergrowth planet,
+    so the biome default is derived from a single sample and is unverified.
+    If a second undergrowth planet ships, recheck before trusting biomes.yaml here.
+  is_override: false

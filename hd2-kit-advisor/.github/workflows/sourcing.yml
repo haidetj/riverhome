@@ -1,0 +1,56 @@
+name: sourcing
+
+# Keep the advisor's data fresh.
+#   - schedule : the cadence (every 6h). Hazards are static, but the war state
+#                (campaigns, defenses, Major Orders) moves constantly.
+#   - dispatch : a manual "update now" button in the Actions tab, with a strict
+#                toggle for a patch-day canary run that fails on drift.
+on:
+  schedule:
+    - cron: "17 */6 * * *"      # every 6 hours, offset off the hour
+  workflow_dispatch:
+    inputs:
+      strict:
+        description: "Fail the run if the seed canary detects drift (patch-day check)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: sourcing
+  cancel-in-progress: false
+
+permissions:
+  contents: write               # commit refreshed data back to the branch
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install --quiet pyyaml
+
+      - name: Refresh data (live war state + canary)
+        id: refresh
+        run: |
+          python3 sourcing/refresh.py ${{ inputs.strict && '--strict' || '' }}
+
+      - name: Commit refreshed data if it changed
+        run: |
+          git config user.name  "hd2-kit sourcing bot"
+          git config user.email "actions@github.com"
+          git add web/data
+          if git diff --cached --quiet; then
+            echo "No data change — nothing to commit."
+          else
+            ts=$(date -u +"%Y-%m-%dT%H:%MZ")
+            git commit -m "data: refresh war state ($ts)"
+            for i in 1 2 3 4; do
+              git push && break || { echo "push failed, retry $i"; sleep $((2**i)); }
+            done
+          fi

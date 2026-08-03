@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-08-03T20:42:07+00:00",
+  "orders": [
+    {
+      "id": 950231,
+      "title": "MACHINERY OF OPPRESSION",
+      "briefing": "High Command has identified two fronts pivotal to the war effort. Liberate them.",
+      "description": "Liberate the designated planets.",
+      "expires_at": null,
+      "expires_in_s": 183600,
+      "target_planets": [
+        95,
+        200
+      ]
+    }
+  ]
+}

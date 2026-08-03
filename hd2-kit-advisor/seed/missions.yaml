@@ -1,0 +1,148 @@
+# Static mission catalog. The war APIs expose planets and campaigns, never the
+# per-planet mission pool — that is resolved client-side at operation select.
+#
+# STATUS: every entry is verified:false. This is a scaffold with the right SHAPE,
+# populated from patch notes and general knowledge, NOT from a authoritative source.
+# Cross-check against helldivers.wiki.gg before shipping. Names and difficulty gates
+# are the likeliest fields to be wrong.
+#
+# duration_band drives mission count per operation (short = 12min, standard = 40min).
+# difficulty_min matters: a Blitz at D4 and a Blitz at D10 are different kit problems.
+
+- id: eradicate
+  display_name: "Eradicate [Faction] Forces"
+  archetype: eradicate
+  factions: [terminids, automatons, illuminate]
+  duration_band: short
+  difficulty_min: 1
+  tags: [static_position, chaff_volume, sentry_friendly, no_traversal]
+  verified: false
+
+- id: blitz_search_destroy
+  display_name: "Blitz: Search and Destroy"
+  archetype: blitz
+  factions: [terminids, automatons]
+  duration_band: short
+  difficulty_min: 2
+  tags: [nest_closing, timer_pressure, mobility, light_armor]
+  verified: false
+
+- id: eliminate_target
+  display_name: "Eliminate [Elite Target]"
+  archetype: eliminate
+  factions: [terminids, automatons, illuminate]
+  duration_band: short
+  difficulty_min: 3
+  tags: [anti_heavy, burst_damage, at_required]
+  verified: false
+
+- id: launch_icbm
+  display_name: "Launch ICBM"
+  archetype: objective
+  factions: [terminids, automatons]
+  duration_band: standard
+  difficulty_min: 3
+  tags: [static_defense, timer_pressure, sentry_friendly]
+  verified: false
+
+- id: retrieve_essential_personnel
+  display_name: "Retrieve Essential Personnel"
+  archetype: evac
+  factions: [terminids, automatons]
+  duration_band: standard
+  difficulty_min: 3
+  tags: [static_defense, chaff_volume, sentry_friendly, sustained_hold]
+  verified: false
+
+- id: emergency_evacuation
+  display_name: "Emergency Evacuation"
+  archetype: evac
+  factions: [terminids, automatons, illuminate]
+  campaign_types: [defense]
+  duration_band: standard
+  difficulty_min: 4
+  tags: [static_defense, chaff_volume, sustained_hold]
+  verified: false
+
+- id: terminate_illegal_broadcast
+  display_name: "Terminate Illegal Broadcast"
+  archetype: sabotage
+  factions: [automatons]
+  duration_band: standard
+  difficulty_min: 3
+  tags: [structure_demo, mobility]
+  verified: false
+
+- id: sabotage_air_base
+  display_name: "Sabotage Air Base"
+  archetype: sabotage
+  factions: [automatons]
+  duration_band: standard
+  difficulty_min: 4
+  tags: [structure_demo, hellbomb, anti_air]
+  verified: false
+
+- id: destroy_command_bunkers
+  display_name: "Destroy Command Bunkers"
+  archetype: sabotage
+  factions: [automatons]
+  duration_band: standard
+  difficulty_min: 4
+  tags: [structure_demo, explosive_primary]
+  verified: false
+
+- id: purge_hatcheries
+  display_name: "Purge Hatcheries"
+  archetype: sabotage
+  factions: [terminids]
+  duration_band: standard
+  difficulty_min: 3
+  tags: [hole_closing, explosive_primary, mobility]
+  verified: false
+
+- id: nuke_nursery
+  display_name: "Nuke Nursery"
+  archetype: sabotage
+  factions: [terminids]
+  duration_band: standard
+  difficulty_min: 4
+  tags: [hole_closing, hellbomb]
+  verified: false
+
+- id: geological_survey
+  display_name: "Conduct Geological Survey"
+  archetype: survey
+  factions: [terminids, automatons]
+  duration_band: standard
+  difficulty_min: 3
+  tags: [static_defense, sustained_hold, sentry_friendly]
+  verified: false
+
+- id: e710_extraction
+  display_name: "E-710 Extraction"
+  archetype: objective
+  factions: [terminids]
+  duration_band: standard
+  difficulty_min: 5
+  tags: [escort, sustained_hold, chaff_volume]
+  verified: false
+  note: Referenced by name in the 6.3.0 patch notes traversal fixes.
+
+- id: annex_mineral_site
+  display_name: "Annex Untapped Mineral Site"
+  archetype: objective
+  factions: [terminids, automatons, illuminate]
+  duration_band: standard
+  difficulty_min: 4
+  tags: [static_defense, sustained_hold]
+  verified: false
+  note: Referenced by name in the 6.3.0 patch notes traversal fixes.
+
+- id: evacuate_citizens
+  display_name: "Evacuate Citizens"
+  archetype: evac
+  factions: [illuminate]
+  duration_band: standard
+  difficulty_min: 4
+  tags: [urban, static_defense, chaff_volume, close_range]
+  verified: false
