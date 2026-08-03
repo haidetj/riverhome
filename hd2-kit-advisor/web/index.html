@@ -232,15 +232,21 @@ const state = {tab:"front", data:null, sel:null, filters:{q:"",biome:"",hazard:"
   adv:{planet:null,faction:"",mission:""}};
 
 // ---------- data load ----------
+// If the page was built self-contained (window.__HD2_DATA__ injected), read that;
+// otherwise fetch the JSON in data/ (the GitHub Pages / local-server path).
 async function loadJSON(p){ const r=await fetch(p,{cache:"no-store"}); if(!r.ok) throw new Error(p+" "+r.status); return r.json(); }
 async function boot(){
   try{
-    const [planets,rules,live,mos,meta] = await Promise.all([
+    let planets,rules,live,mos,meta;
+    if(window.__HD2_DATA__){ const d=window.__HD2_DATA__;
+      planets=d.planets; rules=d.rules; live=d.live||{campaigns:[],summary:{}};
+      mos=d.mos||{orders:[]}; meta=d.meta||{}; }
+    else { [planets,rules,live,mos,meta] = await Promise.all([
       loadJSON("data/planets.json"), loadJSON("data/rules.json"),
       loadJSON("data/live.json").catch(()=>({campaigns:[],summary:{}})),
       loadJSON("data/major_orders.json").catch(()=>({orders:[]})),
       loadJSON("data/meta.json").catch(()=>({})),
-    ]);
+    ]); }
     const byId={}; planets.forEach(p=>byId[p.id]=p);
     state.data={planets,byId,rules,live,mos,meta,
       named:planets.filter(p=>p.name && !p.is_placeholder)};

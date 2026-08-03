@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-08-03T20:42:07+00:00",
+  "generated_at": "2026-08-03T23:08:49+00:00",
   "sources": {
     "planets": {
       "ok": true,
-      "sha256": "42892fe6f209e7824776d4339cb48917cc46f6728d9362319f0311a165f26dee"
+      "sha256": "52388bcb997a3dda38a327b9a8463ea556753e897f3fe2f7ed1c8461925f6b33"
     },
     "campaign": {
       "ok": true,
@@ -32,10 +32,7 @@
   },
   "canary": {
     "checked": true,
-    "drift_count": 2,
-    "drift": [
-      "planet 95 (Genesis Prime): live=['Ion Storms', 'Rainstorms'] seed=['Ion Storms']",
-      "NEW PLANET INDEX 999 ('Xardax Prime') — content signal"
-    ]
+    "drift_count": 0,
+    "drift": []
   }
 }
