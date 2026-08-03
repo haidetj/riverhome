@@ -40,6 +40,12 @@ python3 sourcing/refresh.py --offline sourcing/fixtures   # or drop --offline fo
 python3 -m http.server -d web 8000                         # open http://localhost:8000
 ```
 
+Or bake a single self-contained file you can open with no server (data inlined):
+
+```bash
+python3 sourcing/build_preview.py   # -> web/preview.html  (regenerate after each refresh)
+```
+
 ---
 
 ## The two live pieces
