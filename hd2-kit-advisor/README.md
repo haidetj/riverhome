@@ -83,6 +83,12 @@ when the payload actually changed (the preview is derived from the data, so it m
 lockstep and never causes an empty commit). `pages.yml` republishes the display on every
 such commit, so both the live site and the single-file preview track the latest pull.
 
+While the advisor lives under `hd2-kit-advisor/` inside the `riverhome` repo, GitHub
+won't run that nested workflow (Actions only fires workflows from the repo root). The
+root-level `.github/workflows/hd2-kit-advisor-sourcing.yml` is the in-place runner — same
+steps, `hd2-kit-advisor/` as the working directory. If the advisor is split into its own
+repo, delete that wrapper and the nested `sourcing.yml` takes over unchanged.
+
 ---
 
 ## What the data actually says

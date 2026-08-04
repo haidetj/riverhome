@@ -1,0 +1,67 @@
+name: hd2-kit-advisor sourcing
+
+# In-place runner for the HD2 Kit Advisor while it lives under hd2-kit-advisor/.
+#
+# GitHub only executes workflows from the repo-root .github/workflows/, so the
+# advisor's own hd2-kit-advisor/.github/workflows/sourcing.yml never fires here —
+# it's the config for the eventual standalone repo. This wrapper does the same
+# work from the riverhome root by running every step with hd2-kit-advisor/ as the
+# working directory. If the advisor is ever split into its own repo, delete this
+# file and the nested workflow takes over unchanged.
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"      # every 6 hours, offset off the hour
+  workflow_dispatch:
+    inputs:
+      strict:
+        description: "Fail the run if the seed canary detects drift (patch-day check)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: hd2-kit-advisor-sourcing
+  cancel-in-progress: false
+
+permissions:
+  contents: write               # commit refreshed data back to the branch
+
+defaults:
+  run:
+    working-directory: hd2-kit-advisor
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install --quiet pyyaml
+
+      - name: Refresh data (live war state + canary)
+        run: |
+          python3 sourcing/refresh.py ${{ inputs.strict && '--strict' || '' }}
+
+      - name: Bake self-contained preview.html from the fresh data
+        run: |
+          python3 sourcing/build_preview.py
+
+      - name: Commit refreshed data if it changed
+        run: |
+          git config user.name  "hd2-kit sourcing bot"
+          git config user.email "actions@github.com"
+          git add web/data web/preview.html
+          if git diff --cached --quiet; then
+            echo "No data change — nothing to commit."
+          else
+            ts=$(date -u +"%Y-%m-%dT%H:%MZ")
+            git commit -m "data: refresh war state ($ts)"
+            for i in 1 2 3 4; do
+              git push && break || { echo "push failed, retry $i"; sleep $((2**i)); }
+            done
+          fi
