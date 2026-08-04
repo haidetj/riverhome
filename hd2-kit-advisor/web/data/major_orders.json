@@ -1,16 +1,26 @@
 {
-  "generated_at": "2026-08-04T22:29:48+00:00",
+  "generated_at": "2026-08-04T23:20:20+00:00",
   "orders": [
     {
-      "id": 950231,
-      "title": "MACHINERY OF OPPRESSION",
-      "briefing": "High Command has identified two fronts pivotal to the war effort. Liberate them.",
-      "description": "Liberate the designated planets.",
+      "id": 4043397027,
+      "title": "MAJOR ORDER",
+      "briefing": "Liberate the designated planet, where foul Cyborg lies regarding the TCS+ were fabricated and disseminated.",
+      "description": null,
       "expires_at": null,
-      "expires_in_s": 183600,
+      "expires_in_s": 216966,
       "target_planets": [
-        95,
-        200
+        201
+      ]
+    },
+    {
+      "id": 2769640123,
+      "title": "STRATEGIC THREAT",
+      "briefing": "Liberate the designated planet, where dissident saboteurs have planted a Terminid outbreak.",
+      "description": null,
+      "expires_at": null,
+      "expires_in_s": 168109,
+      "target_planets": [
+        168
       ]
     }
   ]
