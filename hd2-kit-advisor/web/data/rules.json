@@ -613,6 +613,26 @@
         "close_range"
       ],
       "verified": false
+    },
+    {
+      "id": "spread_democracy",
+      "display_name": "Spread Democracy",
+      "archetype": "objective",
+      "factions": [
+        "terminids",
+        "automatons"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 1,
+      "tags": [
+        "static_defense",
+        "sustained_hold",
+        "chaff_volume",
+        "sentry_friendly",
+        "close_range"
+      ],
+      "verified": true,
+      "note": "Raise the Super Earth flag: request the pod, then hold the point ~1:40 against continuous Bug Breaches / Bot Drops; leaving reverses progress. Terminid + Automaton planets, all difficulties (Trivial = 1 flag, Easy+ = 3). Name / factions / difficulty / hold-and-defend mechanic confirmed against helldivers.wiki.gg; duration_band is an estimate."
     }
   ],
   "tag_glossary": {
@@ -645,5 +665,5 @@
     "light_pen": "Light armor-penetration",
     "heavy_pen": "Heavy armor-penetration"
   },
-  "generated_at": "2026-08-03T23:08:49+00:00"
+  "generated_at": "2026-08-04T22:29:48+00:00"
 }
