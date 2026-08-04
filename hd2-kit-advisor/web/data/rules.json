@@ -1,0 +1,669 @@
+{
+  "hazards": {
+    "extreme_cold": {
+      "display_name": "Extreme Cold",
+      "description": "Icy temperatures reduce rate of fire and delay heat buildup in weapons.",
+      "severity": 2,
+      "is_diurnal": false,
+      "modifiers": {
+        "energy": 0.6,
+        "high_rof_ballistic": -0.3,
+        "sustain_fire": 0.2
+      }
+    },
+    "nocturnal_extreme_cold": {
+      "display_name": "Nocturnal Extreme Cold",
+      "description": "At night icy temperatures reduce rate of fire and delay heat buildup.",
+      "severity": 1,
+      "is_diurnal": true,
+      "modifiers": {
+        "energy": 0.3
+      }
+    },
+    "intense_heat": {
+      "display_name": "Intense Heat",
+      "description": "High temperatures increase stamina drain and speed up heat buildup.",
+      "severity": 2,
+      "is_diurnal": false,
+      "modifiers": {
+        "energy": -0.5,
+        "light_armor": 0.3,
+        "stamina_booster": 0.4,
+        "ammo_independent": -0.2
+      }
+    },
+    "durial_intense_heat": {
+      "display_name": "Durial Intense Heat",
+      "description": "Daytime high temperatures increase stamina drain and weapon heat buildup.",
+      "severity": 1,
+      "is_diurnal": true,
+      "modifiers": {
+        "energy": -0.25,
+        "stamina_booster": 0.2
+      }
+    },
+    "ion_storms": {
+      "display_name": "Ion Storms",
+      "description": "Ion storms intermittently disable Stratagems.",
+      "severity": 3,
+      "is_diurnal": false,
+      "modifiers": {
+        "orbital": -0.8,
+        "eagle": -0.8,
+        "support_weapon": 0.7,
+        "strong_primary": 0.5,
+        "sentry": -0.3,
+        "backpack_sustain": 0.4
+      }
+    },
+    "fire_tornadoes": {
+      "display_name": "Fire Tornadoes",
+      "description": "Planet is ravaged by deadly fire tornadoes.",
+      "severity": 3,
+      "is_diurnal": false,
+      "modifiers": {
+        "fire_kit": -0.6,
+        "fire_resist_armor": 0.6,
+        "mobility": 0.4,
+        "sentry": -0.4,
+        "static_position": -0.5
+      }
+    },
+    "meteor_storms": {
+      "display_name": "Meteor Storms",
+      "description": "Meteors impact the surface causing massive damage.",
+      "severity": 3,
+      "is_diurnal": false,
+      "modifiers": {
+        "sentry": -0.5,
+        "static_position": -0.6,
+        "mobility": 0.4,
+        "shield_pack": 0.3
+      }
+    },
+    "volcanic_activity": {
+      "display_name": "Volcanic Activity",
+      "description": "Volcanoes throw burning rocks around this planet.",
+      "severity": 2,
+      "is_diurnal": false,
+      "modifiers": {
+        "mobility": 0.3,
+        "fire_resist_armor": 0.3,
+        "static_position": -0.3
+      }
+    },
+    "tremors": {
+      "display_name": "Tremors",
+      "description": "Frequent earthquakes stun players and enemies alike.",
+      "severity": 2,
+      "is_diurnal": false,
+      "modifiers": {
+        "ranged": 0.4,
+        "close_quarters": -0.4,
+        "melee": -0.6,
+        "stagger_primary": 0.2
+      }
+    },
+    "sandstorms": {
+      "display_name": "Sandstorms",
+      "description": "Dense sandstorms reduce mobility and greatly reduce visibility.",
+      "severity": 3,
+      "is_diurnal": false,
+      "modifiers": {
+        "close_range": 0.6,
+        "marksman": -0.6,
+        "guard_dog": 0.5,
+        "radar_booster": 0.4,
+        "light_armor": 0.3
+      }
+    },
+    "blizzards": {
+      "display_name": "Blizzards",
+      "description": "Intense blizzards reduce mobility and moderately reduce visibility.",
+      "severity": 2,
+      "is_diurnal": false,
+      "modifiers": {
+        "close_range": 0.35,
+        "marksman": -0.35,
+        "light_armor": 0.4,
+        "jump_pack": 0.3
+      }
+    },
+    "thick_fog": {
+      "display_name": "Thick Fog",
+      "description": "Dense fog lightly reduces visibility for both enemy and friendly units.",
+      "severity": 1,
+      "is_diurnal": false,
+      "modifiers": {
+        "close_range": 0.2,
+        "marksman": -0.2,
+        "guard_dog": 0.2
+      }
+    },
+    "rainstorms": {
+      "display_name": "Rainstorms",
+      "description": "Torrential rainstorms reduce visibility.",
+      "severity": 1,
+      "is_diurnal": false,
+      "modifiers": {
+        "close_range": 0.15,
+        "marksman": -0.15
+      }
+    },
+    "acid_storms": {
+      "display_name": "Acid Storms",
+      "description": "Violent acid storms reduce visibility.",
+      "severity": 2,
+      "is_diurnal": false,
+      "modifiers": {
+        "close_range": 0.2,
+        "marksman": -0.2,
+        "light_pen": 0.3,
+        "heavy_pen": -0.1
+      }
+    }
+  },
+  "biomes": {
+    "superearth": {
+      "display_name": "Super Earth",
+      "hazards": [
+        "rainstorms"
+      ],
+      "note": null,
+      "status": null
+    },
+    "mesa": {
+      "display_name": "Mesa",
+      "hazards": [
+        "durial_intense_heat",
+        "nocturnal_extreme_cold",
+        "sandstorms"
+      ],
+      "note": "Only biome with a day/night hazard pair. Kit must handle both heat and cold.",
+      "status": null
+    },
+    "desert": {
+      "display_name": "Desert",
+      "hazards": [
+        "durial_intense_heat",
+        "tremors"
+      ],
+      "note": null,
+      "status": null
+    },
+    "canyon": {
+      "display_name": "Canyon",
+      "hazards": [
+        "tremors"
+      ],
+      "note": null,
+      "status": null
+    },
+    "highlands": {
+      "display_name": "Highlands",
+      "hazards": [
+        "thick_fog",
+        "rainstorms"
+      ],
+      "note": null,
+      "status": null
+    },
+    "moon": {
+      "display_name": "Moon",
+      "hazards": [
+        "extreme_cold",
+        "meteor_storms"
+      ],
+      "note": null,
+      "status": null
+    },
+    "rainforest": {
+      "display_name": "Rainforest",
+      "hazards": [
+        "ion_storms"
+      ],
+      "note": null,
+      "status": null
+    },
+    "jungle": {
+      "display_name": "Jungle",
+      "hazards": [
+        "volcanic_activity",
+        "rainstorms"
+      ],
+      "note": null,
+      "status": null
+    },
+    "toxic": {
+      "display_name": "Toxic",
+      "hazards": [
+        "intense_heat",
+        "acid_storms"
+      ],
+      "note": null,
+      "status": null
+    },
+    "winter": {
+      "display_name": "Winter",
+      "hazards": [
+        "extreme_cold",
+        "blizzards"
+      ],
+      "note": null,
+      "status": null
+    },
+    "icemoss": {
+      "display_name": "Ice Moss",
+      "hazards": [
+        "extreme_cold"
+      ],
+      "note": null,
+      "status": null
+    },
+    "icemoss-special": {
+      "display_name": "Ice Moss (Tien Kwan)",
+      "hazards": [
+        "extreme_cold",
+        "meteor_storms"
+      ],
+      "note": "Single-planet biome. Tien Kwan (239) only.",
+      "status": null
+    },
+    "crimsonmoor": {
+      "display_name": "Crimson Moor",
+      "hazards": [
+        "ion_storms"
+      ],
+      "note": null,
+      "status": null
+    },
+    "swamp": {
+      "display_name": "Swamp",
+      "hazards": [
+        "thick_fog"
+      ],
+      "note": null,
+      "status": null
+    },
+    "morass": {
+      "display_name": "Morass",
+      "hazards": [
+        "thick_fog"
+      ],
+      "note": null,
+      "status": null
+    },
+    "desolate": {
+      "display_name": "Desolate",
+      "hazards": [
+        "intense_heat",
+        "fire_tornadoes"
+      ],
+      "note": null,
+      "status": null
+    },
+    "undergrowth": {
+      "display_name": "Undergrowth",
+      "hazards": [
+        "rainstorms"
+      ],
+      "note": null,
+      "status": null
+    },
+    "blackhole": {
+      "display_name": "Black Hole",
+      "hazards": [
+        "volcanic_activity",
+        "rainstorms"
+      ],
+      "note": "Meridia (64) only.",
+      "status": null
+    },
+    "shattered": {
+      "display_name": "Shattered",
+      "hazards": [],
+      "note": null,
+      "status": null
+    },
+    "ethereal": {
+      "display_name": "Ethereal",
+      "hazards": [],
+      "note": null,
+      "status": null
+    },
+    "tundra": {
+      "display_name": "Tundra",
+      "hazards": [],
+      "note": null,
+      "status": null
+    },
+    "magma": {
+      "display_name": "Magma",
+      "hazards": [],
+      "note": null,
+      "status": null
+    },
+    "lush": {
+      "display_name": "Lush",
+      "hazards": [],
+      "note": null,
+      "status": "unreleased"
+    },
+    "autumn": {
+      "display_name": "Forest (Fall)",
+      "hazards": [],
+      "note": "Basquine VIII (272), Sangis (273). Hazards still empty - recheck after next patch.",
+      "status": "new_in_6_3_0"
+    }
+  },
+  "missions": [
+    {
+      "id": "eradicate",
+      "display_name": "Eradicate [Faction] Forces",
+      "archetype": "eradicate",
+      "factions": [
+        "terminids",
+        "automatons",
+        "illuminate"
+      ],
+      "duration_band": "short",
+      "difficulty_min": 1,
+      "tags": [
+        "static_position",
+        "chaff_volume",
+        "sentry_friendly",
+        "no_traversal"
+      ],
+      "verified": false
+    },
+    {
+      "id": "blitz_search_destroy",
+      "display_name": "Blitz: Search and Destroy",
+      "archetype": "blitz",
+      "factions": [
+        "terminids",
+        "automatons"
+      ],
+      "duration_band": "short",
+      "difficulty_min": 2,
+      "tags": [
+        "nest_closing",
+        "timer_pressure",
+        "mobility",
+        "light_armor"
+      ],
+      "verified": false
+    },
+    {
+      "id": "eliminate_target",
+      "display_name": "Eliminate [Elite Target]",
+      "archetype": "eliminate",
+      "factions": [
+        "terminids",
+        "automatons",
+        "illuminate"
+      ],
+      "duration_band": "short",
+      "difficulty_min": 3,
+      "tags": [
+        "anti_heavy",
+        "burst_damage",
+        "at_required"
+      ],
+      "verified": false
+    },
+    {
+      "id": "launch_icbm",
+      "display_name": "Launch ICBM",
+      "archetype": "objective",
+      "factions": [
+        "terminids",
+        "automatons"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 3,
+      "tags": [
+        "static_defense",
+        "timer_pressure",
+        "sentry_friendly"
+      ],
+      "verified": false
+    },
+    {
+      "id": "retrieve_essential_personnel",
+      "display_name": "Retrieve Essential Personnel",
+      "archetype": "evac",
+      "factions": [
+        "terminids",
+        "automatons"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 3,
+      "tags": [
+        "static_defense",
+        "chaff_volume",
+        "sentry_friendly",
+        "sustained_hold"
+      ],
+      "verified": false
+    },
+    {
+      "id": "emergency_evacuation",
+      "display_name": "Emergency Evacuation",
+      "archetype": "evac",
+      "factions": [
+        "terminids",
+        "automatons",
+        "illuminate"
+      ],
+      "campaign_types": [
+        "defense"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 4,
+      "tags": [
+        "static_defense",
+        "chaff_volume",
+        "sustained_hold"
+      ],
+      "verified": false
+    },
+    {
+      "id": "terminate_illegal_broadcast",
+      "display_name": "Terminate Illegal Broadcast",
+      "archetype": "sabotage",
+      "factions": [
+        "automatons"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 3,
+      "tags": [
+        "structure_demo",
+        "mobility"
+      ],
+      "verified": false
+    },
+    {
+      "id": "sabotage_air_base",
+      "display_name": "Sabotage Air Base",
+      "archetype": "sabotage",
+      "factions": [
+        "automatons"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 4,
+      "tags": [
+        "structure_demo",
+        "hellbomb",
+        "anti_air"
+      ],
+      "verified": false
+    },
+    {
+      "id": "destroy_command_bunkers",
+      "display_name": "Destroy Command Bunkers",
+      "archetype": "sabotage",
+      "factions": [
+        "automatons"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 4,
+      "tags": [
+        "structure_demo",
+        "explosive_primary"
+      ],
+      "verified": false
+    },
+    {
+      "id": "purge_hatcheries",
+      "display_name": "Purge Hatcheries",
+      "archetype": "sabotage",
+      "factions": [
+        "terminids"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 3,
+      "tags": [
+        "hole_closing",
+        "explosive_primary",
+        "mobility"
+      ],
+      "verified": false
+    },
+    {
+      "id": "nuke_nursery",
+      "display_name": "Nuke Nursery",
+      "archetype": "sabotage",
+      "factions": [
+        "terminids"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 4,
+      "tags": [
+        "hole_closing",
+        "hellbomb"
+      ],
+      "verified": false
+    },
+    {
+      "id": "geological_survey",
+      "display_name": "Conduct Geological Survey",
+      "archetype": "survey",
+      "factions": [
+        "terminids",
+        "automatons"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 3,
+      "tags": [
+        "static_defense",
+        "sustained_hold",
+        "sentry_friendly"
+      ],
+      "verified": false
+    },
+    {
+      "id": "e710_extraction",
+      "display_name": "E-710 Extraction",
+      "archetype": "objective",
+      "factions": [
+        "terminids"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 5,
+      "tags": [
+        "escort",
+        "sustained_hold",
+        "chaff_volume"
+      ],
+      "verified": false,
+      "note": "Referenced by name in the 6.3.0 patch notes traversal fixes."
+    },
+    {
+      "id": "annex_mineral_site",
+      "display_name": "Annex Untapped Mineral Site",
+      "archetype": "objective",
+      "factions": [
+        "terminids",
+        "automatons",
+        "illuminate"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 4,
+      "tags": [
+        "static_defense",
+        "sustained_hold"
+      ],
+      "verified": false,
+      "note": "Referenced by name in the 6.3.0 patch notes traversal fixes."
+    },
+    {
+      "id": "evacuate_citizens",
+      "display_name": "Evacuate Citizens",
+      "archetype": "evac",
+      "factions": [
+        "illuminate"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 4,
+      "tags": [
+        "urban",
+        "static_defense",
+        "chaff_volume",
+        "close_range"
+      ],
+      "verified": false
+    },
+    {
+      "id": "spread_democracy",
+      "display_name": "Spread Democracy",
+      "archetype": "objective",
+      "factions": [
+        "terminids",
+        "automatons"
+      ],
+      "duration_band": "standard",
+      "difficulty_min": 1,
+      "tags": [
+        "static_defense",
+        "sustained_hold",
+        "chaff_volume",
+        "sentry_friendly",
+        "close_range"
+      ],
+      "verified": true,
+      "note": "Raise the Super Earth flag: request the pod, then hold the point ~1:40 against continuous Bug Breaches / Bot Drops; leaving reverses progress. Terminid + Automaton planets, all difficulties (Trivial = 1 flag, Easy+ = 3). Name / factions / difficulty / hold-and-defend mechanic confirmed against helldivers.wiki.gg; duration_band is an estimate."
+    }
+  ],
+  "tag_glossary": {
+    "energy": "Energy / laser weapons",
+    "high_rof_ballistic": "High rate-of-fire ballistics",
+    "sustain_fire": "Sustained-fire weapons",
+    "light_armor": "Light armor",
+    "stamina_booster": "Stamina Booster",
+    "ammo_independent": "Ammo-independent weapons",
+    "orbital": "Orbital stratagems",
+    "eagle": "Eagle stratagems",
+    "support_weapon": "Support weapons",
+    "strong_primary": "A strong standalone primary",
+    "sentry": "Sentry / emplacement stratagems",
+    "backpack_sustain": "Sustain backpacks (ammo/supply)",
+    "fire_kit": "Fire-based weapons",
+    "fire_resist_armor": "Fire-resistant armor",
+    "mobility": "Mobility (light kit, jump pack)",
+    "static_position": "Holding a static position",
+    "shield_pack": "Shield backpack",
+    "ranged": "Ranged engagement",
+    "close_quarters": "Close-quarters engagement",
+    "melee": "Melee",
+    "stagger_primary": "Stagger primaries",
+    "close_range": "Close-range weapons",
+    "marksman": "Marksman / long-range",
+    "guard_dog": "Guard Dog / Rover",
+    "radar_booster": "Radar booster",
+    "jump_pack": "Jump pack",
+    "light_pen": "Light armor-penetration",
+    "heavy_pen": "Heavy armor-penetration"
+  },
+  "generated_at": "2026-08-04T22:29:48+00:00"
+}

@@ -1,0 +1,59 @@
+[
+  {
+    "planetIndex": 200,
+    "name": "Matar Bay",
+    "faction": "Automatons",
+    "players": 41230,
+    "percentage": 63.2,
+    "defense": false,
+    "health": 368000,
+    "maxHealth": 1000000
+  },
+  {
+    "planetIndex": 95,
+    "name": "Genesis Prime",
+    "faction": "Terminids",
+    "players": 28910,
+    "percentage": 48.7,
+    "defense": false,
+    "health": 513000,
+    "maxHealth": 1000000
+  },
+  {
+    "planetIndex": 182,
+    "name": "Heze Bay",
+    "faction": "Automatons",
+    "players": 15600,
+    "percentage": 88.1,
+    "defense": false,
+    "health": 119000,
+    "maxHealth": 1000000
+  },
+  {
+    "planetIndex": 125,
+    "name": "Fenrir III",
+    "faction": "Terminids",
+    "players": 33750,
+    "percentage": 21.4,
+    "defense": true,
+    "expireDateTime": 1785877200,
+    "health": 786000,
+    "maxHealth": 1000000
+  },
+  {
+    "planetIndex": 64,
+    "name": "Meridia",
+    "faction": "Terminids",
+    "players": 9200,
+    "percentage": 0.0,
+    "defense": false
+  },
+  {
+    "planetIndex": 13,
+    "name": "Okul VI",
+    "faction": "Automatons",
+    "players": 4100,
+    "percentage": 12.0,
+    "defense": false
+  }
+]

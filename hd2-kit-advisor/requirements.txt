@@ -1,0 +1,2 @@
+# Sourcing + seed build. The display itself needs nothing (static HTML).
+PyYAML>=6.0

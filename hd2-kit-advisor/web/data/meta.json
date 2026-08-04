@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-08-04T22:29:48+00:00",
+  "sources": {
+    "planets": {
+      "ok": true,
+      "sha256": "52388bcb997a3dda38a327b9a8463ea556753e897f3fe2f7ed1c8461925f6b33"
+    },
+    "campaign": {
+      "ok": true,
+      "sha256": "17f1aeaafea3125d6beaa511967a51cf7bd4d1bb86afdea98e28ea5bbb38bbaf"
+    },
+    "status": {
+      "ok": true,
+      "sha256": "862e8a480b21cda4e26be920f34f67187546429b7b47ab42e87d2ca29b90309a"
+    },
+    "major_orders": {
+      "ok": true,
+      "sha256": "f7bc101b096496ac6edd8e4da357f44836138b5c259fe968de31f7a3a02c387f"
+    }
+  },
+  "ok": true,
+  "changed": false,
+  "summary": {
+    "active_campaigns": 6,
+    "defenses": 1,
+    "mo_targets": 2,
+    "total_players": 132790,
+    "faction_players": {
+      "automatons": 60930,
+      "terminids": 71860
+    }
+  },
+  "canary": {
+    "checked": true,
+    "drift_count": 0,
+    "drift": []
+  }
+}

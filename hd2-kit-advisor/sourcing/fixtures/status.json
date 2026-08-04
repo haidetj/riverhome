@@ -1,0 +1,10 @@
+{
+  "planetEvents": [
+    {
+      "planetIndex": 125,
+      "eventType": 1,
+      "expireTime": 1785877200
+    }
+  ],
+  "impactMultiplier": 0.03
+}

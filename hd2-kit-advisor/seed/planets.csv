@@ -1,0 +1,275 @@
+id,name,sector,biome
+0,Super Earth,Sol,superearth
+1,Klen Dahth II,Altus,mesa
+2,Pathfinder V,Altus,highlands
+3,Widow's Harbor,Altus,moon
+4,New Haven,Altus,rainforest
+5,Pilen V,Altus,desert
+6,Hydrofall Prime,Barnard,canyon
+7,Zea Rugosia,Ferris,desert
+8,Darrowsport,Barnard,toxic
+9,Fornskogur II,Barnard,jungle
+10,Midasburg,Barnard,
+11,Cerberus IIIc,Cancri,desert
+12,Prosperity Falls,Cancri,rainforest
+13,Okul VI,Gothmar,winter
+14,Martyr's Bay,Cantolus,icemoss
+15,Freedom Peak,Cantolus,crimsonmoor
+16,Fort Union,Orion,highlands
+17,Kelvinor,Cantolus,winter
+18,Wraith,Idun,toxic
+19,Igla,Kelvin,icemoss
+20,New Kiruna,Kelvin,winter
+21,Fort Justice,Kelvin,
+22,Zegema Paradise,Kelvin,jungle
+23,Providence,Iptus,crimsonmoor
+24,Primordia,Iptus,jungle
+25,Sulfura,Celeste,ethereal
+26,Nublaria I,Celeste,jungle
+27,Krakatwo,Celeste,icemoss
+28,Volterra,Korpus,highlands
+29,Crucible,Korpus,
+30,Veil,Barnard,swamp
+31,Marre IV,Barnard,desolate
+32,Fort Sanctuary,Cancri,crimsonmoor
+33,Seyshel Beach,Cancri,ethereal
+34,Hellmire,Mirin,desolate
+35,Effluvia,Cancri,canyon
+36,Solghast,Gothmar,swamp
+37,Diluvia,Gothmar,
+38,Viridia Prime,Cantolus,mesa
+39,Obari,Cantolus,highlands
+40,Myradesh,Idun,desert
+41,Atrama,Idun,rainforest
+42,Emeria,Kelvin,canyon
+43,Barabos,Marspira,icemoss
+44,Fenmire,Marspira,highlands
+45,Mastia,Marspira,mesa
+46,Shallus,Talus,ethereal
+47,Krakabos,Iptus,icemoss
+48,Iridica,Iptus,ethereal
+49,Azterra,Orion,canyon
+50,Azur Secundus,Sten,desert
+51,Ivis,Celeste,shattered
+52,Slif,Celeste,toxic
+53,Caramoor,Korpus,mesa
+54,Kharst,Gallux,crimsonmoor
+55,Eukoria,Morgon,icemoss
+56,Myrium,Morgon,canyon
+57,Kerth Secundus,Rictus,tundra
+58,Parsh,Rictus,winter
+59,Reaf,Saleria,highlands
+60,Irulta,Saleria,jungle
+61,Emorath,Meridian,
+62,Ilduna Prime,Meridian,
+63,Maw,Idun,
+64,Meridia,Umlaut,blackhole
+65,Borea,Sagan,winter
+66,Curia,Marspira,moon
+67,Tarsh,Marspira,morass
+68,Shelt,Talus,tundra
+69,Imber,Talus,desolate
+70,Blistica,Gellert,desolate
+71,Ratch,Iptus,mesa
+72,Julheim,Nanos,winter
+73,Valgaard,Iptus,crimsonmoor
+74,Arkturus,Arturion,winter
+75,Esker,Falstaff,toxic
+76,Terrek,Orion,moon
+77,Cirrus,Orion,swamp
+78,Crimsica,Draco,crimsonmoor
+79,Heeth,Orion,winter
+80,Veld,Orion,rainforest
+81,Alta V,Korpus,jungle
+82,Ursica XI,Borgus,
+83,Inari,Korpus,icemoss
+84,Skaash,Ursa,toxic
+85,Moradesh,Celeste,shattered
+86,Rasp,Gallux,moon
+87,Bashyr,Gallux,swamp
+88,Regnus,Morgon,jungle
+89,Mog,Morgon,winter
+90,Valmox,Rictus,crimsonmoor
+91,Iro,Rictus,highlands
+92,Grafmere,Rictus,icemoss
+93,New Stockholm,Hanzo,winter
+94,Oasis,Rictus,jungle
+95,Genesis Prime,Rictus,jungle
+96,Outpost 32,Saleria,mesa
+97,Calypso,Saleria,canyon
+98,Elysian Meadows,Guang,crimsonmoor
+99,Alderidge Cove,Guang,swamp
+100,Trandor,Sten,tundra
+101,East Iridium Trading Bay,Tarragon,jungle
+102,Liberty Ridge,Meridian,crimsonmoor
+103,Baldrick Prime,Meridian,jungle
+104,The Weir,Theseus,highlands
+105,Kuper,Theseus,crimsonmoor
+106,Oslo Station,Sagan,icemoss
+107,Pöpli IX,Xzar,desolate
+108,Gunvald,Sagan,crimsonmoor
+109,Dolph,Nanos,moon
+110,Bekvam III,Nanos,
+111,Duma Tyr,Nanos,
+112,Vernen Wells,Hydra,canyon
+113,Aesir Pass,Hydra,swamp
+114,Aurora Bay,Valdis,tundra
+115,Penta,Lacaille,swamp
+116,Gaellivare,Talus,jungle
+117,Vog-sojoth,Tanis,winter
+118,Kirrik,Arturion,jungle
+119,Mortax Prime,Arturion,desert
+120,Wilford Station,Arturion,toxic
+121,Pioneer II,Arturion,canyon
+122,Erson Sands,Falstaff,desert
+123,Socorro III,Falstaff,morass
+124,Bore Rock,Falstaff,desolate
+125,Fenrir III,Umlaut,moon
+126,Turing,Umlaut,ethereal
+127,Angel's Venture,Orion,shattered
+128,Darius II,Borgus,toxic
+129,Acamar IV,Jin Xi,highlands
+130,Achernar Secundus,Borgus,highlands
+131,Achird III,Borgus,canyon
+132,Acrab XI,Ursa,crimsonmoor
+133,Acrux IX,Ursa,icemoss
+134,Acubens Prime,Gallux,
+135,Adhara,Gallux,desolate
+136,Afoyay Bay,Gallux,highlands
+137,Ain-5,Hanzo,swamp
+138,Alairt III,Hanzo,rainforest
+139,Alamak VII,Hanzo,ethereal
+140,Alaraph,Akira,swamp
+141,Alathfar XI,Akira,winter
+142,Andar,Akira,tundra
+143,Asperoth Prime,Akira,desolate
+144,Bellatrix,Guang,highlands
+145,Botein,Guang,toxic
+146,Osupsam,Tarragon,mesa
+147,Brink-2,Tarragon,rainforest
+148,Bunda Secundus,Tarragon,tundra
+149,Canopus,Tarragon,desert
+150,Caph,Theseus,jungle
+151,Castor,Theseus,canyon
+152,Durgen,Severin,mesa
+153,Draupnir,Xzar,highlands
+154,Mort,Xzar,swamp
+155,Ingmar,Xzar,crimsonmoor
+156,Charbal-VII,Andromeda,toxic
+157,Charon Prime,Andromeda,crimsonmoor
+158,Choepessa IV,Trigon,icemoss
+159,Choohe,Lacaille,mesa
+160,Chort Bay,Lacaille,toxic
+161,Claorell,Tanis,moon
+162,Clasa,Tanis,jungle
+163,Demiurg,Tanis,tundra
+164,Deneb Secundus,Arturion,icemoss
+165,Electra Bay,Arturion,highlands
+166,Enuliale,L'estrade,crimsonmoor
+167,Epsilon Phoencis VI,L'estrade,winter
+168,Erata Prime,Umlaut,desert
+169,Estanu,Draco,icemoss
+170,Fori Prime,Draco,canyon
+171,Gacrux,Jin Xi,undergrowth
+172,Gar Haren,Jin Xi,morass
+173,Gatria,Jin Xi,crimsonmoor
+174,Gemma,Ursa,rainforest
+175,Grand Errant,Farsight,desolate
+176,Hadar,Ferris,winter
+177,Haka,Leo,swamp
+178,Haldus,Ferris,moon
+179,Halies Port,Leo,icemoss
+180,Herthon Secundus,Ferris,desolate
+181,Hesoe Prime,Rigel,winter
+182,Heze Bay,Hanzo,mesa
+183,Hort,Rigel,highlands
+184,Hydrobius,Omega,desert
+185,Karlia,Omega,desolate
+186,Keid,Akira,mesa
+187,Khandark,Guang,winter
+188,Klaka 5,Alstrad,jungle
+189,Kneth Port,Alstrad,desolate
+190,Kraz,Alstrad,canyon
+191,Kuma,Hawking,canyon
+192,Lastofe,Theseus,mesa
+193,Leng Secundus,Quintus,toxic
+194,Lesath,Lacaille,icemoss
+195,Maia,Severin,moon
+196,Malevelon Creek,Severin,rainforest
+197,Mantes,Xzar,jungle
+198,Marfark,Andromeda,winter
+199,Martale,Andromeda,tundra
+200,Matar Bay,Andromeda,highlands
+201,Meissa,Ymir,jungle
+202,Mekbuda,Valdis,icemoss
+203,Menkent,Hydra,desolate
+204,Merak,Valdis,toxic
+205,Merga IV,Valdis,winter
+206,Minchir,Gellert,crimsonmoor
+207,Mintoria,Gellert,highlands
+208,Mordia 9,Hawking,ethereal
+209,Nabatea Secundus,L'estrade,rainforest
+210,Navi VII,L'estrade,jungle
+211,Nivel 43,Mirin,swamp
+212,Oshaune,Mirin,highlands
+213,Overgoe Prime,Sten,crimsonmoor
+214,Pandion-XXIV,Jin Xi,swamp
+215,Partion,Sten,desolate
+216,Peacock,Sten,rainforest
+217,Phact Bay,Jin Xi,mesa
+218,Pherkad Secundus,Farsight,highlands
+219,Polaris Prime,Farsight,desert
+220,Pollux 31,Farsight,jungle
+221,Prasa,Farsight,canyon
+222,Propus,Leo,mesa
+223,Ras Algethi,Leo,tundra
+224,RD-4,Rigel,moon
+225,Rogue 5,Rigel,jungle
+226,Rirga Bay,Rigel,toxic
+227,Seasse,Omega,rainforest
+228,Senge 23,Omega,canyon
+229,Setia,Omega,mesa
+230,Shete,Xi Tauri,toxic
+231,Siemnot,Xi Tauri,rainforest
+232,Sirius,Xi Tauri,moon
+233,Skat Bay,Xi Tauri,swamp
+234,Spherion,Quintus,jungle
+235,Stor Tha Prime,Quintus,icemoss
+236,Stout,Quintus,crimsonmoor
+237,Termadon,Quintus,highlands
+238,Tibit,Severin,ethereal
+239,Tien Kwan,Theseus,icemoss-special
+240,Troost,Trigon,swamp
+241,Ubanea,Severin,crimsonmoor
+242,Ustotu,Trigon,desert
+243,Vandalon IV,Trigon,winter
+244,Varylia 5,Trigon,highlands
+245,Wasat,Ymir,toxic
+246,Vega Bay,Ymir,winter
+247,Wezen,Ymir,desolate
+248,Vindemitarix Prime,Valdis,ethereal
+249,X-45,Ymir,swamp
+250,Yed Prior,Tanis,crimsonmoor
+251,Zefia,Tanis,ethereal
+252,Zosma,Gellert,moon
+253,Zzaniah Prime,Gellert,mesa
+254,Skitter,Hawking,highlands
+255,Euphoria III,Hawking,moon
+256,Diaspora X,L'estrade,mesa
+257,Gemstone Bluffs,L'estrade,highlands
+258,Zagon Prime,Mirin,mesa
+259,Omicron,L'estrade,tundra
+260,Cyberstan,Valdis,canyon
+261,Fury,Xzar,magma
+262,K,Trigon,magma
+263,,,
+264,,,
+265,,,
+266,Mox,Xzar,magma
+267,Big Rock,,
+268,Luxuriant,,lush
+269,Brilliance,,lush
+270,Unknown,,
+271,Unknown,,
+272,Basquine VIII,,autumn
+273,Sangis,,autumn

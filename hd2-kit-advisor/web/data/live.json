@@ -1,0 +1,128 @@
+{
+  "campaigns": [
+    {
+      "id": 200,
+      "name": "Matar Bay",
+      "sector": "Andromeda",
+      "biome": "highlands",
+      "owner": "automatons",
+      "players": 41230,
+      "health": 368000,
+      "max_health": 1000000,
+      "liberation": 63.2,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": true,
+      "hazards": [
+        "rainstorms"
+      ],
+      "severity_load": 1
+    },
+    {
+      "id": 95,
+      "name": "Genesis Prime",
+      "sector": "Rictus",
+      "biome": "jungle",
+      "owner": "terminids",
+      "players": 28910,
+      "health": 513000,
+      "max_health": 1000000,
+      "liberation": 48.7,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": true,
+      "hazards": [
+        "ion_storms"
+      ],
+      "severity_load": 3
+    },
+    {
+      "id": 125,
+      "name": "Fenrir III",
+      "sector": "Umlaut",
+      "biome": "moon",
+      "owner": "terminids",
+      "players": 33750,
+      "health": 786000,
+      "max_health": 1000000,
+      "liberation": 21.4,
+      "is_defense": true,
+      "expires_at": "2026-08-04T21:00:00+00:00",
+      "is_mo_target": false,
+      "hazards": [
+        "extreme_cold",
+        "meteor_storms"
+      ],
+      "severity_load": 5
+    },
+    {
+      "id": 182,
+      "name": "Heze Bay",
+      "sector": "Hanzo",
+      "biome": "mesa",
+      "owner": "automatons",
+      "players": 15600,
+      "health": 119000,
+      "max_health": 1000000,
+      "liberation": 88.1,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [
+        "durial_intense_heat",
+        "nocturnal_extreme_cold",
+        "sandstorms"
+      ],
+      "severity_load": 5
+    },
+    {
+      "id": 13,
+      "name": "Okul VI",
+      "sector": "Gothmar",
+      "biome": "winter",
+      "owner": "automatons",
+      "players": 4100,
+      "health": 880000,
+      "max_health": 1000000,
+      "liberation": 12.0,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [
+        "extreme_cold",
+        "blizzards"
+      ],
+      "severity_load": 4
+    },
+    {
+      "id": 64,
+      "name": "Meridia",
+      "sector": "Umlaut",
+      "biome": "blackhole",
+      "owner": "terminids",
+      "players": 9200,
+      "health": 1000000,
+      "max_health": 1000000,
+      "liberation": 0.0,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [
+        "volcanic_activity",
+        "rainstorms"
+      ],
+      "severity_load": 3
+    }
+  ],
+  "summary": {
+    "active_campaigns": 6,
+    "defenses": 1,
+    "mo_targets": 2,
+    "total_players": 132790,
+    "faction_players": {
+      "automatons": 60930,
+      "terminids": 71860
+    }
+  },
+  "generated_at": "2026-08-04T22:29:48+00:00"
+}

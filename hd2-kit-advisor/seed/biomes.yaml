@@ -1,0 +1,105 @@
+# Biome -> default hazard set.
+# Verified against helldiverstrainingmanual.com/api/v1/planets, build 24036910 (6.3.1).
+# Holds for 268/274 planet indices. Contradictions live in planet_hazard_overrides.yaml.
+
+superearth:
+  display_name: Super Earth
+  hazards: [rainstorms]
+
+mesa:
+  display_name: Mesa
+  hazards: [durial_intense_heat, nocturnal_extreme_cold, sandstorms]
+  note: Only biome with a day/night hazard pair. Kit must handle both heat and cold.
+
+desert:
+  display_name: Desert
+  hazards: [durial_intense_heat, tremors]
+
+canyon:
+  display_name: Canyon
+  hazards: [tremors]
+
+highlands:
+  display_name: Highlands
+  hazards: [thick_fog, rainstorms]
+
+moon:
+  display_name: Moon
+  hazards: [extreme_cold, meteor_storms]
+
+rainforest:
+  display_name: Rainforest
+  hazards: [ion_storms]
+
+jungle:
+  display_name: Jungle
+  hazards: [volcanic_activity, rainstorms]
+
+toxic:
+  display_name: Toxic
+  hazards: [intense_heat, acid_storms]
+
+winter:
+  display_name: Winter
+  hazards: [extreme_cold, blizzards]
+
+icemoss:
+  display_name: Ice Moss
+  hazards: [extreme_cold]
+
+icemoss-special:
+  display_name: Ice Moss (Tien Kwan)
+  hazards: [extreme_cold, meteor_storms]
+  note: Single-planet biome. Tien Kwan (239) only.
+
+crimsonmoor:
+  display_name: Crimson Moor
+  hazards: [ion_storms]
+
+swamp:
+  display_name: Swamp
+  hazards: [thick_fog]
+
+morass:
+  display_name: Morass
+  hazards: [thick_fog]
+
+desolate:
+  display_name: Desolate
+  hazards: [intense_heat, fire_tornadoes]
+
+undergrowth:
+  display_name: Undergrowth
+  hazards: [rainstorms]
+
+blackhole:
+  display_name: Black Hole
+  hazards: [volcanic_activity, rainstorms]
+  note: Meridia (64) only.
+
+shattered:
+  display_name: Shattered
+  hazards: []
+
+ethereal:
+  display_name: Ethereal
+  hazards: []
+
+tundra:
+  display_name: Tundra
+  hazards: []
+
+magma:
+  display_name: Magma
+  hazards: []
+
+lush:
+  display_name: Lush
+  hazards: []
+  status: unreleased
+
+autumn:
+  display_name: Forest (Fall)
+  hazards: []
+  status: new_in_6_3_0
+  note: Basquine VIII (272), Sangis (273). Hazards still empty - recheck after next patch.

@@ -1,0 +1,148 @@
+{
+  "200": {
+    "name": "Matar Bay",
+    "sector": "Andromeda",
+    "biome": {
+      "slug": "highlands",
+      "description": ""
+    },
+    "environmentals": [
+      {
+        "name": "Rainstorms",
+        "description": "Torrential rainstorms reduce visibility."
+      }
+    ],
+    "players": 41230,
+    "percentage": 63.2,
+    "owner": "Automatons",
+    "health": 368000,
+    "maxHealth": 1000000,
+    "regenPerSecond": 0,
+    "disabled": false
+  },
+  "95": {
+    "name": "Genesis Prime",
+    "sector": "Rictus",
+    "biome": {
+      "slug": "jungle",
+      "description": ""
+    },
+    "environmentals": [
+      {
+        "name": "Ion Storms",
+        "description": "Ion storms intermittently disable Stratagems."
+      }
+    ],
+    "players": 28910,
+    "percentage": 48.7,
+    "owner": "Terminids",
+    "health": 513000,
+    "maxHealth": 1000000,
+    "regenPerSecond": 0,
+    "disabled": false
+  },
+  "182": {
+    "name": "Heze Bay",
+    "sector": "Hanzo",
+    "biome": {
+      "slug": "mesa",
+      "description": ""
+    },
+    "environmentals": [
+      {
+        "name": "Durial Intense Heat",
+        "description": "Daytime high temperatures increase stamina drain and weapon heat buildup."
+      },
+      {
+        "name": "Nocturnal Extreme Cold",
+        "description": "At night icy temperatures reduce rate of fire and delay heat buildup."
+      },
+      {
+        "name": "Sandstorms",
+        "description": "Dense sandstorms reduce mobility and greatly reduce visibility."
+      }
+    ],
+    "players": 15600,
+    "percentage": 88.1,
+    "owner": "Automatons",
+    "health": 119000,
+    "maxHealth": 1000000,
+    "regenPerSecond": 0,
+    "disabled": false
+  },
+  "125": {
+    "name": "Fenrir III",
+    "sector": "Umlaut",
+    "biome": {
+      "slug": "moon",
+      "description": ""
+    },
+    "environmentals": [
+      {
+        "name": "Extreme Cold",
+        "description": "Icy temperatures reduce rate of fire and delay heat buildup in weapons."
+      },
+      {
+        "name": "Meteor Storms",
+        "description": "Meteors impact the surface causing massive damage."
+      }
+    ],
+    "players": 33750,
+    "percentage": 21.4,
+    "owner": "Terminids",
+    "health": 786000,
+    "maxHealth": 1000000,
+    "regenPerSecond": 0,
+    "disabled": false
+  },
+  "64": {
+    "name": "Meridia",
+    "sector": "Umlaut",
+    "biome": {
+      "slug": "blackhole",
+      "description": ""
+    },
+    "environmentals": [
+      {
+        "name": "Volcanic Activity",
+        "description": "Volcanoes throw burning rocks around this planet."
+      },
+      {
+        "name": "Rainstorms",
+        "description": "Torrential rainstorms reduce visibility."
+      }
+    ],
+    "players": 9200,
+    "percentage": 0.0,
+    "owner": "Terminids",
+    "health": 1000000,
+    "maxHealth": 1000000,
+    "regenPerSecond": 0,
+    "disabled": false
+  },
+  "13": {
+    "name": "Okul VI",
+    "sector": "Gothmar",
+    "biome": {
+      "slug": "winter",
+      "description": ""
+    },
+    "environmentals": [
+      {
+        "name": "Extreme Cold",
+        "description": "Icy temperatures reduce rate of fire and delay heat buildup in weapons."
+      },
+      {
+        "name": "Blizzards",
+        "description": "Intense blizzards reduce mobility and moderately reduce visibility."
+      }
+    ],
+    "players": 4100,
+    "percentage": 12.0,
+    "owner": "Automatons",
+    "health": 880000,
+    "maxHealth": 1000000,
+    "regenPerSecond": 0,
+    "disabled": false
+  }
+}

@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+web/data/.live_planets.tmp.json
+.DS_Store
