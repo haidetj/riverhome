@@ -40,11 +40,15 @@ jobs:
         run: |
           python3 sourcing/refresh.py ${{ inputs.strict && '--strict' || '' }}
 
+      - name: Bake self-contained preview.html from the fresh data
+        run: |
+          python3 sourcing/build_preview.py
+
       - name: Commit refreshed data if it changed
         run: |
           git config user.name  "hd2-kit sourcing bot"
           git config user.email "actions@github.com"
-          git add web/data
+          git add web/data web/preview.html
           if git diff --cached --quiet; then
             echo "No data change — nothing to commit."
           else

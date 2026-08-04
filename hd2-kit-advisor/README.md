@@ -43,7 +43,7 @@ python3 -m http.server -d web 8000                         # open http://localho
 Or bake a single self-contained file you can open with no server (data inlined):
 
 ```bash
-python3 sourcing/build_preview.py   # -> web/preview.html  (regenerate after each refresh)
+python3 sourcing/build_preview.py   # -> web/preview.html  (the cron bakes this too)
 ```
 
 ---
@@ -77,9 +77,11 @@ whole ingestion path:
 
 `.github/workflows/sourcing.yml` runs it every 6 hours **and** on a manual
 `workflow_dispatch` (an "update now" button, with a `strict` toggle that fails the run
-on canary drift for patch-day checks). It commits `web/data/` only when the payload
-actually changed. `pages.yml` republishes the display on every such commit, so the live
-site tracks the latest pull.
+on canary drift for patch-day checks). After the pull it re-bakes the self-contained
+`web/preview.html`, then commits `web/data/` **and** `web/preview.html` together — only
+when the payload actually changed (the preview is derived from the data, so it moves in
+lockstep and never causes an empty commit). `pages.yml` republishes the display on every
+such commit, so both the live site and the single-file preview track the latest pull.
 
 ---
 
