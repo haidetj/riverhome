@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-05T09:10:15+00:00",
+  "generated_at": "2026-08-05T14:37:42+00:00",
   "orders": [
     {
       "id": 4043397027,
@@ -7,7 +7,7 @@
       "briefing": "Liberate the designated planet, where foul Cyborg lies regarding the TCS+ were fabricated and disseminated.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 181556,
+      "expires_in_s": 161926,
       "target_planets": [
         201
       ]
@@ -18,7 +18,7 @@
       "briefing": "Liberate the designated planet, where dissident saboteurs have planted a Terminid outbreak.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 132699,
+      "expires_in_s": 113069,
       "target_planets": [
         168
       ]

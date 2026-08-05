@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-05T09:10:15+00:00",
+  "generated_at": "2026-08-05T14:37:42+00:00",
   "sources": {
     "planets": {
       "ok": true,
@@ -7,28 +7,28 @@
     },
     "campaign": {
       "ok": true,
-      "sha256": "152081cf859b5d3f890e57be9f754d8c9c9b4632b825418df4d6ba47ae503803"
+      "sha256": "b3fbfc613bfd1b127df13bb5e434d8e2af07d3bea9ed6d203fb7918f7b94fbcd"
     },
     "status": {
       "ok": true,
-      "sha256": "3020b8c8f4536f6138e17e171c4e8f59b1691a3e71443b4a95374179ab47f064"
+      "sha256": "574b14ea6060d5446fb669bd3d4a358e116f69efc372a3e946a750492c8ca96e"
     },
     "major_orders": {
       "ok": true,
-      "sha256": "3eb77faa749ac840a9d63acf62947b4c1cdc26aebacc0c781791cca4e42df892"
+      "sha256": "87472c5bbe0876f49d355f795db4327175fda7e8374717cc06d18a76defb691a"
     }
   },
   "ok": true,
   "changed": false,
   "summary": {
-    "active_campaigns": 34,
+    "active_campaigns": 33,
     "defenses": 0,
     "mo_targets": 2,
-    "total_players": 21143,
+    "total_players": 43003,
     "faction_players": {
-      "terminids": 9366,
-      "automatons": 11146,
-      "illuminate": 631
+      "automatons": 25973,
+      "terminids": 15887,
+      "illuminate": 1143
     }
   },
   "canary": {
