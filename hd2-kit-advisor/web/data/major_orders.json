@@ -1,16 +1,4 @@
 {
-  "generated_at": "2026-08-07T07:45:55+00:00",
-  "orders": [
-    {
-      "id": 4043397027,
-      "title": "MAJOR ORDER",
-      "briefing": "Liberate the designated planet, where foul Cyborg lies regarding the TCS+ were fabricated and disseminated.",
-      "description": null,
-      "expires_at": null,
-      "expires_in_s": 14016,
-      "target_planets": [
-        201
-      ]
-    }
-  ]
+  "generated_at": "2026-08-07T13:42:42+00:00",
+  "orders": []
 }
