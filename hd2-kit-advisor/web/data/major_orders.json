@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-08T19:02:29+00:00",
+  "generated_at": "2026-08-09T02:31:59+00:00",
   "orders": [
     {
       "id": 4265189769,
@@ -7,7 +7,7 @@
       "briefing": "Hold the designated planets to support the completion of the TCS+.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 218520,
+      "expires_in_s": 191610,
       "target_planets": [
         128,
         130,
