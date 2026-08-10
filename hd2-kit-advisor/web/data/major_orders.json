@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-09T19:05:32+00:00",
+  "generated_at": "2026-08-10T02:37:33+00:00",
   "orders": [
     {
       "id": 4265189769,
@@ -7,23 +7,12 @@
       "briefing": "Hold the designated planets to support the completion of the TCS+.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 132100,
+      "expires_in_s": 104890,
       "target_planets": [
         128,
         130,
         175,
         218
-      ]
-    },
-    {
-      "id": 2899149968,
-      "title": "STRATEGIC OPPORTUNITY",
-      "briefing": "Conduct operations against the Cyborgs on the designated planet to liberate materials needed to construct a Warp Relay to penetrate the Void.",
-      "description": null,
-      "expires_at": null,
-      "expires_in_s": 116975,
-      "target_planets": [
-        156
       ]
     }
   ]
