@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-15T07:00:42+00:00",
+  "generated_at": "2026-08-15T13:02:04+00:00",
   "orders": [
     {
       "id": 3979642198,
@@ -7,7 +7,7 @@
       "briefing": "Complete all operations, eliminate enemies of Freedom, and harvest samples across the designated planets to help map a secure corridor deeper into the Void.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 277178,
+      "expires_in_s": 255468,
       "target_planets": [
         275,
         278,
