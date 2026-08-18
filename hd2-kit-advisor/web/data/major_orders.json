@@ -1,18 +1,4 @@
 {
-  "generated_at": "2026-08-17T19:01:22+00:00",
-  "orders": [
-    {
-      "id": 3979642198,
-      "title": "MAJOR ORDER",
-      "briefing": "Complete all operations, eliminate enemies of Freedom, and harvest samples across the designated planets to help map a secure corridor deeper into the Void.",
-      "description": null,
-      "expires_at": null,
-      "expires_in_s": 61288,
-      "target_planets": [
-        275,
-        278,
-        280
-      ]
-    }
-  ]
+  "generated_at": "2026-08-18T01:53:25+00:00",
+  "orders": []
 }
