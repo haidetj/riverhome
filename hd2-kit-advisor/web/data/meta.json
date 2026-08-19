@@ -1,21 +1,21 @@
 {
-  "generated_at": "2026-08-18T19:00:00+00:00",
+  "generated_at": "2026-08-19T01:55:33+00:00",
   "sources": {
     "planets": {
       "ok": true,
-      "sha256": "bcb6d5aaca06fcca7ef86d5838fce25c8f801c489a949e9ebe27dfdaf8d8d798"
+      "sha256": "c2e92e9ace4b3ca83b55645cb0980d88081bcbb7e3b105f6fd38641b2420e6af"
     },
     "campaign": {
       "ok": true,
-      "sha256": "cc593738a96dc83fe49c4952e60f77bd5a87a0b921cead9bb3a0c6b030d1e85d"
+      "sha256": "4fb7f117da19c5e21f1fbd33529f190b16195ceea32e538217a23b6cf267294d"
     },
     "status": {
       "ok": true,
-      "sha256": "7f64e63bc1ac9ca11b5d506dc6867ac5a0c1da37881d232cfd7bd0c9740287fe"
+      "sha256": "6487d62d96e7ded5e33de0f057bd63166c1b45eeeb68b5f23166cd8fc947b217"
     },
     "major_orders": {
       "ok": true,
-      "sha256": "c7fbbb7ea89977042b662ce86bcf8c3ea0cd8f3d5563f3179b58ebb922a53b8d"
+      "sha256": "4714966d538df9ec6cc076456171bb71c9282dedb910bcf8b3065ce1520491f4"
     }
   },
   "ok": true,
@@ -24,16 +24,29 @@
     "active_campaigns": 36,
     "defenses": 0,
     "mo_targets": 1,
-    "total_players": 42423,
+    "total_players": 157610,
     "faction_players": {
-      "illuminate": 7131,
-      "automatons": 11104,
-      "terminids": 24188
+      "illuminate": 122461,
+      "automatons": 11951,
+      "terminids": 23198
     }
   },
   "canary": {
     "checked": true,
-    "drift_count": 0,
-    "drift": []
+    "drift_count": 12,
+    "drift": [
+      "NEW PLANET INDEX 274 ('Unknown') — content signal",
+      "NEW PLANET INDEX 275 ('Unknown') — content signal",
+      "NEW PLANET INDEX 276 ('Unknown') — content signal",
+      "NEW PLANET INDEX 277 ('Unknown') — content signal",
+      "NEW PLANET INDEX 278 ('Unknown') — content signal",
+      "NEW PLANET INDEX 279 ('Unknown') — content signal",
+      "NEW PLANET INDEX 280 ('Unknown') — content signal",
+      "NEW PLANET INDEX 281 ('Unknown') — content signal",
+      "NEW PLANET INDEX 282 ('Unknown') — content signal",
+      "NEW PLANET INDEX 283 ('Unknown') — content signal",
+      "NEW PLANET INDEX 284 ('Unknown') — content signal",
+      "NEW PLANET INDEX 285 ('Unknown') — content signal"
+    ]
   }
 }
