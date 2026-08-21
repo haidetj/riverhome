@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T13:14:45+00:00",
+  "generated_at": "2026-08-21T19:00:05+00:00",
   "orders": [
     {
       "id": 434236,
@@ -7,9 +7,22 @@
       "briefing": "Liberate Seasse to protect the Ministry of Science expeditionary teams as they trigger the total collapse of the Void.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 254885,
+      "expires_in_s": 234155,
       "target_planets": [
         276
+      ]
+    },
+    {
+      "id": 1945609698,
+      "title": "STRATEGIC OPPORTUNITY",
+      "briefing": "Complete all designated planetary objectives in order to catalyze research into the effect of Void Blossoms, enable the synthesis of a chemical countermeasure, and aid the liberation of the Void source planet, Seasse.",
+      "description": null,
+      "expires_at": null,
+      "expires_in_s": 154822,
+      "target_planets": [
+        277,
+        279,
+        281
       ]
     }
   ]
