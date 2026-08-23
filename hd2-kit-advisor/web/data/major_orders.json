@@ -1,16 +1,4 @@
 {
-  "generated_at": "2026-08-23T13:05:24+00:00",
-  "orders": [
-    {
-      "id": 434236,
-      "title": "MAJOR ORDER",
-      "briefing": "Liberate Seasse to protect the Ministry of Science expeditionary teams as they trigger the total collapse of the Void.",
-      "description": null,
-      "expires_at": null,
-      "expires_in_s": 82745,
-      "target_planets": [
-        276
-      ]
-    }
-  ]
+  "generated_at": "2026-08-23T18:50:56+00:00",
+  "orders": []
 }
