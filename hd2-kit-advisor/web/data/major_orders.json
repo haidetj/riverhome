@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-25T13:15:00+00:00",
+  "generated_at": "2026-08-25T19:01:37+00:00",
   "orders": [
     {
       "id": 3348823937,
@@ -7,7 +7,7 @@
       "briefing": "Liberate the designated enemy planets, which are highly likely to be harboring the dissidents responsible for sabotaging the TCS+.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 514024,
+      "expires_in_s": 493194,
       "target_planets": [
         171,
         172,
