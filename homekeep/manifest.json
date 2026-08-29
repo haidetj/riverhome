@@ -1,0 +1,18 @@
+{
+  "name": "Homekeep",
+  "short_name": "Homekeep",
+  "description": "Your home's memory — send a photo, get a card, accept it or don't. Nothing lands silently.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14110d",
+  "theme_color": "#14110d",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

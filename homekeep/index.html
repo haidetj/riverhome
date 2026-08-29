@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#14110d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Homekeep</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <style>
+    :root {
+      --glass: rgba(214,196,168,0.06);
+      --glass-2: rgba(214,196,168,0.11);
+      --border: rgba(214,196,168,0.20);
+      --border-soft: rgba(214,196,168,0.12);
+      --ink: #f2ece1;
+      --ink-soft: #b3a894;
+      --ink-dim: #7c7364;
+      --accent: #f0b429;
+      --accent-2: #8fb996;
+      --accent-soft: rgba(240,180,41,0.14);
+      --ok: #8fb996;
+      --warn: #f0b429;
+      --bad: #e0836a;
+      --shadow: 0 10px 30px rgba(10,8,5,0.45);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--ink); background: #14110d;
+      min-height: 100vh; -webkit-font-smoothing: antialiased;
+    }
+    body { padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+    body::before {
+      content: ""; position: fixed; inset: 0; z-index: -1;
+      background:
+        radial-gradient(60% 50% at 18% 0%, rgba(240,180,41,0.13), transparent 60%),
+        radial-gradient(55% 45% at 92% 8%, rgba(143,185,150,0.10), transparent 60%),
+        linear-gradient(180deg, #14110d, #191510 55%, #14110d);
+    }
+    .app { max-width: 560px; margin: 0 auto; padding: 20px 16px 96px; }
+
+    .card, .sheet, .thread-note {
+      background: var(--glass);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow);
+    }
+
+    /* Header */
+    header { text-align: center; margin-bottom: 14px; position: relative; }
+    .mark { width: 46px; height: 46px; margin: 2px auto 9px; display: block; }
+    h1 { font-size: 1.3rem; font-weight: 600; margin: 0; letter-spacing: 0.3px; }
+    .tagline { color: var(--ink-soft); font-size: 0.82rem; margin: 3px 0 0; }
+    .gear { position: absolute; top: 0; right: 2px; background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--ink-soft); padding: 6px; }
+
+    .section-title {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--ink-soft); margin: 22px 6px 10px; font-weight: 600;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .section-title .note { opacity: 0.65; font-weight: 500; text-transform: none; letter-spacing: 0; }
+
+    /* Tabs */
+    nav.tabs {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      background: rgba(20,17,13,0.92);
+      -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+      border-top: 1px solid var(--border-soft);
+      padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+    }
+    nav.tabs button {
+      position: relative;
+      background: none; border: none; color: var(--ink-dim); cursor: pointer;
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase;
+      padding: 6px 2px; display: grid; gap: 3px; justify-items: center;
+    }
+    nav.tabs button .ic { font-size: 1.15rem; line-height: 1; }
+    nav.tabs button.on { color: var(--accent); }
+    nav.tabs button .badge {
+      position: absolute; top: 0; left: 50%; margin-left: 4px;
+      background: var(--accent); color: #14110d; font-size: 0.6rem; font-weight: 800;
+      border-radius: 10px; padding: 1px 5px; min-width: 16px;
+    }
+
+    /* Composer */
+    .composer { border-radius: var(--radius); padding: 12px; margin-bottom: 8px; }
+    .composer .row { display: flex; gap: 8px; align-items: flex-end; }
+    .composer textarea {
+      flex: 1; resize: none; min-height: 42px; max-height: 140px;
+      background: var(--glass-2); border: 1px solid var(--border-soft); border-radius: 14px;
+      color: var(--ink); font: inherit; font-size: 0.92rem; padding: 11px 12px;
+    }
+    .composer textarea:focus { outline: none; border-color: var(--accent); }
+    .iconbtn {
+      width: 42px; height: 42px; flex: 0 0 42px; border-radius: 14px; cursor: pointer;
+      background: var(--glass-2); border: 1px solid var(--border-soft); color: var(--ink);
+      font-size: 1.1rem; display: grid; place-items: center;
+    }
+    .iconbtn.send { background: var(--accent); border-color: var(--accent); color: #14110d; font-weight: 700; }
+    .iconbtn:disabled { opacity: 0.4; cursor: default; }
+    .shot { margin-top: 9px; display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--ink-soft); }
+    .shot img { width: 54px; height: 54px; object-fit: cover; border-radius: 11px; border: 1px solid var(--border-soft); }
+    .shot button { background: none; border: none; color: var(--ink-dim); cursor: pointer; font-size: 0.8rem; text-decoration: underline; padding: 0; }
+
+    /* Thread */
+    .thread { display: grid; gap: 12px; }
+    .turn { display: grid; gap: 8px; }
+    .bubble {
+      border-radius: 16px; padding: 11px 13px; font-size: 0.9rem; line-height: 1.45;
+      max-width: 88%; white-space: pre-wrap; overflow-wrap: anywhere;
+    }
+    .bubble.mine { justify-self: end; background: var(--accent-soft); border: 1px solid rgba(240,180,41,0.25); }
+    .bubble.theirs { justify-self: start; background: var(--glass); border: 1px solid var(--border-soft); }
+    .bubble img { width: 100%; max-width: 210px; border-radius: 11px; display: block; margin-bottom: 7px; }
+    .stamp { font-size: 0.68rem; color: var(--ink-dim); }
+    .turn.mine .stamp { text-align: right; }
+    .thinking { color: var(--ink-soft); font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 1.1s infinite ease-in-out; }
+    .dot:nth-child(2) { animation-delay: 0.18s; } .dot:nth-child(3) { animation-delay: 0.36s; }
+    @keyframes pulse { 0%,100% { opacity: 0.25; } 50% { opacity: 1; } }
+
+    /* Proposal cards */
+    .prop { border-radius: 16px; padding: 13px 14px; border-left: 3px solid var(--accent); }
+    .prop.settled { border-left-color: var(--ink-dim); opacity: 0.72; }
+    .prop-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+    .prop-title { font-size: 0.95rem; font-weight: 600; line-height: 1.3; }
+    .prop-why { font-size: 0.81rem; color: var(--ink-soft); margin-top: 6px; line-height: 1.45; }
+    .prop-fields { margin-top: 10px; display: grid; gap: 5px; font-size: 0.8rem; }
+    .prop-fields .f { display: flex; gap: 8px; }
+    .prop-fields .f .k { color: var(--ink-dim); min-width: 84px; }
+    .prop-fields .f .v { color: var(--ink); overflow-wrap: anywhere; }
+    .chip {
+      font-size: 0.63rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 3px 8px; border-radius: 20px; white-space: nowrap; flex: 0 0 auto;
+    }
+    .chip.guess { background: rgba(240,180,41,0.15); color: var(--accent); }
+    .chip.sure { background: rgba(143,185,150,0.16); color: var(--ok); }
+    .chip.owner { background: rgba(143,185,150,0.16); color: var(--ok); }
+    .chip.agent { background: rgba(240,180,41,0.15); color: var(--accent); }
+    .chip.grey { background: rgba(214,196,168,0.12); color: var(--ink-soft); }
+    .prop-where { margin-top: 11px; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--ink-soft); }
+    .prop-where select { flex: 1; }
+    .prop-acts { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; margin-top: 12px; }
+    button.act {
+      border-radius: 12px; padding: 9px 12px; font-size: 0.84rem; font-weight: 600; cursor: pointer;
+      background: var(--glass-2); border: 1px solid var(--border-soft); color: var(--ink);
+    }
+    button.act.accept { background: var(--accent); border-color: var(--accent); color: #14110d; }
+    button.act.dismiss { color: var(--ink-soft); }
+    .prop-verdict { margin-top: 11px; font-size: 0.78rem; color: var(--ink-soft); }
+
+    /* Forms */
+    label.fl { display: block; font-size: 0.76rem; color: var(--ink-soft); margin: 10px 2px 5px; font-weight: 600; }
+    input, select, textarea.ta {
+      width: 100%; background: var(--glass-2); border: 1px solid var(--border-soft);
+      border-radius: 12px; color: var(--ink); font: inherit; font-size: 0.9rem; padding: 10px 11px;
+    }
+    input:focus, select:focus, textarea.ta:focus { outline: none; border-color: var(--accent); }
+    select { appearance: none; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .hint { font-size: 0.74rem; color: var(--ink-dim); margin: 6px 2px 0; line-height: 1.45; }
+
+    /* Ledger */
+    .space-block { border-radius: 16px; padding: 13px 14px; margin-bottom: 10px; }
+    .space-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .space-name { font-size: 0.98rem; font-weight: 600; }
+    .space-meta { font-size: 0.73rem; color: var(--ink-dim); margin-top: 2px; }
+    .item-row {
+      display: flex; align-items: center; gap: 9px; padding: 9px 0;
+      border-top: 1px solid var(--border-soft); cursor: pointer;
+    }
+    .item-row .nm { flex: 1; font-size: 0.88rem; }
+    .item-row .sub { font-size: 0.74rem; color: var(--ink-dim); margin-top: 2px; }
+    .item-row .chev { color: var(--ink-dim); font-size: 0.9rem; }
+    .nest { padding-left: 16px; border-left: 1px solid var(--border-soft); margin-left: 4px; }
+
+    /* Tasks */
+    .task-row { display: flex; align-items: flex-start; gap: 11px; padding: 12px 0; border-bottom: 1px solid var(--border-soft); }
+    .task-row:last-child { border-bottom: none; }
+    .tick {
+      width: 22px; height: 22px; flex: 0 0 22px; border-radius: 7px; margin-top: 1px;
+      border: 1.5px solid var(--border); background: none; cursor: pointer; color: var(--accent);
+      display: grid; place-items: center; font-size: 0.8rem; font-weight: 800;
+    }
+    .task-row.done .tt { text-decoration: line-through; color: var(--ink-dim); }
+    .tt { font-size: 0.9rem; }
+    .td { font-size: 0.74rem; color: var(--ink-dim); margin-top: 3px; }
+    .td.over { color: var(--bad); }
+    .td.soon { color: var(--warn); }
+
+    /* Sheets & modals */
+    .veil {
+      position: fixed; inset: 0; z-index: 50; background: rgba(10,8,5,0.62);
+      -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .veil[hidden] { display: none; }
+    .sheet {
+      width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto;
+      border-radius: 22px 22px 0 0; padding: 18px 16px calc(22px + env(safe-area-inset-bottom));
+    }
+    .sheet-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .sheet-head h2 { font-size: 1.05rem; margin: 0; font-weight: 600; }
+    .x { background: none; border: none; color: var(--ink-soft); font-size: 1.3rem; cursor: pointer; padding: 2px 6px; }
+    .sheet-acts { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 18px; }
+    button.wide {
+      width: 100%; border-radius: 13px; padding: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+      background: var(--glass-2); border: 1px solid var(--border-soft); color: var(--ink);
+    }
+    button.wide.primary { background: var(--accent); border-color: var(--accent); color: #14110d; }
+    button.wide.danger { color: var(--bad); border-color: rgba(224,131,106,0.3); }
+
+    .empty { text-align: center; color: var(--ink-dim); font-size: 0.86rem; padding: 26px 18px; line-height: 1.55; }
+    .empty strong { color: var(--ink-soft); font-weight: 600; }
+    .prov { font-size: 0.72rem; color: var(--ink-dim); margin-top: 9px; line-height: 1.45; }
+    .toast {
+      position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%);
+      background: rgba(20,17,13,0.96); border: 1px solid var(--border); color: var(--ink);
+      padding: 10px 15px; border-radius: 13px; font-size: 0.84rem; z-index: 60; box-shadow: var(--shadow);
+      max-width: 90vw; text-align: center;
+    }
+    .toast[hidden] { display: none; }
+    .err { color: var(--bad); font-size: 0.82rem; margin-top: 8px; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <button class="gear" id="gearBtn" title="Settings" aria-label="Settings">⚙︎</button>
+    <svg class="mark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+      <path d="M10 30 32 12l22 18" stroke="#f0b429" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M16 28v22h32V28" stroke="#f0b429" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+      <path d="M24 50V36h16v14" stroke="#8fb996" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h1>Homekeep</h1>
+    <p class="tagline" id="tagline">Your home's memory.</p>
+  </header>
+
+  <!-- ── TODAY ─────────────────────────────────────────────────────────── -->
+  <section id="tab-today">
+    <div class="card composer">
+      <div class="row">
+        <button class="iconbtn" id="photoBtn" title="Add a photo" aria-label="Add a photo">📷</button>
+        <textarea id="msgInput" rows="1" placeholder="Send a photo, or just tell me something…"></textarea>
+        <button class="iconbtn send" id="sendBtn" title="Send" aria-label="Send">↑</button>
+      </div>
+      <div class="shot" id="shotRow" hidden>
+        <img id="shotImg" alt="" />
+        <span id="shotName">Photo ready</span>
+        <button id="shotDrop">remove</button>
+      </div>
+      <input type="file" id="photoInput" accept="image/*" capture="environment" hidden />
+    </div>
+
+    <div id="dueStrip"></div>
+
+    <div class="section-title" id="threadTitle" hidden><span>The thread</span><span class="note" id="threadNote"></span></div>
+    <div class="thread" id="thread"></div>
+    <div id="todayEmpty" class="empty">
+      <strong>Send the first thing.</strong><br />
+      A photo of the water heater, the furnace label, a crack you keep meaning to deal with —
+      or just type it. Nothing gets written down until you say so.
+    </div>
+  </section>
+
+  <!-- ── HOME ──────────────────────────────────────────────────────────── -->
+  <section id="tab-home" hidden>
+    <div class="section-title"><span>The house</span><span class="note" id="ledgerCount"></span></div>
+    <div id="ledger"></div>
+    <div id="ledgerEmpty" class="empty">
+      <strong>Nothing on the record yet.</strong><br />
+      Everything here arrives by accepting a card — the ledger is never written to behind your back.
+    </div>
+    <button class="wide" id="addSpaceBtn" style="margin-top:14px">+ Add a space by hand</button>
+  </section>
+
+  <!-- ── REMINDERS ─────────────────────────────────────────────────────── -->
+  <section id="tab-tasks" hidden>
+    <div class="section-title"><span>Reminders</span><span class="note" id="taskCount"></span></div>
+    <div class="card" id="taskCard" style="border-radius:var(--radius);padding:4px 15px">
+      <div id="taskList"></div>
+    </div>
+    <div id="taskEmpty" class="empty"><strong>No reminders yet.</strong><br />Filter changes, gutters, the annual service — write them down once.</div>
+    <button class="wide primary" id="addTaskBtn" style="margin-top:14px">+ New reminder</button>
+    <div class="section-title" id="doneTitle" hidden><span>Done</span></div>
+    <div class="card" id="doneCard" hidden style="border-radius:var(--radius);padding:4px 15px">
+      <div id="doneList"></div>
+    </div>
+  </section>
+</div>
+
+<nav class="tabs">
+  <button data-tab="today" class="on"><span class="ic">💬</span><span>Today<span class="badge" id="pendBadge" hidden>0</span></span></button>
+  <button data-tab="home"><span class="ic">🏠</span><span>House</span></button>
+  <button data-tab="tasks"><span class="ic">🔔</span><span>Reminders</span></button>
+</nav>
+
+<!-- ── Settings sheet ──────────────────────────────────────────────────── -->
+<div class="veil" id="setVeil" hidden>
+  <div class="sheet">
+    <div class="sheet-head"><h2>Settings</h2><button class="x" id="setClose">✕</button></div>
+
+    <div class="section-title"><span>Your home</span></div>
+    <label class="fl" for="homeAddr">Address or nickname</label>
+    <input id="homeAddr" placeholder="The house on Elm" autocomplete="off" />
+    <div class="grid2">
+      <div>
+        <label class="fl" for="homeYear">Year built</label>
+        <input id="homeYear" inputmode="numeric" placeholder="1974" />
+      </div>
+      <div>
+        <label class="fl" for="homeType">Type</label>
+        <select id="homeType">
+          <option value="">—</option><option>house</option><option>condo</option>
+          <option>townhouse</option><option>other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section-title"><span>The agent</span></div>
+    <label class="fl" for="keyInput">Anthropic API key</label>
+    <input id="keyInput" type="password" placeholder="sk-ant-…" autocomplete="off" spellcheck="false" />
+    <p class="hint">Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" style="color:var(--accent)">console.anthropic.com</a>. It stays on this device and is sent only to Anthropic. Without a key Homekeep still keeps everything — you fill the cards in yourself instead of the agent drafting them.</p>
+    <label class="fl" for="modelInput">Model</label>
+    <input id="modelInput" list="modelList" autocomplete="off" spellcheck="false" placeholder="claude-opus-5" />
+    <datalist id="modelList"></datalist>
+
+    <div class="section-title"><span>Your data</span></div>
+    <p class="hint">Everything lives in this browser on this device — photos included. Nothing is uploaded except the one photo the agent is reading, at the moment it reads it.</p>
+    <div class="sheet-acts">
+      <button class="wide" id="exportBtn">Export everything</button>
+      <button class="wide danger" id="wipeBtn">Delete everything</button>
+    </div>
+    <div class="sheet-acts">
+      <button class="wide" id="setCancel">Close</button>
+      <button class="wide primary" id="setSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Edit-proposal sheet ─────────────────────────────────────────────── -->
+<div class="veil" id="editVeil" hidden>
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="editTitle">Edit before accepting</h2><button class="x" id="editClose">✕</button></div>
+    <p class="hint" id="editHint">Anything you change here becomes your word, not a guess — it's recorded as stated by you.</p>
+    <div id="editFields"></div>
+    <div class="sheet-acts">
+      <button class="wide" id="editCancel">Cancel</button>
+      <button class="wide primary" id="editSave">Save &amp; accept</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Item detail sheet ───────────────────────────────────────────────── -->
+<div class="veil" id="itemVeil" hidden>
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="itemTitle">Item</h2><button class="x" id="itemClose">✕</button></div>
+    <div id="itemBody"></div>
+    <div class="sheet-acts">
+      <button class="wide danger" id="itemRemove">Remove from ledger</button>
+      <button class="wide primary" id="itemEdit">Correct this</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Task sheet ──────────────────────────────────────────────────────── -->
+<div class="veil" id="taskVeil" hidden>
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="taskSheetTitle">New reminder</h2><button class="x" id="taskClose">✕</button></div>
+    <label class="fl" for="taskTitle">What needs doing</label>
+    <input id="taskTitle" placeholder="Replace the furnace filter" autocomplete="off" />
+    <div class="grid2">
+      <div>
+        <label class="fl" for="taskDue">Due</label>
+        <input id="taskDue" type="date" />
+      </div>
+      <div>
+        <label class="fl" for="taskRec">Repeats</label>
+        <select id="taskRec">
+          <option value="none">once</option><option value="monthly">monthly</option>
+          <option value="quarterly">quarterly</option><option value="semiannual">twice a year</option>
+          <option value="annual">yearly</option>
+        </select>
+      </div>
+    </div>
+    <label class="fl" for="taskItem">About (optional)</label>
+    <select id="taskItem"><option value="">—</option></select>
+    <div class="sheet-acts">
+      <button class="wide" id="taskCancel">Cancel</button>
+      <button class="wide primary" id="taskSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ═══ Settings ═══════════════════════════════════════════════════════════
+     Small, boring, and in localStorage. The ledger itself lives in IndexedDB
+     (below) because photos are the record and photos do not fit here.         */
+
+  const KEY_STORE = "homekeep.key";
+  const SET_STORE = "homekeep.settings";
+  const MODELS = [
+    { id: "claude-opus-5",    label: "Opus 5 — most capable (default)" },
+    { id: "claude-sonnet-5",  label: "Sonnet 5 — balanced" },
+    { id: "claude-haiku-4-5", label: "Haiku 4.5 — fastest" }
+  ];
+
+  const settings = Object.assign(
+    { model: "claude-opus-5" },
+    (() => { try { return JSON.parse(localStorage.getItem(SET_STORE)) || {}; } catch { return {}; } })()
+  );
+  const loadKey  = () => { try { return localStorage.getItem(KEY_STORE) || ""; } catch { return ""; } };
+  const saveSettings = () => { try { localStorage.setItem(SET_STORE, JSON.stringify(settings)); } catch {} };
+  const hasAgent = () => !!loadKey();
+
+  /* ═══ The vault ══════════════════════════════════════════════════════════
+     IndexedDB, one store per entity, mirroring schema.sql field for field so
+     the ledger can move to SQL without a migration of meaning. Photos live in
+     `media` as blobs — kept, because they are the record.                     */
+
+  const DB_NAME = "homekeep", DB_VER = 1;
+  const STORES = ["home", "space", "item", "observation", "proposal", "task", "media"];
+  let db = null;
+
+  function openDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VER);
+      req.onupgradeneeded = () => {
+        const d = req.result;
+        for (const s of STORES) if (!d.objectStoreNames.contains(s)) d.createObjectStore(s, { keyPath: "id" });
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+  const idb = (store, mode, fn) => new Promise((resolve, reject) => {
+    const t = db.transaction(store, mode);
+    const r = fn(t.objectStore(store));
+    t.oncomplete = () => resolve(r && r.result);
+    t.onerror = () => reject(t.error);
+  });
+  const dbPut    = (store, val) => idb(store, "readwrite", (s) => s.put(val));
+  const dbDel    = (store, id)  => idb(store, "readwrite", (s) => s.delete(id));
+  const dbAll    = (store)      => idb(store, "readonly",  (s) => s.getAll());
+  const dbClear  = (store)      => idb(store, "readwrite", (s) => s.clear());
+
+  /* In-memory mirror. One household's ledger is small; keeping it all in RAM
+     keeps every render synchronous and the code honest about what it holds. */
+  const S = { home: null, space: [], item: [], observation: [], proposal: [], task: [] };
+  const mediaURL = new Map();   // media id -> object URL, made on demand
+
+  async function loadAll() {
+    const [home, space, item, observation, proposal, task] = await Promise.all(
+      ["home", "space", "item", "observation", "proposal", "task"].map(dbAll)
+    );
+    S.home = home[0] || null;
+    Object.assign(S, { space, item, observation, proposal, task });
+    if (!S.home) {
+      S.home = { id: uid(), address: "", year_built: null, year_built_certainty: "unknown",
+                 type: "", ownership: "", created_at: now(), updated_at: now() };
+      await dbPut("home", S.home);
+    }
+  }
+
+  async function photoURL(mediaRef) {
+    if (!mediaRef) return null;
+    if (mediaURL.has(mediaRef)) return mediaURL.get(mediaRef);
+    const rec = await idb("media", "readonly", (s) => s.get(mediaRef));
+    if (!rec) return null;
+    const url = URL.createObjectURL(rec.blob);
+    mediaURL.set(mediaRef, url);
+    return url;
+  }
+
+  /* ═══ Small helpers ══════════════════════════════════════════════════════ */
+
+  const $ = (id) => document.getElementById(id);
+  const uid = () => (crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2));
+  const now = () => new Date().toISOString();
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const today = () => new Date().toISOString().slice(0, 10);
+
+  function when(iso) {
+    if (!iso) return "";
+    const d = new Date(iso), t = new Date();
+    const days = Math.round((new Date(t.toDateString()) - new Date(d.toDateString())) / 86400000);
+    const clock = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    if (days === 0) return clock;
+    if (days === 1) return "yesterday " + clock;
+    if (days < 7) return d.toLocaleDateString([], { weekday: "long" }) + " " + clock;
+    return d.toLocaleDateString([], { month: "short", day: "numeric" });
+  }
+  function dueLabel(due) {
+    if (!due) return { text: "no date", cls: "" };
+    const days = Math.round((new Date(due + "T00:00:00") - new Date(today() + "T00:00:00")) / 86400000);
+    if (days < 0)  return { text: `${-days} day${days === -1 ? "" : "s"} overdue`, cls: "over" };
+    if (days === 0) return { text: "due today", cls: "soon" };
+    if (days === 1) return { text: "due tomorrow", cls: "soon" };
+    if (days < 14) return { text: `due in ${days} days`, cls: days < 4 ? "soon" : "" };
+    return { text: "due " + new Date(due + "T00:00:00").toLocaleDateString([], { month: "short", day: "numeric" }), cls: "" };
+  }
+  let toastT = null;
+  function toast(msg) {
+    const el = $("toast");
+    el.textContent = msg; el.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, 2600);
+  }
+
+  /* ═══ The one write path ═════════════════════════════════════════════════
+     Rule 3 from the data model: raw observations always save; everything else
+     lands only through a proposal that was accepted or edited. That rule is
+     structural here, not a promise — `commit()` is the only function in this
+     file that writes to `space` or `item`, and it always stamps the proposal
+     that authorised it. An owner typing into a form is the same path with the
+     proposal pre-accepted, so the audit trail has no holes in it.             */
+
+  const SPACE_FIELDS = ["name", "kind", "floor", "notes"];
+  const ITEM_FIELDS  = ["name", "category", "brand", "model", "serial", "installed",
+                        "installed_certainty", "condition", "expected_life_years", "notes"];
+  const FIELD_LABEL = {
+    name: "Name", kind: "Kind", floor: "Floor", notes: "Notes", category: "Category",
+    brand: "Brand", model: "Model", serial: "Serial", installed: "Installed",
+    installed_certainty: "How sure", condition: "Condition", expected_life_years: "Expected life",
+    space_id: "Space"
+  };
+  const CERTAINTY = ["stated", "estimated_from_photo", "inferred", "unknown"];
+  const CERTAINTY_LABEL = {
+    stated: "you told me", estimated_from_photo: "my guess from the photo",
+    inferred: "inferred", unknown: "unknown"
+  };
+
+  const TASK_FIELDS  = ["title", "due", "recurrence"];
+  const fieldsFor = (t) => (t === "space" ? SPACE_FIELDS : t === "task" ? TASK_FIELDS : ITEM_FIELDS);
+
+  function signature(p) {
+    const f = {};
+    for (const k of fieldsFor(p.target_type)) {
+      const v = String((p.change && p.change[k]) || "").trim().toLowerCase();
+      if (v && k !== "notes") f[k] = v;
+    }
+    const body = Object.keys(f).sort().map((k) => k + "=" + f[k]).join(";");
+    return `${p.target_type}|${p.target_id || ""}|${p.op}|${body}`;
+  }
+
+  /** Writes the proposal's change into the ledger and stamps provenance on it. */
+  async function commit(prop, { edited = false, spaceChoice = null, newSpaceName = "" } = {}) {
+    const stated_by = edited ? "owner" : (prop.source_type === "owner" ? "owner" : "agent");
+    const confidence = stated_by === "owner" ? 1 : (prop.confidence ?? 0.5);
+    const prov = { source_observation_id: prop.source_type === "observation" ? prop.source_id : null,
+                   stated_by, confidence };
+    const ts = now();
+    let appliedId = null;
+
+    if (prop.target_type === "space") {
+      if (prop.op === "create") {
+        const row = Object.assign({ id: uid(), home_id: S.home.id, created_at: ts, updated_at: ts }, prov);
+        for (const k of SPACE_FIELDS) row[k] = prop.change[k] || "";
+        await dbPut("space", row); S.space.push(row); appliedId = row.id;
+      } else {
+        const row = S.space.find((x) => x.id === prop.target_id);
+        if (!row) throw new Error("that space is no longer in the ledger");
+        for (const k of SPACE_FIELDS) if (prop.change[k]) row[k] = prop.change[k];
+        Object.assign(row, prov, { updated_at: ts });
+        await dbPut("space", row); appliedId = row.id;
+      }
+    } else if (prop.target_type === "item") {
+      /* An item needs a space. The card asks for one rather than inventing it:
+         picking "new space" creates both rows from this one decision, which is
+         visible on the card's face before it is taken. */
+      let spaceId = spaceChoice;
+      if (spaceId === "__new__") {
+        const nm = (newSpaceName || prop.change.space_name || "Unsorted").trim();
+        const existing = S.space.find((x) => x.name.toLowerCase() === nm.toLowerCase());
+        if (existing) spaceId = existing.id;
+        else {
+          const sp = Object.assign({ id: uid(), home_id: S.home.id, name: nm, kind: "", floor: "", notes: "",
+                                     created_at: ts, updated_at: ts }, prov);
+          await dbPut("space", sp); S.space.push(sp); spaceId = sp.id;
+        }
+      }
+      if (prop.op === "create") {
+        const row = Object.assign({ id: uid(), space_id: spaceId || null, parent_id: null,
+                                    status: "active", created_at: ts, updated_at: ts }, prov);
+        for (const k of ITEM_FIELDS) row[k] = prop.change[k] || "";
+        await dbPut("item", row); S.item.push(row); appliedId = row.id;
+      } else {
+        const row = S.item.find((x) => x.id === prop.target_id);
+        if (!row) throw new Error("that item is no longer in the ledger");
+        for (const k of ITEM_FIELDS) if (prop.change[k]) row[k] = prop.change[k];
+        if (spaceId) row.space_id = spaceId;
+        if (prop.change.status) row.status = prop.change.status;
+        Object.assign(row, prov, { updated_at: ts });
+        await dbPut("item", row); appliedId = row.id;
+      }
+    } else if (prop.target_type === "task") {
+      const row = prop.op === "create"
+        ? Object.assign({ id: uid(), home_id: S.home.id, item_id: prop.change.item_id || null,
+                          done_at: null, created_at: ts, updated_at: ts }, prov)
+        : S.task.find((x) => x.id === prop.target_id);
+      if (!row) throw new Error("that reminder is gone");
+      row.title = prop.change.title || row.title || "";
+      row.due = prop.change.due || null;
+      row.recurrence = prop.change.recurrence || "none";
+      if ("item_id" in prop.change) row.item_id = prop.change.item_id || null;
+      if ("done_at" in prop.change) row.done_at = prop.change.done_at;
+      row.updated_at = ts;
+      await dbPut("task", row);
+      if (prop.op === "create") S.task.push(row);
+      appliedId = row.id;
+    }
+
+    prop.status = edited ? "edited" : "accepted";
+    prop.decided_at = ts;
+    prop.applied_id = appliedId;
+    await dbPut("proposal", prop);
+    return appliedId;
+  }
+
+  /** An owner-authored write: a proposal that is decided the moment it is made. */
+  async function ownerWrite(target_type, op, target_id, change, title) {
+    const prop = {
+      id: uid(), home_id: S.home.id, source_type: "owner", source_id: null,
+      target_type, target_id: target_id || null, op, title,
+      rationale: "You wrote this in yourself.", change, confidence: 1,
+      status: "pending", applied_id: null, decided_at: null, created_at: now()
+    };
+    prop.signature = signature(prop);
+    S.proposal.push(prop);
+    await dbPut("proposal", prop);
+    return commit(prop, { edited: false, spaceChoice: change.space_id || null, newSpaceName: change.space_name || "" });
+  }
+
+  async function dismiss(prop) {
+    prop.status = "dismissed";
+    prop.decided_at = now();
+    await dbPut("proposal", prop);
+  }
+
+  /* Rule 4: dismissed stays dismissed. A dismissal is remembered by signature —
+     the same claim about the same thing does not come back. A different value
+     is new evidence and is allowed through. */
+  const dismissedSignatures = () =>
+    new Set(S.proposal.filter((p) => p.status === "dismissed").map((p) => p.signature));
+
+  /* ═══ The agent ══════════════════════════════════════════════════════════
+     Reads a photo or a note and drafts cards. It never writes to the ledger —
+     `commit()` above does, and only when you press accept.                    */
+
+  const AGENT_SYSTEM = `You are Homekeep — the memory of one household, run by its owner. You read what the owner sends you (a photo, a note, or both) and draft proposed entries for their home ledger. You never write to the ledger yourself: everything you conclude becomes a card the owner accepts, edits, or dismisses.
+
+The ledger has two kinds of row you may propose:
+- space — a room or zone: kitchen, attic, crawlspace, north exterior, back yard.
+- item — any thing: appliance, system, fixture, material, structural component. Items live in a space.
+
+How to behave:
+- Ground every field in what you can actually see or were actually told. Never invent a brand, model, serial, or date. An empty string is always better than a guess dressed as a fact.
+- When you do estimate, say so in the field's certainty: "estimated_from_photo" for something you read off an image, "inferred" for something you reasoned to, "stated" only for what the owner told you, "unknown" when you have nothing.
+- Set confidence honestly: 0.9+ when a label is legible in the photo, 0.5–0.7 for a confident read of an unlabelled thing, below 0.4 for a real guess.
+- Propose the fewest cards that capture what is actually there. One clear item beats four speculative ones. If a photo shows one appliance, that is one card — do not itemise its parts unless they are separately visible and separately worth tracking.
+- Ask like a contractor: how old, where, what is it connected to, how bad. But ask at most ONE question, in the "question" field, and only when the answer would change what goes on the record. No question at all is the right call more often than not.
+- Suggest once, then wait. Never re-raise something the owner has already turned down.
+- The "reply" is one or two plain sentences, the way you would text a friend who owns this house: what you see, what you are proposing. Warm, brief, never salesy. Acknowledge progress without inflating it — no "great job!", no exclamation marks.
+- If the photo shows nothing you can responsibly file, say so in the reply and return no proposals. That is a good outcome, not a failure.
+
+Card fields:
+- title: what the card says on its face, e.g. "Add: gas water heater (basement)".
+- rationale: one line on why you think so, naming the evidence — "the label reads A.O. Smith GCR-40, and the flue looks original".
+- name: what the thing is called, plainly. "Gas water heater", not "AO Smith GCR-40 40gal Water Heater Unit".
+- space_name: the space it belongs in. Reuse an existing space's exact name when it fits; otherwise propose a plain new one.
+- installed: a year or ISO date, or "" if you don't know. installed_certainty must match how you got it.
+- expected_life_years: a typical service life for this kind of thing, as a number in a string, or "" if it isn't the kind of thing that has one.
+- Every field you have nothing for must be an empty string. Do not use "unknown", "N/A", or "-".`;
+
+  const PROP_PROPS = {
+    target_type: { type: "string", enum: ["space", "item"] },
+    op: { type: "string", enum: ["create", "update"] },
+    target_id: { type: "string" },
+    title: { type: "string" },
+    rationale: { type: "string" },
+    confidence: { type: "number" },
+    name: { type: "string" },
+    space_name: { type: "string" },
+    kind: { type: "string" },
+    floor: { type: "string" },
+    category: { type: "string" },
+    brand: { type: "string" },
+    model: { type: "string" },
+    serial: { type: "string" },
+    installed: { type: "string" },
+    installed_certainty: { type: "string", enum: CERTAINTY },
+    condition: { type: "string" },
+    expected_life_years: { type: "string" },
+    notes: { type: "string" }
+  };
+  const EXTRACT_SCHEMA = {
+    type: "object",
+    properties: {
+      reply: { type: "string" },
+      question: { type: "string" },
+      proposals: {
+        type: "array",
+        items: { type: "object", properties: PROP_PROPS, required: Object.keys(PROP_PROPS), additionalProperties: false }
+      }
+    },
+    required: ["reply", "question", "proposals"],
+    additionalProperties: false
+  };
+
+  /** The ledger as the agent sees it: what exists, and what has been turned down. */
+  function agentContext() {
+    const spaces = S.space.map((s) => ({ id: s.id, name: s.name, kind: s.kind || "" }));
+    const items = S.item.filter((i) => i.status === "active").slice(-60).map((i) => ({
+      id: i.id, name: i.name, space: (S.space.find((s) => s.id === i.space_id) || {}).name || "",
+      brand: i.brand || "", model: i.model || "", installed: i.installed || ""
+    }));
+    const turned_down = S.proposal.filter((p) => p.status === "dismissed").slice(-15).map((p) => p.title);
+    return {
+      home: { address: S.home.address || "", year_built: S.home.year_built || "", type: S.home.type || "" },
+      today: today(), spaces, items,
+      turned_down_before: turned_down,
+      note: "Reuse an existing space name or id when the thing belongs somewhere you already know about. Never propose again anything in turned_down_before unless this capture genuinely contradicts it."
+    };
+  }
+
+  /** Downscale for the wire. The original photo is kept untouched in the vault. */
+  function shrink(blob) {
+    return new Promise((resolve, reject) => {
+      const img = new Image(), url = URL.createObjectURL(blob);
+      img.onload = () => {
+        const max = 1280, scale = Math.min(1, max / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        resolve(c.toDataURL("image/jpeg", 0.82).split(",")[1]);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("that image could not be read")); };
+      img.src = url;
+    });
+  }
+
+  async function askAgent({ text, blob }) {
+    const content = [];
+    if (blob) {
+      content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: await shrink(blob) } });
+    }
+    content.push({ type: "text", text:
+      `LEDGER:\n${JSON.stringify(agentContext(), null, 1)}\n\n` +
+      `THE OWNER SAYS:\n${text || (blob ? "(a photo, no words)" : "")}` });
+
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": loadKey(),
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: settings.model || "claude-opus-5",
+        max_tokens: 4000,
+        system: AGENT_SYSTEM,
+        output_config: { format: { type: "json_schema", schema: EXTRACT_SCHEMA } },
+        messages: [{ role: "user", content }]
+      })
+    });
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      throw new Error((e.error && e.error.message) || `the agent could not be reached (${res.status})`);
+    }
+    const body = await res.json();
+    const tb = (body.content || []).find((b) => b.type === "text");
+    if (!tb) throw new Error("the agent replied with nothing to read");
+    return JSON.parse(tb.text);
+  }
+
+  /* ═══ Capture ════════════════════════════════════════════════════════════
+     The observation saves first and always — before the agent runs, and
+     whether or not it succeeds. It is the provenance every later row points
+     at, so it must not depend on a network call.                              */
+
+  let pendingBlob = null, sending = false;
+
+  async function send() {
+    const text = $("msgInput").value.trim();
+    const blob = pendingBlob;
+    if (!text && !blob || sending) return;
+    sending = true; $("sendBtn").disabled = true;
+
+    let mediaRef = null;
+    if (blob) {
+      mediaRef = uid();
+      await dbPut("media", { id: mediaRef, blob, type: blob.type || "image/jpeg", created_at: now() });
+    }
+    const obs = {
+      id: uid(), home_id: S.home.id, kind: blob ? "photo" : "text",
+      media_ref: mediaRef, transcript: blob ? "" : text, caption: blob ? text : "",
+      extracted: null, extract_status: "pending", extract_error: null, captured_at: now()
+    };
+    S.observation.push(obs);
+    await dbPut("observation", obs);
+
+    $("msgInput").value = ""; clearShot(); autogrow();
+    await renderToday();
+
+    try {
+      if (hasAgent()) {
+        const out = await askAgent({ text, blob });
+        await landProposals(obs, out);
+      } else {
+        await blankCard(obs, text);
+      }
+    } catch (err) {
+      obs.extract_status = "failed";
+      obs.extract_error = err.message || String(err);
+      await dbPut("observation", obs);
+    }
+    sending = false; $("sendBtn").disabled = false;
+    await renderToday(); renderBadge();
+  }
+
+  /** Turn the agent's draft into cards, minus anything already turned down. */
+  async function landProposals(obs, out) {
+    const dismissed = dismissedSignatures();
+    let held = 0;
+    const kept = [];
+    for (const p of out.proposals || []) {
+      const change = {};
+      for (const k of fieldsFor(p.target_type)) change[k] = (p[k] || "").trim();
+      if (p.target_type === "item") change.space_name = (p.space_name || "").trim();
+      if (!change.name) continue;
+      const prop = {
+        id: uid(), home_id: S.home.id, source_type: "observation", source_id: obs.id,
+        target_type: p.target_type === "space" ? "space" : "item",
+        target_id: (p.op === "update" && p.target_id) || null,
+        op: p.op === "update" && p.target_id ? "update" : "create",
+        title: (p.title || change.name).trim(),
+        rationale: (p.rationale || "").trim(),
+        change, confidence: typeof p.confidence === "number" ? p.confidence : 0.5,
+        status: "pending", applied_id: null, decided_at: null, created_at: now()
+      };
+      prop.signature = signature(prop);
+      if (dismissed.has(prop.signature)) { held++; continue; }
+      kept.push(prop);
+      S.proposal.push(prop);
+      await dbPut("proposal", prop);
+    }
+    obs.extracted = { reply: out.reply || "", question: out.question || "", proposals: kept.length, held_back: held };
+    obs.extract_status = "done";
+    await dbPut("observation", obs);
+  }
+
+  /** No key, no vision — but the loop still has to close. You draft the card. */
+  async function blankCard(obs, text) {
+    const guess = (text || "").split(/[.,;\n]/)[0].trim().slice(0, 60);
+    const prop = {
+      id: uid(), home_id: S.home.id, source_type: "observation", source_id: obs.id,
+      target_type: "item", target_id: null, op: "create",
+      title: guess ? `Add: ${guess}` : "Add this to the ledger",
+      rationale: "No API key set, so this card is blank — fill it in and it's on the record as your word.",
+      change: Object.fromEntries(fieldsFor("item").map((k) => [k, ""])),
+      confidence: 0, status: "pending", applied_id: null, decided_at: null, created_at: now()
+    };
+    prop.change.name = guess;
+    prop.change.space_name = "";
+    prop.signature = signature(prop);
+    S.proposal.push(prop);
+    await dbPut("proposal", prop);
+    obs.extracted = { reply: "", question: "", proposals: 1, held_back: 0, no_agent: true };
+    obs.extract_status = "skipped";
+    await dbPut("observation", obs);
+  }
+
+  /* ═══ The thread ═════════════════════════════════════════════════════════ */
+
+  const confChip = (p) => {
+    if (p.source_type === "owner") return ["owner", "yours"];
+    if (!p.confidence) return ["grey", "blank"];          // a card with no claim in it yet
+    return p.confidence >= 0.8 ? ["sure", "confident"]
+         : p.confidence >= 0.4 ? ["guess", "likely"] : ["guess", "a guess"];
+  };
+
+  function propCard(p) {
+    const settled = p.status !== "pending";
+    const [cls, word] = confChip(p);
+    const rows = fieldsFor(p.target_type)
+      .filter((k) => p.change[k] && k !== "name")
+      .map((k) => {
+        let v = esc(p.change[k]);
+        if (k === "installed_certainty") v = esc(CERTAINTY_LABEL[p.change[k]] || p.change[k]);
+        if (k === "expected_life_years") v = esc(p.change[k]) + " years";
+        return `<div class="f"><span class="k">${esc(FIELD_LABEL[k] || k)}</span><span class="v">${v}</span></div>`;
+      }).join("");
+
+    let where = "";
+    if (!settled && p.target_type === "item") {
+      const hint = (p.change.space_name || "").trim();
+      const match = S.space.find((s) => s.name.toLowerCase() === hint.toLowerCase());
+      const opts = S.space.map((s) => `<option value="${esc(s.id)}"${match && match.id === s.id ? " selected" : ""}>${esc(s.name)}</option>`);
+      const newName = hint && !match ? hint : "";
+      opts.push(`<option value="__new__"${newName || !S.space.length ? " selected" : ""}>＋ new space${newName ? ": " + esc(newName) : ""}</option>`);
+      where = `<div class="prop-where"><span>Where</span><select class="js-space" data-new="${esc(newName)}">${opts.join("")}</select></div>`;
+    }
+
+    const acts = settled
+      ? `<div class="prop-verdict">${p.status === "dismissed" ? "Dismissed — I won't raise this again." :
+          p.status === "edited" ? "Accepted with your edits, recorded as your word." : "Accepted."}</div>`
+      : `<div class="prop-acts">
+           <button class="act accept js-accept" data-p="${esc(p.id)}">${p.change.name ? "Accept" : "Fill it in"}</button>
+           <button class="act js-edit" data-p="${esc(p.id)}">Edit</button>
+           <button class="act dismiss js-dismiss" data-p="${esc(p.id)}">Dismiss</button>
+         </div>`;
+
+    return `<div class="card prop${settled ? " settled" : ""}">
+      <div class="prop-head">
+        <div class="prop-title">${esc(p.title)}</div>
+        <span class="chip ${settled ? "grey" : cls}">${settled ? esc(p.status) : esc(word)}</span>
+      </div>
+      ${p.rationale ? `<div class="prop-why">${esc(p.rationale)}</div>` : ""}
+      ${rows ? `<div class="prop-fields">${rows}</div>` : ""}
+      ${where}${acts}
+    </div>`;
+  }
+
+  async function renderToday() {
+    const obs = S.observation.slice().sort((a, b) => a.captured_at.localeCompare(b.captured_at)).slice(-25);
+    const el = $("thread");
+    $("todayEmpty").hidden = obs.length > 0;
+    $("threadTitle").hidden = obs.length === 0;
+
+    el.innerHTML = obs.map((o) => {
+      const said = o.kind === "photo" ? o.caption : o.transcript;
+      const mine = `<div class="turn mine">
+          <div class="bubble mine">${o.media_ref ? `<img data-media="${esc(o.media_ref)}" alt="the photo you sent" />` : ""}${esc(said || (o.media_ref ? "" : "—"))}</div>
+          <div class="stamp">${esc(when(o.captured_at))}</div>
+        </div>`;
+
+      const x = o.extracted || {};
+      let theirs = "";
+      if (o.extract_status === "pending") {
+        theirs = `<div class="turn"><div class="bubble theirs"><span class="thinking"><span class="dot"></span><span class="dot"></span><span class="dot"></span> reading it…</span></div></div>`;
+      } else if (o.extract_status === "failed") {
+        theirs = `<div class="turn"><div class="bubble theirs">I couldn't read that one — ${esc(o.extract_error || "the agent didn't answer")}.<br />
+          <button class="act js-retry" data-o="${esc(o.id)}" style="margin-top:9px">Try again</button></div></div>`;
+      } else if (x.no_agent) {
+        theirs = `<div class="turn"><div class="bubble theirs">Saved. No API key set, so here's a blank card — fill it in and it goes on the record as your word.</div></div>`;
+      } else if (x.reply || x.question) {
+        theirs = `<div class="turn"><div class="bubble theirs">${esc(x.reply)}${x.question ? `<br /><br />${esc(x.question)}` : ""}</div></div>`;
+      }
+
+      const cards = S.proposal.filter((p) => p.source_id === o.id)
+        .sort((a, b) => a.created_at.localeCompare(b.created_at)).map(propCard).join("");
+      const held = x.held_back ? `<div class="prov" style="margin:0 4px">${x.held_back} suggestion${x.held_back === 1 ? "" : "s"} held back — you'd already turned ${x.held_back === 1 ? "it" : "them"} down.</div>` : "";
+
+      return mine + theirs + cards + held;
+    }).join("");
+
+    for (const img of el.querySelectorAll("img[data-media]")) {
+      const url = await photoURL(img.dataset.media);
+      if (url) img.src = url;
+    }
+    const pend = S.proposal.filter((p) => p.status === "pending").length;
+    $("threadNote").textContent = pend ? `${pend} waiting on you` : "all caught up";
+    renderDue();
+  }
+
+  function renderDue() {
+    const open = S.task.filter((t) => !t.done_at && t.due && t.due <= today());
+    $("dueStrip").innerHTML = open.length
+      ? `<div class="card prop" style="border-left-color:var(--accent-2);margin-bottom:8px">
+           <div class="prop-title">${open.length === 1 ? "One thing's due" : `${open.length} things are due`}</div>
+           <div class="prop-why">${open.slice(0, 3).map((t) => esc(t.title)).join(" · ")}</div>
+         </div>` : "";
+  }
+
+  function renderBadge() {
+    const n = S.proposal.filter((p) => p.status === "pending").length;
+    const b = $("pendBadge");
+    b.textContent = n; b.hidden = n === 0;
+  }
+
+  /* ═══ The house ══════════════════════════════════════════════════════════ */
+
+  function provLine(row) {
+    const src = row.source_observation_id ? S.observation.find((o) => o.id === row.source_observation_id) : null;
+    const who = row.stated_by === "owner" ? "you" : row.stated_by === "research" ? "research" : "the agent";
+    const from = src ? ` from ${src.kind === "photo" ? "a photo" : "a note"} on ${new Date(src.captured_at).toLocaleDateString([], { month: "short", day: "numeric" })}` : "";
+    const conf = row.stated_by === "owner" ? "" : ` · ${Math.round((row.confidence ?? 0.5) * 100)}% sure`;
+    return `stated by ${who}${from}${conf}`;
+  }
+
+  function renderLedger() {
+    const active = S.item.filter((i) => i.status !== "removed");
+    const spaces = S.space.slice().sort((a, b) => a.name.localeCompare(b.name));
+    const loose = active.filter((i) => !i.space_id || !spaces.some((s) => s.id === i.space_id));
+    $("ledgerEmpty").hidden = spaces.length + active.length > 0;
+    $("ledgerCount").textContent = spaces.length
+      ? `${spaces.length} space${spaces.length === 1 ? "" : "s"} · ${active.length} item${active.length === 1 ? "" : "s"}` : "";
+
+    const block = (name, meta, items) => `<div class="card space-block">
+        <div class="space-head"><div><div class="space-name">${esc(name)}</div><div class="space-meta">${esc(meta)}</div></div>
+        <span class="chip grey">${items.length}</span></div>
+        ${items.map(itemRow).join("")}
+      </div>`;
+
+    $("ledger").innerHTML =
+      spaces.map((s) => block(s.name, [s.kind, s.floor, provLine(s)].filter(Boolean).join(" · "),
+                              active.filter((i) => i.space_id === s.id))).join("") +
+      (loose.length ? block("Not in a space yet", "waiting to be filed", loose) : "");
+  }
+
+  function itemRow(i) {
+    const bits = [i.brand, i.model].filter(Boolean).join(" ");
+    const age = i.installed ? `installed ${i.installed}${i.installed_certainty && i.installed_certainty !== "stated" ? " (my guess)" : ""}` : "";
+    return `<div class="item-row js-item" data-i="${esc(i.id)}">
+        <div class="nm">${esc(i.name)}<div class="sub">${esc([bits, age, i.condition].filter(Boolean).join(" · ") || provLine(i))}</div></div>
+        <span class="chip ${i.stated_by === "owner" ? "owner" : "agent"}">${i.stated_by === "owner" ? "yours" : "agent"}</span>
+        <span class="chev">›</span>
+      </div>`;
+  }
+
+  /* ═══ Reminders ══════════════════════════════════════════════════════════ */
+
+  const NEXT_DUE = { monthly: 1, quarterly: 3, semiannual: 6, annual: 12 };
+  function advance(due, recurrence) {
+    const months = NEXT_DUE[recurrence];
+    if (!months) return null;
+    const d = new Date((due || today()) + "T00:00:00");
+    d.setMonth(d.getMonth() + months);
+    return d.toISOString().slice(0, 10);
+  }
+
+  function renderTasks() {
+    const open = S.task.filter((t) => !t.done_at)
+      .sort((a, b) => (a.due || "9999").localeCompare(b.due || "9999"));
+    const done = S.task.filter((t) => t.done_at).sort((a, b) => b.done_at.localeCompare(a.done_at)).slice(0, 12);
+    $("taskEmpty").hidden = open.length > 0;
+    $("taskCard").hidden = open.length === 0;
+    $("taskCount").textContent = open.length ? `${open.length} open` : "";
+    $("doneTitle").hidden = $("doneCard").hidden = done.length === 0;
+
+    const row = (t, isDone) => {
+      const d = dueLabel(t.due);
+      const about = t.item_id ? (S.item.find((i) => i.id === t.item_id) || {}).name : "";
+      const rec = t.recurrence && t.recurrence !== "none" ? ` · repeats ${t.recurrence === "semiannual" ? "twice a year" : t.recurrence}` : "";
+      return `<div class="task-row${isDone ? " done" : ""}">
+          <button class="tick js-tick" data-t="${esc(t.id)}">${isDone ? "✓" : ""}</button>
+          <div style="flex:1">
+            <div class="tt">${esc(t.title)}</div>
+            <div class="td ${isDone ? "" : d.cls}">${isDone ? "done " + esc(when(t.done_at)) : esc(d.text)}${esc(about ? " · " + about : "")}${esc(rec)}</div>
+          </div>
+          ${isDone ? "" : `<button class="act js-tedit" data-t="${esc(t.id)}" style="padding:6px 10px;font-size:0.78rem">edit</button>`}
+        </div>`;
+    };
+    $("taskList").innerHTML = open.map((t) => row(t, false)).join("");
+    $("doneList").innerHTML = done.map((t) => row(t, true)).join("");
+    const sel = $("taskItem");
+    sel.innerHTML = `<option value="">—</option>` + S.item.filter((i) => i.status !== "removed")
+      .map((i) => `<option value="${esc(i.id)}">${esc(i.name)}</option>`).join("");
+  }
+
+  function renderAll() { renderLedger(); renderTasks(); renderBadge(); return renderToday(); }
+
+  /* ═══ Deciding on a card ═════════════════════════════════════════════════ */
+
+  const findProp = (id) => S.proposal.find((p) => p.id === id);
+
+  function spaceChoiceFrom(btn) {
+    const sel = btn.closest(".prop") && btn.closest(".prop").querySelector(".js-space");
+    if (!sel) return { spaceChoice: null, newSpaceName: "" };
+    return { spaceChoice: sel.value, newSpaceName: sel.value === "__new__" ? (sel.dataset.new || "") : "" };
+  }
+
+  async function acceptProp(id, btn) {
+    const p = findProp(id);
+    if (!p || p.status !== "pending") return;
+    if (!p.change.name) return openEdit(id);
+    try {
+      await commit(p, Object.assign({ edited: false }, spaceChoiceFrom(btn)));
+      toast("On the record.");
+    } catch (err) { toast(err.message || "couldn't write that"); }
+    await renderAll();
+  }
+
+  async function dismissProp(id) {
+    const p = findProp(id);
+    if (!p || p.status !== "pending") return;
+    await dismiss(p);
+    toast("Dismissed. I won't raise it again.");
+    await renderAll();
+  }
+
+  /* ── Edit sheet ─────────────────────────────────────────────────────────
+     Editing is what makes accept honest: a card you corrected is recorded as
+     stated by you, at full confidence, outranking anything the agent inferred. */
+
+  let editing = null;   // { propId } | { itemId }
+
+  function fieldInput(k, val, id) {
+    if (k === "installed_certainty") {
+      return `<label class="fl" for="${id}">${esc(FIELD_LABEL[k])}</label>
+        <select id="${id}">${CERTAINTY.map((c) => `<option value="${c}"${c === val ? " selected" : ""}>${esc(CERTAINTY_LABEL[c])}</option>`).join("")}</select>`;
+    }
+    if (k === "notes") {
+      return `<label class="fl" for="${id}">${esc(FIELD_LABEL[k])}</label><textarea class="ta" id="${id}" rows="2">${esc(val)}</textarea>`;
+    }
+    return `<label class="fl" for="${id}">${esc(FIELD_LABEL[k] || k)}</label><input id="${id}" value="${esc(val)}" autocomplete="off" />`;
+  }
+
+  function openEdit(propId) {
+    const p = findProp(propId);
+    if (!p) return;
+    editing = { propId };
+    $("editTitle").textContent = p.op === "create" ? "Edit before accepting" : "Edit this change";
+    $("editHint").textContent = "Anything you change becomes your word, not a guess — it's recorded as stated by you.";
+    let html = fieldsFor(p.target_type).map((k) => fieldInput(k, p.change[k] || "", "ef_" + k)).join("");
+    if (p.target_type === "item") {
+      const hint = (p.change.space_name || "").trim();
+      const match = S.space.find((s) => s.name.toLowerCase() === hint.toLowerCase());
+      html += `<label class="fl" for="ef_space">Space</label><select id="ef_space">
+        ${S.space.map((s) => `<option value="${esc(s.id)}"${match && match.id === s.id ? " selected" : ""}>${esc(s.name)}</option>`).join("")}
+        <option value="__new__"${!match ? " selected" : ""}>＋ new space…</option></select>
+        <label class="fl" for="ef_spacename">New space name</label>
+        <input id="ef_spacename" value="${esc(match ? "" : hint)}" placeholder="Basement" autocomplete="off" />`;
+    }
+    $("editFields").innerHTML = html;
+    $("editVeil").hidden = false;
+  }
+
+  function openItemEdit(itemId) {
+    const it = S.item.find((i) => i.id === itemId);
+    if (!it) return;
+    editing = { itemId };
+    $("editTitle").textContent = "Correct this";
+    $("editHint").textContent = "Your correction outranks whatever the agent thought — it goes in as stated by you.";
+    let html = ITEM_FIELDS.map((k) => fieldInput(k, it[k] || "", "ef_" + k)).join("");
+    html += `<label class="fl" for="ef_space">Space</label><select id="ef_space">
+      ${S.space.map((s) => `<option value="${esc(s.id)}"${s.id === it.space_id ? " selected" : ""}>${esc(s.name)}</option>`).join("")}
+      <option value="__new__">＋ new space…</option></select>
+      <label class="fl" for="ef_spacename">New space name</label><input id="ef_spacename" placeholder="Basement" autocomplete="off" />`;
+    $("editFields").innerHTML = html;
+    $("editVeil").hidden = false;
+  }
+
+  async function saveEdit() {
+    if (!editing) return;
+    const target_type = editing.itemId ? "item" : findProp(editing.propId).target_type;
+    const change = {};
+    for (const k of fieldsFor(target_type)) {
+      const el = $("ef_" + k);
+      change[k] = el ? el.value.trim() : "";
+    }
+    if (!change.name) { toast("It needs a name at least."); return; }
+    const spaceSel = $("ef_space");
+    const spaceChoice = spaceSel ? spaceSel.value : null;
+    const newSpaceName = spaceChoice === "__new__" ? ($("ef_spacename").value.trim() || "Unsorted") : "";
+
+    try {
+      if (editing.itemId) {
+        change.space_id = spaceChoice; change.space_name = newSpaceName;
+        await ownerWrite("item", "update", editing.itemId, change, "You corrected " + change.name);
+      } else {
+        const p = findProp(editing.propId);
+        p.change = Object.assign({}, p.change, change);
+        p.signature = signature(p);
+        await commit(p, { edited: true, spaceChoice, newSpaceName });
+      }
+      toast("On the record, as your word.");
+    } catch (err) { toast(err.message || "couldn't save that"); }
+    closeEdit();
+    await renderAll();
+  }
+  function closeEdit() { editing = null; $("editVeil").hidden = true; }
+
+  /* ── Item sheet ─────────────────────────────────────────────────────────── */
+
+  let openItemId = null;
+
+  async function openItem(id) {
+    const it = S.item.find((x) => x.id === id);
+    if (!it) return;
+    openItemId = id;
+    $("itemTitle").textContent = it.name;
+    const space = S.space.find((s) => s.id === it.space_id);
+    const rows = ITEM_FIELDS.filter((k) => k !== "name" && it[k]).map((k) => {
+      let v = esc(it[k]);
+      if (k === "installed_certainty") v = esc(CERTAINTY_LABEL[it[k]] || it[k]);
+      if (k === "expected_life_years") v = esc(it[k]) + " years";
+      return `<div class="f"><span class="k">${esc(FIELD_LABEL[k] || k)}</span><span class="v">${v}</span></div>`;
+    }).join("");
+    const src = it.source_observation_id ? S.observation.find((o) => o.id === it.source_observation_id) : null;
+    $("itemBody").innerHTML = `
+      <div class="prop-fields" style="margin-top:12px">
+        <div class="f"><span class="k">Space</span><span class="v">${esc(space ? space.name : "not filed yet")}</span></div>
+        ${rows}
+      </div>
+      <div class="prov">${esc(provLine(it))}</div>
+      ${src && src.media_ref ? `<img data-media="${esc(src.media_ref)}" alt="the photo this came from" style="width:100%;border-radius:14px;margin-top:12px" />` : ""}`;
+    $("itemVeil").hidden = false;
+    for (const img of $("itemBody").querySelectorAll("img[data-media]")) {
+      const url = await photoURL(img.dataset.media);
+      if (url) img.src = url;
+    }
+  }
+
+  async function removeItem() {
+    const it = S.item.find((x) => x.id === openItemId);
+    if (!it || !confirm(`Take "${it.name}" off the ledger? The photo and the original note stay — only this row goes.`)) return;
+    const change = Object.fromEntries(ITEM_FIELDS.map((k) => [k, it[k] || ""]));
+    change.status = "removed";
+    await ownerWrite("item", "update", it.id, change, "You removed " + it.name);
+    $("itemVeil").hidden = true;
+    toast("Off the ledger.");
+    await renderAll();
+  }
+
+  /* ── Reminder sheet ─────────────────────────────────────────────────────── */
+
+  let editingTask = null;
+
+  function openTask(id) {
+    editingTask = id || null;
+    const t = id ? S.task.find((x) => x.id === id) : null;
+    $("taskSheetTitle").textContent = t ? "Edit reminder" : "New reminder";
+    $("taskTitle").value = t ? t.title : "";
+    $("taskDue").value = t && t.due ? t.due : "";
+    $("taskRec").value = t ? (t.recurrence || "none") : "none";
+    $("taskItem").value = t && t.item_id ? t.item_id : "";
+    $("taskVeil").hidden = false;
+  }
+
+  async function saveTask() {
+    const title = $("taskTitle").value.trim();
+    if (!title) { toast("Give it a name."); return; }
+    const change = { title, due: $("taskDue").value || "", recurrence: $("taskRec").value, item_id: $("taskItem").value || "" };
+    await ownerWrite("task", editingTask ? "update" : "create", editingTask, change,
+                     (editingTask ? "You edited a reminder: " : "You added a reminder: ") + title);
+    $("taskVeil").hidden = true;
+    toast("Noted.");
+    await renderAll();
+  }
+
+  async function tickTask(id) {
+    const t = S.task.find((x) => x.id === id);
+    if (!t) return;
+    if (t.done_at) {                                  // un-tick
+      await ownerWrite("task", "update", id, { title: t.title, due: t.due || "", recurrence: t.recurrence || "none",
+                                               item_id: t.item_id || "", done_at: null }, "You reopened " + t.title);
+    } else {
+      await ownerWrite("task", "update", id, { title: t.title, due: t.due || "", recurrence: t.recurrence || "none",
+                                               item_id: t.item_id || "", done_at: now() }, "You did " + t.title);
+      const next = advance(t.due, t.recurrence);
+      if (next) {
+        await ownerWrite("task", "create", null, { title: t.title, due: next, recurrence: t.recurrence, item_id: t.item_id || "" },
+                         "Next round of " + t.title);
+        toast("Done — next one's on " + new Date(next + "T00:00:00").toLocaleDateString([], { month: "short", day: "numeric" }) + ".");
+      } else toast("Done.");
+    }
+    await renderAll();
+  }
+
+  /* ═══ Adding by hand, and second attempts ════════════════════════════════ */
+
+  /** Even a hand-written entry arrives as a card — same three buttons, same trail. */
+  async function addSpaceByHand() {
+    const prop = {
+      id: uid(), home_id: S.home.id, source_type: "owner", source_id: null,
+      target_type: "space", target_id: null, op: "create", title: "New space",
+      rationale: "You're adding this one yourself.",
+      change: Object.fromEntries(SPACE_FIELDS.map((k) => [k, ""])),
+      confidence: 1, status: "pending", applied_id: null, decided_at: null, created_at: now()
+    };
+    prop.signature = signature(prop);
+    S.proposal.push(prop);
+    await dbPut("proposal", prop);
+    openEdit(prop.id);
+  }
+
+  async function retry(obsId) {
+    const o = S.observation.find((x) => x.id === obsId);
+    if (!o) return;
+    if (!hasAgent()) { toast("No API key set — open ⚙︎ to add one."); return; }
+    o.extract_status = "pending"; o.extract_error = null;
+    await dbPut("observation", o);
+    await renderToday();
+    try {
+      const rec = o.media_ref ? await idb("media", "readonly", (s) => s.get(o.media_ref)) : null;
+      const out = await askAgent({ text: o.kind === "photo" ? o.caption : o.transcript, blob: rec ? rec.blob : null });
+      await landProposals(o, out);
+    } catch (err) {
+      o.extract_status = "failed"; o.extract_error = err.message || String(err);
+      await dbPut("observation", o);
+    }
+    await renderAll();
+  }
+
+  /* ═══ Settings, export, and the delete-everything button ═════════════════
+     Merge note #2, kept: photos are the record and are kept; the owner can
+     export or delete everything in one tap. The vault is this browser on this
+     device — nothing leaves it except the single photo the agent is reading. */
+
+  function openSettings() {
+    $("homeAddr").value = S.home.address || "";
+    $("homeYear").value = S.home.year_built || "";
+    $("homeType").value = S.home.type || "";
+    $("keyInput").value = loadKey();
+    $("modelInput").value = settings.model || "claude-opus-5";
+    $("modelList").innerHTML = MODELS.map((m) => `<option value="${m.id}">${m.label}</option>`).join("");
+    $("setVeil").hidden = false;
+  }
+
+  async function saveSettingsSheet() {
+    const year = parseInt($("homeYear").value, 10);
+    Object.assign(S.home, {
+      address: $("homeAddr").value.trim(),
+      year_built: Number.isFinite(year) ? year : null,
+      year_built_certainty: Number.isFinite(year) ? "stated" : "unknown",
+      type: $("homeType").value, updated_at: now()
+    });
+    await dbPut("home", S.home);
+    const k = $("keyInput").value.trim();
+    try { k ? localStorage.setItem(KEY_STORE, k) : localStorage.removeItem(KEY_STORE); } catch {}
+    settings.model = $("modelInput").value.trim() || "claude-opus-5";
+    saveSettings();
+    $("setVeil").hidden = true;
+    setTagline();
+    toast("Saved.");
+    await renderAll();
+  }
+
+  const blobToDataURL = (blob) => new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result); r.onerror = () => rej(r.error);
+    r.readAsDataURL(blob);
+  });
+
+  async function exportAll() {
+    toast("Packing it up…");
+    const media = await dbAll("media");
+    const out = {
+      app: "homekeep", schema: "see schema.sql", exported_at: now(),
+      home: S.home, space: S.space, item: S.item, observation: S.observation,
+      proposal: S.proposal, task: S.task,
+      media: await Promise.all(media.map(async (m) => ({ id: m.id, type: m.type, created_at: m.created_at, data_url: await blobToDataURL(m.blob) })))
+    };
+    const url = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: "application/json" }));
+    const a = document.createElement("a");
+    a.href = url; a.download = `homekeep-${today()}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+
+  async function wipeAll() {
+    if (!confirm("Delete everything — the ledger, every card, every photo? This cannot be undone. Export first if you want a copy.")) return;
+    if (!confirm("Last check: really delete it all?")) return;
+    for (const s of STORES) await dbClear(s);
+    try { localStorage.removeItem(SET_STORE); localStorage.removeItem(KEY_STORE); } catch {}
+    location.reload();
+  }
+
+  /* ═══ Wiring ═════════════════════════════════════════════════════════════ */
+
+  function setTagline() {
+    $("tagline").textContent = S.home && S.home.address ? S.home.address : "Your home's memory.";
+  }
+
+  function autogrow() {
+    const t = $("msgInput");
+    t.style.height = "auto";
+    t.style.height = Math.min(t.scrollHeight, 140) + "px";
+  }
+  function clearShot() {
+    pendingBlob = null;
+    $("shotRow").hidden = true;
+    $("photoInput").value = "";
+    const img = $("shotImg");
+    if (img.src.startsWith("blob:")) URL.revokeObjectURL(img.src);
+    img.removeAttribute("src");
+  }
+
+  function showTab(name) {
+    for (const t of ["today", "home", "tasks"]) $("tab-" + t).hidden = t !== name;
+    for (const b of document.querySelectorAll("nav.tabs button")) b.classList.toggle("on", b.dataset.tab === name);
+  }
+
+  function wire() {
+    document.querySelectorAll("nav.tabs button").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
+    $("sendBtn").addEventListener("click", send);
+    $("msgInput").addEventListener("input", autogrow);
+    $("msgInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); send(); }
+    });
+    $("photoBtn").addEventListener("click", () => $("photoInput").click());
+    $("photoInput").addEventListener("change", () => {
+      const f = $("photoInput").files[0];
+      if (!f) return;
+      pendingBlob = f;
+      $("shotImg").src = URL.createObjectURL(f);
+      $("shotName").textContent = "Photo ready — add a word or just send";
+      $("shotRow").hidden = false;
+    });
+    $("shotDrop").addEventListener("click", clearShot);
+
+    document.addEventListener("click", (e) => {
+      const t = e.target.closest("button, .js-item");
+      if (!t) return;
+      if (t.classList.contains("js-accept"))  return acceptProp(t.dataset.p, t);
+      if (t.classList.contains("js-edit"))    return openEdit(t.dataset.p);
+      if (t.classList.contains("js-dismiss")) return dismissProp(t.dataset.p);
+      if (t.classList.contains("js-retry"))   return retry(t.dataset.o);
+      if (t.classList.contains("js-item"))    return openItem(t.dataset.i);
+      if (t.classList.contains("js-tick"))    return tickTask(t.dataset.t);
+      if (t.classList.contains("js-tedit"))   return openTask(t.dataset.t);
+    });
+
+    $("gearBtn").addEventListener("click", openSettings);
+    $("setClose").addEventListener("click", () => { $("setVeil").hidden = true; });
+    $("setCancel").addEventListener("click", () => { $("setVeil").hidden = true; });
+    $("setSave").addEventListener("click", saveSettingsSheet);
+    $("exportBtn").addEventListener("click", exportAll);
+    $("wipeBtn").addEventListener("click", wipeAll);
+
+    $("editClose").addEventListener("click", cancelEdit);
+    $("editCancel").addEventListener("click", cancelEdit);
+    $("editSave").addEventListener("click", saveEdit);
+
+    $("itemClose").addEventListener("click", () => { $("itemVeil").hidden = true; });
+    $("itemEdit").addEventListener("click", () => { $("itemVeil").hidden = true; openItemEdit(openItemId); });
+    $("itemRemove").addEventListener("click", removeItem);
+
+    $("addSpaceBtn").addEventListener("click", addSpaceByHand);
+    $("addTaskBtn").addEventListener("click", () => openTask(null));
+    $("taskClose").addEventListener("click", () => { $("taskVeil").hidden = true; });
+    $("taskCancel").addEventListener("click", () => { $("taskVeil").hidden = true; });
+    $("taskSave").addEventListener("click", saveTask);
+
+    for (const v of ["setVeil", "editVeil", "itemVeil", "taskVeil"]) {
+      $(v).addEventListener("click", (e) => {
+        if (e.target !== $(v)) return;
+        if (v === "editVeil") cancelEdit(); else $(v).hidden = true;
+      });
+    }
+  }
+
+  /** Backing out of a blank hand-written card shouldn't leave a ghost behind. */
+  async function cancelEdit() {
+    if (editing && editing.propId) {
+      const p = findProp(editing.propId);
+      if (p && p.status === "pending" && p.source_type === "owner" && !p.change.name) {
+        S.proposal = S.proposal.filter((x) => x.id !== p.id);
+        await dbDel("proposal", p.id);
+      }
+    }
+    closeEdit();
+    await renderAll();
+  }
+
+  /* ═══ Boot ═══════════════════════════════════════════════════════════════ */
+
+  (async function boot() {
+    try {
+      db = await openDB();
+      await loadAll();
+    } catch (err) {
+      document.querySelector(".app").innerHTML =
+        `<div class="empty"><strong>This browser won't let Homekeep keep anything.</strong><br />` +
+        `The ledger needs IndexedDB — private windows and blocked site data switch it off.<br /><br />${esc(err.message || err)}</div>`;
+      return;
+    }
+    setTagline();
+    wire();
+    await renderAll();
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+  })();
+})();
+</script>
+</body>
+</html>

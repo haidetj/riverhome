@@ -1,0 +1,74 @@
+erDiagram
+  HOME ||--o{ SPACE : has
+  SPACE ||--o{ ITEM : contains
+  ITEM |o--o{ ITEM : "parent of"
+  HOME ||--o{ OBSERVATION : receives
+  OBSERVATION }o--o{ ITEM : mentions
+  OBSERVATION ||--o{ PROPOSAL : generates
+  ITEM ||--o{ ISSUE : has
+  ISSUE |o--o| PROJECT : becomes
+  PROJECT ||--o{ TASK : "breaks into"
+  ITEM ||--o{ TASK : maintenance
+  HOME {
+    uuid id PK
+    string address
+    int year_built
+    string type
+  }
+  SPACE {
+    uuid id PK
+    uuid home_id FK
+    string name
+    string kind
+  }
+  ITEM {
+    uuid id PK
+    uuid space_id FK
+    uuid parent_id FK
+    string category
+    string brand_model
+    date installed
+    string installed_certainty
+    string condition
+  }
+  OBSERVATION {
+    uuid id PK
+    uuid home_id FK
+    string kind
+    string media_ref
+    text transcript
+    timestamp captured_at
+  }
+  PROPOSAL {
+    uuid id PK
+    string source_type
+    uuid source_id
+    string target_type
+    uuid target_id
+    json change
+    float confidence
+    string status
+  }
+  ISSUE {
+    uuid id PK
+    uuid item_id FK
+    string title
+    string severity
+    string status
+  }
+  PROJECT {
+    uuid id PK
+    uuid home_id FK
+    uuid issue_id FK
+    string title
+    string status
+    decimal budget
+  }
+  TASK {
+    uuid id PK
+    uuid project_id FK
+    uuid item_id FK
+    string title
+    date due
+    string recurrence
+  }
