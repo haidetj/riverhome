@@ -1,52 +1,39 @@
 {
   "campaigns": [
     {
-      "id": 268,
-      "name": "Luxuriant",
-      "sector": null,
-      "biome": "lush",
-      "owner": "terminids",
-      "players": 3057,
-      "health": 2000000,
-      "max_health": 2000000,
-      "liberation": 0.0,
-      "is_defense": false,
-      "expires_at": null,
-      "is_mo_target": true,
-      "hazards": [],
-      "severity_load": 0
-    },
-    {
-      "id": 269,
-      "name": "Brilliance",
-      "sector": null,
-      "biome": "lush",
-      "owner": "super_earth",
-      "players": 1,
-      "health": 2000000,
-      "max_health": 2000000,
-      "liberation": 0.0,
-      "is_defense": false,
-      "expires_at": null,
-      "is_mo_target": true,
-      "hazards": [],
-      "severity_load": 0
-    },
-    {
       "id": 251,
       "name": "Zefia",
       "sector": "Tanis",
       "biome": "ethereal",
       "owner": "automatons",
-      "players": 4140,
-      "health": 920075,
+      "players": 24360,
+      "health": 838333,
       "max_health": 950000,
-      "liberation": 3.15,
+      "liberation": 11.754,
       "is_defense": true,
-      "expires_at": "2026-08-31T20:19:02+00:00",
+      "expires_at": "2026-08-31T20:19:19+00:00",
       "is_mo_target": false,
       "hazards": [],
       "severity_load": 0
+    },
+    {
+      "id": 201,
+      "name": "Meissa",
+      "sector": "Ymir",
+      "biome": "jungle",
+      "owner": "automatons",
+      "players": 832,
+      "health": 649996,
+      "max_health": 650000,
+      "liberation": 0.001,
+      "is_defense": true,
+      "expires_at": "2026-09-01T13:51:49+00:00",
+      "is_mo_target": false,
+      "hazards": [
+        "volcanic_activity",
+        "rainstorms"
+      ],
+      "severity_load": 3
     },
     {
       "id": 130,
@@ -54,10 +41,10 @@
       "sector": "Borgus",
       "biome": "highlands",
       "owner": "terminids",
-      "players": 1079,
-      "health": 1236173,
+      "players": 9743,
+      "health": 1128581,
       "max_health": 2000000,
-      "liberation": 38.191,
+      "liberation": 43.571,
       "is_defense": false,
       "expires_at": null,
       "is_mo_target": false,
@@ -67,15 +54,35 @@
       "severity_load": 1
     },
     {
+      "id": 217,
+      "name": "Phact Bay",
+      "sector": "Jin Xi",
+      "biome": "mesa",
+      "owner": "terminids",
+      "players": 14178,
+      "health": 2200000,
+      "max_health": 2200000,
+      "liberation": 0.0,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [
+        "durial_intense_heat",
+        "nocturnal_extreme_cold",
+        "sandstorms"
+      ],
+      "severity_load": 5
+    },
+    {
       "id": 185,
       "name": "Karlia",
       "sector": "Omega",
       "biome": "desolate",
       "owner": "illuminate",
-      "players": 731,
-      "health": 1256549,
+      "players": 2010,
+      "health": 1253768,
       "max_health": 1400000,
-      "liberation": 10.246,
+      "liberation": 10.445,
       "is_defense": false,
       "expires_at": null,
       "is_mo_target": false,
@@ -91,10 +98,10 @@
       "sector": "Akira",
       "biome": "swamp",
       "owner": "illuminate",
-      "players": 484,
-      "health": 1731312,
+      "players": 740,
+      "health": 1729540,
       "max_health": 1800000,
-      "liberation": 3.816,
+      "liberation": 3.914,
       "is_defense": false,
       "expires_at": null,
       "is_mo_target": false,
@@ -109,10 +116,10 @@
       "sector": "Hanzo",
       "biome": "winter",
       "owner": "illuminate",
-      "players": 62,
-      "health": 975120,
+      "players": 175,
+      "health": 974128,
       "max_health": 1000000,
-      "liberation": 2.488,
+      "liberation": 2.587,
       "is_defense": false,
       "expires_at": null,
       "is_mo_target": false,
@@ -123,50 +130,12 @@
       "severity_load": 4
     },
     {
-      "id": 217,
-      "name": "Phact Bay",
-      "sector": "Jin Xi",
-      "biome": "mesa",
-      "owner": "terminids",
-      "players": 2370,
-      "health": 2200000,
-      "max_health": 2200000,
-      "liberation": 0.0,
-      "is_defense": false,
-      "expires_at": null,
-      "is_mo_target": false,
-      "hazards": [
-        "durial_intense_heat",
-        "nocturnal_extreme_cold",
-        "sandstorms"
-      ],
-      "severity_load": 5
-    },
-    {
-      "id": 95,
-      "name": "Genesis Prime",
-      "sector": "Rictus",
-      "biome": "jungle",
-      "owner": "illuminate",
-      "players": 112,
-      "health": 1580576,
-      "max_health": 1600000,
-      "liberation": 1.214,
-      "is_defense": false,
-      "expires_at": null,
-      "is_mo_target": false,
-      "hazards": [
-        "ion_storms"
-      ],
-      "severity_load": 3
-    },
-    {
       "id": 200,
       "name": "Matar Bay",
       "sector": "Andromeda",
       "biome": "highlands",
       "owner": "automatons",
-      "players": 754,
+      "players": 1592,
       "health": 1600000,
       "max_health": 1600000,
       "liberation": 0.0,
@@ -184,7 +153,7 @@
       "sector": "L'estrade",
       "biome": "tundra",
       "owner": "terminids",
-      "players": 631,
+      "players": 1591,
       "health": 3000000,
       "max_health": 3000000,
       "liberation": 0.0,
@@ -195,43 +164,56 @@
       "severity_load": 0
     },
     {
-      "id": 143,
-      "name": "Asperoth Prime",
-      "sector": "Akira",
-      "biome": "desolate",
+      "id": 95,
+      "name": "Genesis Prime",
+      "sector": "Rictus",
+      "biome": "jungle",
       "owner": "illuminate",
-      "players": 62,
-      "health": 1789788,
-      "max_health": 1800000,
-      "liberation": 0.567,
+      "players": 273,
+      "health": 1579843,
+      "max_health": 1600000,
+      "liberation": 1.26,
       "is_defense": false,
       "expires_at": null,
       "is_mo_target": false,
       "hazards": [
-        "intense_heat",
-        "fire_tornadoes"
+        "ion_storms"
       ],
-      "severity_load": 5
+      "severity_load": 3
     },
     {
-      "id": 182,
-      "name": "Heze Bay",
-      "sector": "Hanzo",
-      "biome": "mesa",
-      "owner": "illuminate",
-      "players": 34,
-      "health": 1790111,
-      "max_health": 1800000,
-      "liberation": 0.549,
+      "id": 100,
+      "name": "Trandor",
+      "sector": "Sten",
+      "biome": "tundra",
+      "owner": "terminids",
+      "players": 1355,
+      "health": 1900000,
+      "max_health": 1900000,
+      "liberation": 0.0,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [],
+      "severity_load": 0
+    },
+    {
+      "id": 214,
+      "name": "Pandion-XXIV",
+      "sector": "Jin Xi",
+      "biome": "swamp",
+      "owner": "terminids",
+      "players": 1300,
+      "health": 1000000,
+      "max_health": 1000000,
+      "liberation": 0.0,
       "is_defense": false,
       "expires_at": null,
       "is_mo_target": false,
       "hazards": [
-        "durial_intense_heat",
-        "nocturnal_extreme_cold",
-        "sandstorms"
+        "thick_fog"
       ],
-      "severity_load": 5
+      "severity_load": 1
     },
     {
       "id": 159,
@@ -239,7 +221,7 @@
       "sector": "Lacaille",
       "biome": "mesa",
       "owner": "automatons",
-      "players": 542,
+      "players": 864,
       "health": 1000000,
       "max_health": 1000000,
       "liberation": 0.0,
@@ -259,7 +241,7 @@
       "sector": "Valdis",
       "biome": "tundra",
       "owner": "automatons",
-      "players": 500,
+      "players": 830,
       "health": 1600000,
       "max_health": 1600000,
       "liberation": 0.0,
@@ -270,12 +252,49 @@
       "severity_load": 0
     },
     {
+      "id": 231,
+      "name": "Siemnot",
+      "sector": "Xi Tauri",
+      "biome": "rainforest",
+      "owner": "illuminate",
+      "players": 805,
+      "health": 1000000,
+      "max_health": 1000000,
+      "liberation": 0.0,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [
+        "ion_storms"
+      ],
+      "severity_load": 3
+    },
+    {
+      "id": 143,
+      "name": "Asperoth Prime",
+      "sector": "Akira",
+      "biome": "desolate",
+      "owner": "illuminate",
+      "players": 153,
+      "health": 1789417,
+      "max_health": 1800000,
+      "liberation": 0.588,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [
+        "intense_heat",
+        "fire_tornadoes"
+      ],
+      "severity_load": 5
+    },
+    {
       "id": 199,
       "name": "Martale",
       "sector": "Andromeda",
       "biome": "tundra",
       "owner": "automatons",
-      "players": 493,
+      "players": 719,
       "health": 1500000,
       "max_health": 1500000,
       "liberation": 0.0,
@@ -286,22 +305,60 @@
       "severity_load": 0
     },
     {
-      "id": 214,
-      "name": "Pandion-XXIV",
-      "sector": "Jin Xi",
-      "biome": "swamp",
+      "id": 216,
+      "name": "Peacock",
+      "sector": "Sten",
+      "biome": "rainforest",
       "owner": "terminids",
-      "players": 345,
-      "health": 1000000,
-      "max_health": 1000000,
+      "players": 655,
+      "health": 1300000,
+      "max_health": 1300000,
       "liberation": 0.0,
       "is_defense": false,
       "expires_at": null,
       "is_mo_target": false,
       "hazards": [
-        "thick_fog"
+        "ion_storms"
       ],
-      "severity_load": 1
+      "severity_load": 3
+    },
+    {
+      "id": 182,
+      "name": "Heze Bay",
+      "sector": "Hanzo",
+      "biome": "mesa",
+      "owner": "illuminate",
+      "players": 80,
+      "health": 1789693,
+      "max_health": 1800000,
+      "liberation": 0.573,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [
+        "durial_intense_heat",
+        "nocturnal_extreme_cold",
+        "sandstorms"
+      ],
+      "severity_load": 5
+    },
+    {
+      "id": 92,
+      "name": "Grafmere",
+      "sector": "Rictus",
+      "biome": "icemoss",
+      "owner": "illuminate",
+      "players": 635,
+      "health": 2100000,
+      "max_health": 2100000,
+      "liberation": 0.0,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [
+        "extreme_cold"
+      ],
+      "severity_load": 2
     },
     {
       "id": 207,
@@ -309,7 +366,7 @@
       "sector": "Gellert",
       "biome": "highlands",
       "owner": "automatons",
-      "players": 299,
+      "players": 612,
       "health": 1300000,
       "max_health": 1300000,
       "liberation": 0.0,
@@ -328,7 +385,7 @@
       "sector": "Omega",
       "biome": "canyon",
       "owner": "illuminate",
-      "players": 291,
+      "players": 552,
       "health": 1300000,
       "max_health": 1300000,
       "liberation": 0.0,
@@ -341,12 +398,50 @@
       "severity_load": 2
     },
     {
+      "id": 215,
+      "name": "Partion",
+      "sector": "Sten",
+      "biome": "desolate",
+      "owner": "terminids",
+      "players": 520,
+      "health": 1000000,
+      "max_health": 1000000,
+      "liberation": 0.0,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [
+        "intense_heat",
+        "fire_tornadoes"
+      ],
+      "severity_load": 5
+    },
+    {
+      "id": 124,
+      "name": "Bore Rock",
+      "sector": "Falstaff",
+      "biome": "desolate",
+      "owner": "terminids",
+      "players": 502,
+      "health": 1000000,
+      "max_health": 1000000,
+      "liberation": 0.0,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [
+        "intense_heat",
+        "fire_tornadoes"
+      ],
+      "severity_load": 5
+    },
+    {
       "id": 157,
       "name": "Charon Prime",
       "sector": "Andromeda",
       "biome": "crimsonmoor",
       "owner": "automatons",
-      "players": 287,
+      "players": 458,
       "health": 1000000,
       "max_health": 1000000,
       "liberation": 0.0,
@@ -359,23 +454,22 @@
       "severity_load": 3
     },
     {
-      "id": 180,
-      "name": "Herthon Secundus",
-      "sector": "Ferris",
-      "biome": "desolate",
-      "owner": "illuminate",
-      "players": 32,
-      "health": 1795543,
-      "max_health": 1800000,
-      "liberation": 0.248,
+      "id": 211,
+      "name": "Nivel 43",
+      "sector": "Mirin",
+      "biome": "swamp",
+      "owner": "terminids",
+      "players": 427,
+      "health": 1000000,
+      "max_health": 1000000,
+      "liberation": 0.0,
       "is_defense": false,
       "expires_at": null,
       "is_mo_target": false,
       "hazards": [
-        "intense_heat",
-        "fire_tornadoes"
+        "thick_fog"
       ],
-      "severity_load": 5
+      "severity_load": 1
     },
     {
       "id": 205,
@@ -383,7 +477,7 @@
       "sector": "Valdis",
       "biome": "winter",
       "owner": "automatons",
-      "players": 245,
+      "players": 334,
       "health": 1000000,
       "max_health": 1000000,
       "liberation": 0.0,
@@ -397,32 +491,33 @@
       "severity_load": 4
     },
     {
-      "id": 92,
-      "name": "Grafmere",
-      "sector": "Rictus",
-      "biome": "icemoss",
+      "id": 180,
+      "name": "Herthon Secundus",
+      "sector": "Ferris",
+      "biome": "desolate",
       "owner": "illuminate",
-      "players": 221,
-      "health": 2100000,
-      "max_health": 2100000,
-      "liberation": 0.0,
+      "players": 35,
+      "health": 1795374,
+      "max_health": 1800000,
+      "liberation": 0.257,
       "is_defense": false,
       "expires_at": null,
       "is_mo_target": false,
       "hazards": [
-        "extreme_cold"
+        "intense_heat",
+        "fire_tornadoes"
       ],
-      "severity_load": 2
+      "severity_load": 5
     },
     {
-      "id": 231,
-      "name": "Siemnot",
-      "sector": "Xi Tauri",
-      "biome": "rainforest",
+      "id": 90,
+      "name": "Valmox",
+      "sector": "Rictus",
+      "biome": "crimsonmoor",
       "owner": "illuminate",
-      "players": 216,
-      "health": 1000000,
-      "max_health": 1000000,
+      "players": 181,
+      "health": 1900000,
+      "max_health": 1900000,
       "liberation": 0.0,
       "is_defense": false,
       "expires_at": null,
@@ -433,84 +528,12 @@
       "severity_load": 3
     },
     {
-      "id": 215,
-      "name": "Partion",
-      "sector": "Sten",
-      "biome": "desolate",
-      "owner": "terminids",
-      "players": 178,
-      "health": 1000000,
-      "max_health": 1000000,
-      "liberation": 0.0,
-      "is_defense": false,
-      "expires_at": null,
-      "is_mo_target": false,
-      "hazards": [
-        "intense_heat",
-        "fire_tornadoes"
-      ],
-      "severity_load": 5
-    },
-    {
-      "id": 100,
-      "name": "Trandor",
-      "sector": "Sten",
-      "biome": "tundra",
-      "owner": "terminids",
-      "players": 147,
-      "health": 1900000,
-      "max_health": 1900000,
-      "liberation": 0.0,
-      "is_defense": false,
-      "expires_at": null,
-      "is_mo_target": false,
-      "hazards": [],
-      "severity_load": 0
-    },
-    {
-      "id": 124,
-      "name": "Bore Rock",
-      "sector": "Falstaff",
-      "biome": "desolate",
-      "owner": "terminids",
-      "players": 127,
-      "health": 1000000,
-      "max_health": 1000000,
-      "liberation": 0.0,
-      "is_defense": false,
-      "expires_at": null,
-      "is_mo_target": false,
-      "hazards": [
-        "intense_heat",
-        "fire_tornadoes"
-      ],
-      "severity_load": 5
-    },
-    {
-      "id": 211,
-      "name": "Nivel 43",
-      "sector": "Mirin",
-      "biome": "swamp",
-      "owner": "terminids",
-      "players": 114,
-      "health": 1000000,
-      "max_health": 1000000,
-      "liberation": 0.0,
-      "is_defense": false,
-      "expires_at": null,
-      "is_mo_target": false,
-      "hazards": [
-        "thick_fog"
-      ],
-      "severity_load": 1
-    },
-    {
       "id": 224,
       "name": "RD-4",
       "sector": "Rigel",
       "biome": "moon",
       "owner": "illuminate",
-      "players": 85,
+      "players": 175,
       "health": 1000000,
       "max_health": 1000000,
       "liberation": 0.0,
@@ -524,31 +547,12 @@
       "severity_load": 5
     },
     {
-      "id": 70,
-      "name": "Blistica",
-      "sector": "Gellert",
-      "biome": "desolate",
-      "owner": "automatons",
-      "players": 72,
-      "health": 1000000,
-      "max_health": 1000000,
-      "liberation": 0.0,
-      "is_defense": false,
-      "expires_at": null,
-      "is_mo_target": false,
-      "hazards": [
-        "intense_heat",
-        "fire_tornadoes"
-      ],
-      "severity_load": 5
-    },
-    {
       "id": 156,
       "name": "Charbal-VII",
       "sector": "Andromeda",
       "biome": "toxic",
       "owner": "automatons",
-      "players": 65,
+      "players": 159,
       "health": 2000000,
       "max_health": 2000000,
       "liberation": 0.0,
@@ -562,12 +566,31 @@
       "severity_load": 4
     },
     {
+      "id": 70,
+      "name": "Blistica",
+      "sector": "Gellert",
+      "biome": "desolate",
+      "owner": "automatons",
+      "players": 136,
+      "health": 1000000,
+      "max_health": 1000000,
+      "liberation": 0.0,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [
+        "intense_heat",
+        "fire_tornadoes"
+      ],
+      "severity_load": 5
+    },
+    {
       "id": 181,
       "name": "Hesoe Prime",
       "sector": "Rigel",
       "biome": "winter",
       "owner": "illuminate",
-      "players": 55,
+      "players": 87,
       "health": 1000000,
       "max_health": 1000000,
       "liberation": 0.0,
@@ -581,49 +604,12 @@
       "severity_load": 4
     },
     {
-      "id": 90,
-      "name": "Valmox",
-      "sector": "Rictus",
-      "biome": "crimsonmoor",
-      "owner": "illuminate",
-      "players": 54,
-      "health": 1900000,
-      "max_health": 1900000,
-      "liberation": 0.0,
-      "is_defense": false,
-      "expires_at": null,
-      "is_mo_target": false,
-      "hazards": [
-        "ion_storms"
-      ],
-      "severity_load": 3
-    },
-    {
-      "id": 7,
-      "name": "Zea Rugosia",
-      "sector": "Ferris",
-      "biome": "desert",
-      "owner": "illuminate",
-      "players": 27,
-      "health": 1700000,
-      "max_health": 1700000,
-      "liberation": 0.0,
-      "is_defense": false,
-      "expires_at": null,
-      "is_mo_target": false,
-      "hazards": [
-        "durial_intense_heat",
-        "tremors"
-      ],
-      "severity_load": 3
-    },
-    {
       "id": 178,
       "name": "Haldus",
       "sector": "Ferris",
       "biome": "moon",
       "owner": "illuminate",
-      "players": 18,
+      "players": 60,
       "health": 1000000,
       "max_health": 1000000,
       "liberation": 0.0,
@@ -637,12 +623,31 @@
       "severity_load": 5
     },
     {
+      "id": 7,
+      "name": "Zea Rugosia",
+      "sector": "Ferris",
+      "biome": "desert",
+      "owner": "illuminate",
+      "players": 40,
+      "health": 1700000,
+      "max_health": 1700000,
+      "liberation": 0.0,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [
+        "durial_intense_heat",
+        "tremors"
+      ],
+      "severity_load": 3
+    },
+    {
       "id": 225,
       "name": "Rogue 5",
       "sector": "Rigel",
       "biome": "jungle",
       "owner": "illuminate",
-      "players": 9,
+      "players": 35,
       "health": 1000000,
       "max_health": 1000000,
       "liberation": 0.0,
@@ -654,19 +659,35 @@
         "rainstorms"
       ],
       "severity_load": 3
+    },
+    {
+      "id": 269,
+      "name": "Brilliance",
+      "sector": null,
+      "biome": "lush",
+      "owner": "super_earth",
+      "players": 0,
+      "health": 2000000,
+      "max_health": 2000000,
+      "liberation": 0.0,
+      "is_defense": false,
+      "expires_at": null,
+      "is_mo_target": false,
+      "hazards": [],
+      "severity_load": 0
     }
   ],
   "summary": {
-    "active_campaigns": 36,
-    "defenses": 1,
-    "mo_targets": 2,
-    "total_players": 17939,
+    "active_campaigns": 37,
+    "defenses": 2,
+    "mo_targets": 0,
+    "total_players": 67203,
     "faction_players": {
-      "automatons": 7397,
-      "terminids": 8048,
-      "illuminate": 2493,
-      "super_earth": 1
+      "automatons": 30896,
+      "terminids": 30271,
+      "illuminate": 6036,
+      "super_earth": 0
     }
   },
-  "generated_at": "2026-08-31T05:44:21+00:00"
+  "generated_at": "2026-08-31T14:02:08+00:00"
 }
