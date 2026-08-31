@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-30T21:12:35+00:00",
+  "generated_at": "2026-08-31T05:44:21+00:00",
   "orders": [
     {
       "id": 3348823937,
@@ -7,7 +7,7 @@
       "briefing": "Liberate the designated enemy planets, which are highly likely to be harboring the dissidents responsible for sabotaging the TCS+.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 53644,
+      "expires_in_s": 22924,
       "target_planets": [
         171,
         172,
@@ -20,7 +20,7 @@
       "briefing": "Liberate the designated planet to cleanse the Terminid outbreak and repair the TCS+.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 41759,
+      "expires_in_s": 11039,
       "target_planets": [
         269
       ]
