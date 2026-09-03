@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T04:39:09+00:00",
+  "generated_at": "2026-09-03T11:23:01+00:00",
   "orders": [
     {
       "id": 3038612729,
@@ -7,7 +7,7 @@
       "briefing": "Neutralize the designated enemy targets, for conversion into bounty trophies for citizens who arrest suspected dissidents.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 109492,
+      "expires_in_s": 85302,
       "target_planets": [
         0
       ]
