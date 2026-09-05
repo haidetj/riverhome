@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05T10:42:42+00:00",
+  "generated_at": "2026-09-05T15:19:06+00:00",
   "orders": [
     {
       "id": 1622985592,
@@ -7,7 +7,7 @@
       "briefing": "Liberate the designated planets so that the TCS+ may be extended and made even more impregnable.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 180621,
+      "expires_in_s": 164121,
       "target_planets": [
         124,
         211
