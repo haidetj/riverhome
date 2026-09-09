@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-09T04:49:51+00:00",
+  "generated_at": "2026-09-09T11:31:38+00:00",
   "orders": [
     {
       "id": 968949516,
@@ -7,7 +7,7 @@
       "briefing": "Liberate the designated Cyborg-occupied planets to disrupt an election-impeding cyberattack.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 371440,
+      "expires_in_s": 347490,
       "target_planets": [
         156,
         253
