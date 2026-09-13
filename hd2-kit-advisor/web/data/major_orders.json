@@ -1,17 +1,4 @@
 {
-  "generated_at": "2026-09-13T11:59:39+00:00",
-  "orders": [
-    {
-      "id": 968949516,
-      "title": "MAJOR ORDER",
-      "briefing": "Liberate the designated Cyborg-occupied planets to disrupt an election-impeding cyberattack.",
-      "description": null,
-      "expires_at": null,
-      "expires_in_s": 430,
-      "target_planets": [
-        156,
-        253
-      ]
-    }
-  ]
+  "generated_at": "2026-09-13T16:25:07+00:00",
+  "orders": []
 }
