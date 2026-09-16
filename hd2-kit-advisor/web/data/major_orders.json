@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T21:27:10+00:00",
+  "generated_at": "2026-09-16T04:56:03+00:00",
   "orders": [
     {
       "id": 3354462162,
@@ -7,7 +7,7 @@
       "briefing": "Decommission the targeted quantity of Automaton Troopers, by any means necessary, to prevent their use in posing as voters.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 150719,
+      "expires_in_s": 123859,
       "target_planets": [
         0
       ]
