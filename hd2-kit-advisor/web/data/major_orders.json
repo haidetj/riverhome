@@ -1,4 +1,16 @@
 {
-  "generated_at": "2026-09-17T11:49:44+00:00",
-  "orders": []
+  "generated_at": "2026-09-17T17:06:35+00:00",
+  "orders": [
+    {
+      "id": 806233317,
+      "title": "MAJOR ORDER",
+      "briefing": "Uphold election security by destroying all those who would threaten it.",
+      "description": null,
+      "expires_at": null,
+      "expires_in_s": 341610,
+      "target_planets": [
+        0
+      ]
+    }
+  ]
 }
