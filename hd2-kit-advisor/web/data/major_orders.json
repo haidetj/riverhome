@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-19T20:47:44+00:00",
+  "generated_at": "2026-09-20T04:59:32+00:00",
   "orders": [
     {
       "id": 806233317,
@@ -7,7 +7,7 @@
       "briefing": "Uphold election security by destroying all those who would threaten it.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 155680,
+      "expires_in_s": 126200,
       "target_planets": [
         0
       ]
