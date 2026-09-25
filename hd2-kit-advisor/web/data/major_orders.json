@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-25T17:17:36+00:00",
+  "generated_at": "2026-09-25T21:39:22+00:00",
   "orders": [
     {
       "id": 4174059175,
@@ -7,7 +7,7 @@
       "briefing": "Liberate the designated planets to secure territory for long-term construction of the TD-110 Maelstrom Tank.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 68200,
+      "expires_in_s": 52380,
       "target_planets": [
         198,
         217
