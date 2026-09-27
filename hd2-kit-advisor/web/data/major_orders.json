@@ -1,4 +1,16 @@
 {
-  "generated_at": "2026-09-27T17:02:27+00:00",
-  "orders": []
+  "generated_at": "2026-09-27T21:25:24+00:00",
+  "orders": [
+    {
+      "id": 1715805482,
+      "title": "MAJOR ORDER",
+      "briefing": "Kill the requisite enemies to ensure early investors in the TD-110 Maelstrom Tanks receive their promised deluxe features.",
+      "description": null,
+      "expires_at": null,
+      "expires_in_s": 338620,
+      "target_planets": [
+        0
+      ]
+    }
+  ]
 }
