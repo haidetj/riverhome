@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-01T06:05:42+00:00",
+  "generated_at": "2026-10-01T13:28:30+00:00",
   "orders": [
     {
       "id": 1715805482,
@@ -7,7 +7,7 @@
       "briefing": "Kill the requisite enemies to ensure early investors in the TD-110 Maelstrom Tanks receive their promised deluxe features.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 48420,
+      "expires_in_s": 21820,
       "target_planets": [
         0
       ]
