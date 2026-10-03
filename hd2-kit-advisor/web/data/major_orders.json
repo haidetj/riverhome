@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-02T22:19:33+00:00",
+  "generated_at": "2026-10-03T05:25:18+00:00",
   "orders": [
     {
       "id": 2991945293,
@@ -7,7 +7,7 @@
       "briefing": "Defend the designated planets, wielding the TD-110 Maelstrom Tank to support a public awareness sales campaign.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 162250,
+      "expires_in_s": 136710,
       "target_planets": [
         173,
         245
