@@ -1,17 +1,4 @@
 {
-  "generated_at": "2026-10-03T21:24:32+00:00",
-  "orders": [
-    {
-      "id": 2991945293,
-      "title": "MAJOR ORDER",
-      "briefing": "Defend the designated planets, wielding the TD-110 Maelstrom Tank to support a public awareness sales campaign.",
-      "description": null,
-      "expires_at": null,
-      "expires_in_s": 79200,
-      "target_planets": [
-        173,
-        245
-      ]
-    }
-  ]
+  "generated_at": "2026-10-04T06:00:49+00:00",
+  "orders": []
 }
