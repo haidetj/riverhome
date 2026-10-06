@@ -1,4 +1,17 @@
 {
-  "generated_at": "2026-10-06T06:29:30+00:00",
-  "orders": []
+  "generated_at": "2026-10-06T18:27:09+00:00",
+  "orders": [
+    {
+      "id": 1249406358,
+      "title": "MAJOR ORDER",
+      "briefing": "Liberate the designated planet and eliminate the mandated number of Illuminate hostiles in order to televise broadcasts of the sector's pacification.",
+      "description": null,
+      "expires_at": null,
+      "expires_in_s": 239633,
+      "target_planets": [
+        0,
+        228
+      ]
+    }
+  ]
 }
