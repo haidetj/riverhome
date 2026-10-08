@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T23:09:58+00:00",
+  "generated_at": "2026-10-08T06:15:04+00:00",
   "orders": [
     {
       "id": 1249406358,
@@ -7,7 +7,7 @@
       "briefing": "Liberate the designated planet and eliminate the mandated number of Illuminate hostiles in order to televise broadcasts of the sector's pacification.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 136373,
+      "expires_in_s": 110793,
       "target_planets": [
         0,
         228
