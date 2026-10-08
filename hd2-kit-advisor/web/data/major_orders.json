@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-10-08T06:15:04+00:00",
+  "generated_at": "2026-10-08T13:42:52+00:00",
   "orders": [
     {
-      "id": 1249406358,
+      "id": 4152388944,
       "title": "MAJOR ORDER",
-      "briefing": "Liberate the designated planet and eliminate the mandated number of Illuminate hostiles in order to televise broadcasts of the sector's pacification.",
+      "briefing": "Hold the designated planet and eliminate the mandated number of bile-producing Terminids in order to prove the safety of our chemical airstrikes, and to aid vital and fully planned research into airborne toxicity.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 110793,
+      "expires_in_s": 431979,
       "target_planets": [
         0,
         228
