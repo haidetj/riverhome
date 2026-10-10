@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T12:41:06+00:00",
+  "generated_at": "2026-10-10T21:50:19+00:00",
   "orders": [
     {
       "id": 4152388944,
@@ -7,7 +7,7 @@
       "briefing": "Hold the designated planet and eliminate the mandated number of bile-producing Terminids in order to prove the safety of our chemical airstrikes, and to aid vital and fully planned research into airborne toxicity.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 262939,
+      "expires_in_s": 230019,
       "target_planets": [
         0,
         228
@@ -19,7 +19,7 @@
       "briefing": "Protect and hold the designated planets in order to destroy the propaganda arrays being established by the Incineration Corps and Jet Brigade, and protect citizens from the Automatons' craven lies.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 115743,
+      "expires_in_s": 82823,
       "target_planets": [
         198,
         203
