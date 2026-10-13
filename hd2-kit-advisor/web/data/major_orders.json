@@ -1,17 +1,4 @@
 {
-  "generated_at": "2026-10-13T00:47:55+00:00",
-  "orders": [
-    {
-      "id": 4152388944,
-      "title": "MAJOR ORDER",
-      "briefing": "Hold the designated planet and eliminate the mandated number of bile-producing Terminids in order to prove the safety of our chemical airstrikes, and to aid vital and fully planned research into airborne toxicity.",
-      "description": null,
-      "expires_at": null,
-      "expires_in_s": 46619,
-      "target_planets": [
-        0,
-        228
-      ]
-    }
-  ]
+  "generated_at": "2026-10-13T14:20:43+00:00",
+  "orders": []
 }
