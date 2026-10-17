@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-16T21:19:18+00:00",
+  "generated_at": "2026-10-17T04:37:15+00:00",
   "orders": [
     {
       "id": 4184022284,
@@ -7,7 +7,7 @@
       "briefing": "Hold the designated planet, complete the required number of operations, and terminate the mandated quantity of Illuminate hostiles in order to restore peace of mind and full respiratory capacity to our most honored retirees.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 239280,
+      "expires_in_s": 213050,
       "target_planets": [
         0,
         228
