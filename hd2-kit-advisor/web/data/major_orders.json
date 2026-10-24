@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-23T21:29:17+00:00",
+  "generated_at": "2026-10-24T04:45:28+00:00",
   "orders": [
     {
       "id": 3875819082,
@@ -7,7 +7,7 @@
       "briefing": "Liberate the designated planets to secure the raw materials needed to properly honor our fallen heroes.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 42069,
+      "expires_in_s": 15899,
       "target_planets": [
         7,
         75,
