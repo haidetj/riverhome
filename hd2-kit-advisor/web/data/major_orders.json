@@ -1,17 +1,15 @@
 {
-  "generated_at": "2026-10-24T04:45:28+00:00",
+  "generated_at": "2026-10-24T11:13:18+00:00",
   "orders": [
     {
-      "id": 3875819082,
+      "id": 568917260,
       "title": "MAJOR ORDER",
-      "briefing": "Liberate the designated planets to secure the raw materials needed to properly honor our fallen heroes.",
+      "briefing": "Kill the designated enemies to provide footage for the upcoming inspirational education film \"Democratic Sniper.\"",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 15899,
+      "expires_in_s": 430868,
       "target_planets": [
-        7,
-        75,
-        261
+        0
       ]
     }
   ]
