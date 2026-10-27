@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-27T05:14:17+00:00",
+  "generated_at": "2026-10-27T12:22:36+00:00",
   "orders": [
     {
       "id": 568917260,
@@ -7,7 +7,7 @@
       "briefing": "Kill the designated enemies to provide footage for the upcoming inspirational education film \"Democratic Sniper.\"",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 193298,
+      "expires_in_s": 167508,
       "target_planets": [
         0
       ]
