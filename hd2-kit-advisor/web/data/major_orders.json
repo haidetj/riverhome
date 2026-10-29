@@ -1,16 +1,4 @@
 {
-  "generated_at": "2026-10-29T05:57:07+00:00",
-  "orders": [
-    {
-      "id": 568917260,
-      "title": "MAJOR ORDER",
-      "briefing": "Kill the designated enemies to provide footage for the upcoming inspirational education film \"Democratic Sniper.\"",
-      "description": null,
-      "expires_at": null,
-      "expires_in_s": 17848,
-      "target_planets": [
-        0
-      ]
-    }
-  ]
+  "generated_at": "2026-10-29T13:14:55+00:00",
+  "orders": []
 }
