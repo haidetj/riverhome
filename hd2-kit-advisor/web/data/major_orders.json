@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-01T06:19:56+00:00",
+  "generated_at": "2026-11-01T17:57:24+00:00",
   "orders": [
     {
       "id": 3291378705,
@@ -7,7 +7,7 @@
       "briefing": "Acquire Automaton samples and kill Cyborgs to aid the development of enhanced digital interrogation techniques.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 122076,
+      "expires_in_s": 80176,
       "target_planets": [
         0
       ]
