@@ -1,31 +1,4 @@
 {
-  "generated_at": "2026-11-08T06:14:44+00:00",
-  "orders": [
-    {
-      "id": 1636665659,
-      "title": "MAJOR ORDER",
-      "briefing": "Eliminate the mandated number of Terminids in order to restore public confidence, quell unlawful rumours of TCS+ failures, and safeguard Federal prosperity.",
-      "description": null,
-      "expires_at": null,
-      "expires_in_s": 24470,
-      "target_planets": [
-        0,
-        170
-      ]
-    },
-    {
-      "id": 3504692473,
-      "title": "STRATEGIC THREAT",
-      "briefing": "Investigate and, if warranted, hold the designated planets, in order to verify highly unlikely reports of TCS+ breaches.",
-      "description": null,
-      "expires_at": null,
-      "expires_in_s": 23866,
-      "target_planets": [
-        78,
-        128,
-        130,
-        270
-      ]
-    }
-  ]
+  "generated_at": "2026-11-08T13:38:19+00:00",
+  "orders": []
 }
