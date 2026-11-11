@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-10T19:50:04+00:00",
+  "generated_at": "2026-11-11T06:40:04+00:00",
   "orders": [
     {
       "id": 236809735,
@@ -7,7 +7,7 @@
       "briefing": "Defend against the required number of Terminid attacks in order to contain the unprovoked, unforeseeable outbreak affecting multiple TCS+ sectors.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 322604,
+      "expires_in_s": 283604,
       "target_planets": [
         0
       ]
