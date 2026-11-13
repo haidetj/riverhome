@@ -1,15 +1,17 @@
 {
-  "generated_at": "2026-11-13T06:54:08+00:00",
+  "generated_at": "2026-11-13T19:49:56+00:00",
   "orders": [
     {
-      "id": 236809735,
+      "id": 1701745153,
       "title": "MAJOR ORDER",
-      "briefing": "Defend against the required number of Terminid attacks in order to contain the unprovoked, unforeseeable outbreak affecting multiple TCS+ sectors.",
+      "briefing": "Hold the designated planets in order to enable the Firebreak Protocol, to raze infested planets and stop the spread of the mutated Terminid strain.",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 109994,
+      "expires_in_s": 246354,
       "target_planets": [
-        0
+        129,
+        171,
+        215
       ]
     }
   ]
