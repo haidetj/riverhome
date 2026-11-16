@@ -1,18 +1,4 @@
 {
-  "generated_at": "2026-11-16T06:43:43+00:00",
-  "orders": [
-    {
-      "id": 1701745153,
-      "title": "MAJOR ORDER",
-      "briefing": "Hold the designated planets in order to enable the Firebreak Protocol, to raze infested planets and stop the spread of the mutated Terminid strain.",
-      "description": null,
-      "expires_at": null,
-      "expires_in_s": 34424,
-      "target_planets": [
-        129,
-        171,
-        215
-      ]
-    }
-  ]
+  "generated_at": "2026-11-16T22:15:47+00:00",
+  "orders": []
 }
