@@ -1,4 +1,17 @@
 {
-  "generated_at": "2026-11-17T08:03:30+00:00",
-  "orders": []
+  "generated_at": "2026-11-17T21:01:28+00:00",
+  "orders": [
+    {
+      "id": 2890701424,
+      "title": "MAJOR ORDER",
+      "briefing": "Hold the planet chosen for construction of the Center for Mental Clarity and kill Voteless to catalyze research into innovative SEAF mental health treatments. ",
+      "description": null,
+      "expires_at": null,
+      "expires_in_s": 318040,
+      "target_planets": [
+        0,
+        7
+      ]
+    }
+  ]
 }
