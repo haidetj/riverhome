@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-25T08:47:07+00:00",
+  "generated_at": "2026-11-25T21:48:11+00:00",
   "orders": [
     {
       "id": 1278711574,
@@ -7,7 +7,7 @@
       "briefing": "Eliminate the mandated amount of Troopers, Factory Striders, Terminids, and Bile Spewers to collect raw materials for neural implant production. ",
       "description": null,
       "expires_at": null,
-      "expires_in_s": 132408,
+      "expires_in_s": 85538,
       "target_planets": [
         0
       ]
