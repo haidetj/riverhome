@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-27T21:25:46+00:00",
+  "generated_at": "2026-11-28T07:59:25+00:00",
   "orders": [
     {
       "id": 2730230368,
@@ -7,7 +7,7 @@
       "briefing": null,
       "description": null,
       "expires_at": null,
-      "expires_in_s": 239691,
+      "expires_in_s": 201761,
       "target_planets": [
         7,
         180,
